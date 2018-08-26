@@ -1,0 +1,136 @@
+let SMS = {
+    data: '',
+    format: {
+        full: new RegExp("^([a-zA-Z.]+);([0-9.]+)@([0-9]+)$"),
+        short: new RegExp("^([a-zA-Z.]+)@([0-9]+)$"),
+        loop: new RegExp("^[0-9]+(\\.[0-9]+)*$"),
+        digit1: new RegExp("^[0-9]{1}(\\.[0-9]{1})*$"),
+        digit2: new RegExp("^[0-9]{2}(\\.[0-9]{2})*$"),
+        digit3: new RegExp("^[0-9]{3}(\\.[0-9]{3})*$")
+    },
+    code: {
+        available: ['CM', 'CN', 'J', 'P', 'T', 'S', 'C'],
+        head: ['AS', 'KP', 'K', 'C'],
+        unique: {
+            J: 'odd',
+            P: 'even',
+            T: 'big',
+            S: 'small'
+        }
+    },
+    number: {
+        even: [0, 2, 4, 6, 8],
+        odd: [1, 3, 5, 7, 9],
+        big: [5, 6, 7, 8, 9],
+        small: [0, 1, 2, 3, 4],
+    },
+    objects: [],
+    messages: {
+        correct: [],
+        inCorrect: []
+    },
+    setData(message) {
+        this.data = message;
+
+        return this;
+    },
+    getObjects() {
+        this.objects = this.data.split(' ');
+
+        return this.objects;
+    },
+    parse() {
+        let app = this;
+      
+        this.restart();
+
+        this.getObjects().forEach(item => {
+            let fullText, theCode, theLoop, thePrice;
+
+            if (app.format.full.test(item)) {
+                [fullText, theCode, theLoop, thePrice] = app.format.full.exec(item);
+
+                app.parsing(item, theCode, theLoop, thePrice);
+            } else if (app.format.short.test(item)) {
+                [fullText, theCode, thePrice] = app.format.short.exec(item);
+
+                app.parsing(item, theCode, theLoop, thePrice);
+            } else {
+                app.messages.inCorrect.push(item);
+            }
+        });
+      
+      return app;
+    },
+    parsing(theItem, theCode, theLoop, thePrice) {
+        let index   = theCode.split('.');
+        let isJitu  = index.length > 1 ? true : false;
+        theCode     = index[0].toUpperCase();
+
+        if (this.code.available.includes(theCode)) {
+            if (theCode in this.code.unique) {
+                if (typeof theLoop != "undefined") {
+                    this.messages.inCorrect.push(theItem);
+                } else {
+                    let data = this.number[this.code.unique[theCode]];
+
+                    this.addMessage(data, theCode, thePrice);
+                }
+            } else if (isJitu) {
+                let theHead = isJitu ? index[1].toUpperCase() : false;
+
+                if (this.code.head.includes(theHead)) {
+                    this.mustHaveDigit(1, theItem, theCode + " " + theHead, theLoop, thePrice);
+                } else {
+                    this.messages.inCorrect.push(theItem);
+                }
+            } else if (theCode == 'C') {
+                this.mustHaveLoop(theItem, theCode, theLoop, thePrice, 1, 8);
+            } else if (theCode == 'CM') {
+                this.mustHaveLoop(theItem, theCode, theLoop, thePrice, 2);
+            } else if (theCode == 'CN') {
+                this.mustHaveLoop(theItem, theCode, theLoop, thePrice, 3);
+            }
+        } else {
+            this.messages.inCorrect.push(theItem);
+        }
+    },
+    mustHaveDigit(digit, theItem, theCode, theLoop, thePrice) {
+        if (this.format['digit' + digit].test(theLoop)) {
+            this.addMessage(theLoop, theCode, thePrice);
+        } else {
+            this.messages.inCorrect.push(theItem);
+        }
+    },
+    mustHaveLoop(theItem, theCode, theLoop, thePrice, digit = 1, maxLoop = 999) {
+        if (typeof theLoop == "undefined") {
+            this.messages.inCorrect.push(theItem);
+        } else if (theLoop.split('.').length > maxLoop) {
+            this.messages.inCorrect.push(theItem);
+        } else {
+            this.mustHaveDigit(digit, theItem, theCode, theLoop, thePrice);
+        }
+    },
+    addMessage(data, code, price){
+        let app     = this;
+        let items   = Array.isArray(data)
+            ? data
+            : typeof data == "undefined"
+                ? ['N/A']
+                : data.split('.');
+
+        items.forEach(item => {
+            let message = item == "N/A"
+                ? code + " " + price
+                : code + " " + item + " " + price;
+
+            app.messages.correct.push(message);
+        });
+    },
+    restart() {
+        this.messages = {
+            correct: [],
+            inCorrect: []
+        };
+    }
+};
