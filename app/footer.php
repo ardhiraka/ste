@@ -14,6 +14,9 @@
 
 	<script>
 		jQuery(function($) {
+			let formatNumber = function(number) {
+				return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(number * 1000);
+			}
       let dataTable = $('#tablesms').DataTable({
           scrollY: "200px",
           scrollCollapse: true,
@@ -77,14 +80,34 @@
 				let result 	= SMS.matchResult;
 				let totalWin 	= 0;
 				let totalLose	= 0;
-				for (var i in result) {
-					totalWin 	+= result[i].win.length;
-					totalLose += result[i].lose.length;
-					hasil.push(SMS.searchCode(i) + ":" + result[i].win.length + "/" + result[i].lose.length);
-				}
-				hasil.push("Total: " + totalWin + "/" + totalLose);
-				
-				$('#hasildapat').val(hasil.join("\n"));
+				let totalPWin = 0;
+				let totalPLose = 0;
+				$.post('ajax/getDataByNumber.php', {number: container.data('number')}, function(response) {
+					for (var i in result) {
+						totalWin 	+= result[i].win.length;
+						totalLose += result[i].lose.length;
+						let theCode = SMS.searchCode(i, true);
+						let theCodeRumusWin = theCode.head
+							? 'Jitu'
+							: theCode.code == 'CM'
+								? 'CM1'
+								: theCode.code;
+						let theCodeRumusLose = theCode.head
+							? 'Jitu'
+							: theCode.code;
+						let thePrice = SMS.searchPrice(i);
+						let rumusWin = result[i].win.length * thePrice * response[theCodeRumusWin+'_win'];
+						let rumusLose = (result[i].lose.length * thePrice) - ((result[i].lose.length * thePrice) * (response[theCodeRumusLose+'_disc'] / 100));
+						let rumus = rumusWin - rumusLose;
+						totalPWin += rumusWin;
+						totalPLose += rumusLose;
+						
+						hasil.push(theCode.full + ":" + result[i].win.length + "/" + result[i].lose.length + " | " + formatNumber(rumusWin) + "/" + formatNumber(rumusLose));
+					}
+					hasil.push("Total: " + totalWin + "/" + totalLose + " | " + formatNumber(totalPWin) + "/" + formatNumber(totalPLose) + " | " + formatNumber(totalPWin - totalPLose));
+
+					$('#hasildapat').val(hasil.join("\n"));
+				}, 'json');
       });
       
       // Delete message

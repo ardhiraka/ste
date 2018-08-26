@@ -289,7 +289,7 @@ let SMS = {
             console.error('Anda harus menggunakan method setNumber() sebelum match()!');
         }
     },
-    searchCode(format) {
+    searchCode(format, object = false) {
         let fullText, theCode, theLoop, thePrice;
 
         if (this.format.full.test(format)) {
@@ -298,7 +298,28 @@ let SMS = {
             [fullText, theCode, thePrice] = this.format.short.exec(format);
         }
 
-        return theCode;
+        let code = theCode.split('.');
+
+        if (object) {
+            return {
+                code: code[0],
+                head: code.length > 1 ? code[1] : false,
+                full: code[0] + (code.length > 1 ? '.' + code[1] : '')
+            }
+        } else {
+            return code[0];
+        }
+    },
+    searchPrice(format) {
+        let fullText, theCode, theLoop, thePrice;
+
+        if (this.format.full.test(format)) {
+            [fullText, theCode, theLoop, thePrice] = this.format.full.exec(format);
+        } else if (this.format.short.test(format)) {
+            [fullText, theCode, thePrice] = this.format.short.exec(format);
+        }
+
+        return thePrice;
     },
     restart() {
         this.data                   = '';
