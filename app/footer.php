@@ -84,25 +84,67 @@
 				let totalPLose = 0;
 				$.post('ajax/getDataByNumber.php', {number: container.data('number')}, function(response) {
 					for (var i in result) {
-						totalWin 	+= result[i].win.length;
-						totalLose += result[i].lose.length;
-						let theCode = SMS.searchCode(i, true);
-						let theCodeRumusWin = theCode.head
-							? 'Jitu'
-							: theCode.code == 'CM'
-								? 'CM1'
-								: theCode.code;
-						let theCodeRumusLose = theCode.head
-							? 'Jitu'
-							: theCode.code;
-						let thePrice = SMS.searchPrice(i);
-						let rumusWin = result[i].win.length * thePrice * response[theCodeRumusWin+'_win'];
-						let rumusLose = (result[i].lose.length * thePrice) - ((result[i].lose.length * thePrice) * (response[theCodeRumusLose+'_disc'] / 100));
-						let rumus = rumusWin - rumusLose;
-						totalPWin += rumusWin;
-						totalPLose += rumusLose;
+						let theCode 	= SMS.searchCode(i, true);
+						let thePrice 	= SMS.searchPrice(i);
 						
-						hasil.push(theCode.full + ":" + result[i].win.length + "/" + result[i].lose.length + " | " + formatNumber(rumusWin) + "/" + formatNumber(rumusLose));
+						if (theCode.code == 'N/A') {
+							let iWin				= 0;
+							let iLose 			= 0;
+							let hasilWin 		= 0;
+							let hasilLose		= 0;
+							let hasilTotal	= 0;
+							for (let code in result[i]) {
+								let icode = result[i][code];
+								
+								totalWin 	+= icode.win.length;
+								totalLose += icode.lose.length;
+// 								iWin 			+= icode.win.length;
+// 								iLose 		+= icode.lose.length;
+								hasilWin 	+= icode.win.length * thePrice * response[code + '_win'];
+								hasilLose += (icode.lose.length * thePrice) - ((icode.lose.length * thePrice) * (response[code + '_disc'] / 100));
+								let cWin 	= icode.win.length * thePrice * response[code + '_win'];
+								let cLose	= (icode.lose.length * thePrice) - ((icode.lose.length * thePrice) * (response[code + '_disc'] / 100));
+								hasil.push(code + ": " + icode.win.length + "/" + icode.lose.length + " | " + formatNumber(cWin) + "/" + formatNumber(cLose));
+// 								console.log(icode.win.length+"*"+thePrice+"*"+response[code + '_win']);
+// 								console.log('('+icode.lose.length+"*"+thePrice+') - (('+icode.lose.length+'*'+thePrice+') * ('+response[code + '_disc']+'/'+100+'))');
+							}
+							totalPWin 	= hasilWin;
+							totalPLose	= hasilLose;
+							hasilTotal 	= hasilWin - hasilLose;
+							
+// 							hasil.push("d: " + iWin + "/" + iLose + " | " + formatNumber(hasilWin) + "/" + formatNumber(hasilLose));
+						} else {
+							totalWin 	+= result[i].win.length;
+							totalLose += result[i].lose.length;
+							let theCodeRumusWin = theCode.head
+								? 'Jitu'
+								: theCode.code == 'CM'
+									? 'CM1'
+									: theCode.code;
+							let theCodeRumusLose = theCode.head
+								? 'Jitu'
+								: theCode.code;
+							let unique = ['J', 'P', 'T', 'S'];
+							let rumusWin = 0;
+							let rumusLose = 0;
+
+							if (unique.includes(theCode.code)) {
+								rumusWin = result[i].win.length > 0
+									? result[i].win.length * thePrice * response[theCodeRumusWin+'_win']
+									: 0;
+								rumusLose = result[i].win.length > 0
+									? 0
+									: (result[i].lose.length * thePrice) + ((result[i].lose.length * thePrice) * (response[theCodeRumusLose+'_disc'] / 100));
+							} else {
+								rumusWin = result[i].win.length * thePrice * response[theCodeRumusWin+'_win'];
+								rumusLose = (result[i].lose.length * thePrice) - ((result[i].lose.length * thePrice) * (response[theCodeRumusLose+'_disc'] / 100));
+							}
+							let rumus = rumusWin - rumusLose;
+							totalPWin += rumusWin;
+							totalPLose += rumusLose;
+
+							hasil.push(theCode.full + ": " + result[i].win.length + "/" + result[i].lose.length + " | " + formatNumber(rumusWin) + "/" + formatNumber(rumusLose));
+						}
 					}
 					hasil.push("Total: " + totalWin + "/" + totalLose + " | " + formatNumber(totalPWin) + "/" + formatNumber(totalPLose) + " | " + formatNumber(totalPWin - totalPLose));
 
