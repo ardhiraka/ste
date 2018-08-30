@@ -1,15 +1,15 @@
   <!-- SCRIPTS -->
 	<!-- JQuery -->
-	<script type="text/javascript" src="../js/jquery-3.3.1.min.js"></script>
+	<script type="text/javascript" src="../assets/js/jquery-3.3.1.min.js"></script>
 	<!-- Bootstrap tooltips -->
-	<script type="text/javascript" src="../js/popper.min.js"></script>
+	<script type="text/javascript" src="../assets/js/popper.min.js"></script>
 	<!-- Bootstrap core JavaScript -->
-	<script type="text/javascript" src="../js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="../assets/js/bootstrap.min.js"></script>
 	<!-- MDB core JavaScript -->
-	<script type="text/javascript" src="../js/mdb.min.js"></script>
-	<script type="text/javascript" src="../js/addons/datatables.min.js"></script>
+	<script type="text/javascript" src="../assets/js/mdb.min.js"></script>
+	<script type="text/javascript" src="../assets/js/addons/datatables.min.js"></script>
   <!-- SMS Parse Module - Aris - Techarea -->
-  <script type="text/javascript" src="../js/sms.js"></script>
+  <script type="text/javascript" src="../assets/js/sms.js"></script>
 
 
 	<script>
@@ -68,6 +68,8 @@
           id: container.data('id'),
           data: container.data('message')
         };
+
+        $('#submitSms').attr('data-id', message.id).attr('data-message', message.data);
         
         SMS.setData(message.data).filter().parse().setNumber(finalNum).match();
         
@@ -116,19 +118,19 @@
 						} else {
 							totalWin 	+= result[i].win.length;
 							totalLose += result[i].lose.length;
-							let theCodeRumusWin = theCode.head
+							let theCodeRumusWin = SMS.code.head.includes(theCode.head)
 								? 'Jitu'
 								: theCode.code == 'CM'
 									? 'CM1'
 									: theCode.code;
-							let theCodeRumusLose = theCode.head
+							let theCodeRumusLose = SMS.code.head.includes(theCode.head)
 								? 'Jitu'
 								: theCode.code;
 							let unique = ['J', 'P', 'T', 'S'];
 							let rumusWin = 0;
 							let rumusLose = 0;
 
-							if (unique.includes(theCode.code)) {
+							if (unique.includes(theCode.code) || theCode.code == 'M') {
 								rumusWin = result[i].win.length > 0
 									? result[i].win.length * thePrice * response[theCodeRumusWin+'_win']
 									: 0;
@@ -187,6 +189,17 @@
 					$('#smsbenar').val(SMS.filtered.correct.join("\n"));
 				}, 500);
 			});
+
+            $(document).on('click', '#submitSms', function() {
+                let data    = this.dataset;
+                let sms     = SMS.setData(data.message).filter().parse();
+
+                $.post('ajax/storeSplitData.php', {...data, split: sms.messages.correct}, function(response) {
+                    console.log(response);
+                }, 'json');
+
+                console.log(sms.messages.correct);
+            });
 		});
 	</script>
 

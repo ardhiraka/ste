@@ -2,12 +2,6 @@
 
 require_once '../db.php';
 
-$getMessages  = 'SELECT ID, UDH, SenderNumber, TextDecoded FROM inbox ORDER BY ReceivingDateTime ASC';
-$result       = $conn->query($getMessages);
-$messages     = ['data' => []];
+$messages = $db->fetch_all("SELECT ID, UDH, SenderNumber, TextDecoded FROM inbox ORDER BY ReceivingDateTime ASC");
 
-while($row = $result->fetch_assoc()) :
-  $messages['data'][] = $row;
-endwhile;
-
-echo json_encode($messages);
+echo json_encode(['data' => $messages]);

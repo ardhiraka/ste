@@ -2,10 +2,10 @@
 
 require_once '../db.php';
 
-$delete = "DELETE FROM inbox WHERE ID = {$_POST['id']}";
+$delete = $db->delete('inbox', ['ID' => $_POST['id']]);
 
-if ($conn->query($delete) === TRUE) :
+if ($delete) :
   echo json_encode(['status' => 'success']);
 else :
-  echo json_encode(['status' => 'error', 'error' => $conn->error]);
+  echo json_encode(['status' => 'error', 'error' => 'ID tidak ditemukan!']);
 endif;

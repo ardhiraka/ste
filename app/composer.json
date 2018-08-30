@@ -1,0 +1,5 @@
+{
+    "require": {
+        "vielhuber/dbhelper": "^1.8"
+    }
+}

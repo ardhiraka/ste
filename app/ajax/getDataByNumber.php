@@ -2,8 +2,6 @@
 
 require_once '../db.php';
 
-$number   = $_POST['number'];
-$getData  = "SELECT * FROM `member` WHERE nohp = '{$number}'";
-$result   = $conn->query($getData);
+$data = $db->fetch_row("SELECT * FROM `member` WHERE nohp = ?", $_POST['number']);
 
-echo json_encode($result->fetch_assoc());
+echo json_encode($data);

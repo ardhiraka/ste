@@ -11,14 +11,16 @@ let SMS = {
     format: {
         full: new RegExp("^([a-zA-Z.]+);([0-9.]+)@([0-9]+)$"),
         short: new RegExp("^([a-zA-Z.]+)@([0-9]+)$"),
+        ncode: new RegExp("^([0-9]{2,4}(?:\\.[0-9]{2,4})*)@([0-9]+)$"),
         loop: new RegExp("^[0-9]+(\\.[0-9]+)*$"),
         digit1: new RegExp("^[0-9]{1}(\\.[0-9]{1})*$"),
         digit2: new RegExp("^[0-9]{2}(\\.[0-9]{2})*$"),
         digit3: new RegExp("^[0-9]{3}(\\.[0-9]{3})*$"),
+        mformat: new RegExp("^([JPTS]{2}(?:|[JPTS]{2}))$"),
         default: [';', '@']
     },
     code: {
-        available: ['CM', 'CN', 'J', 'P', 'T', 'S', 'C'],
+        available: ['CM', 'CN', 'J', 'P', 'T', 'S', 'C', 'M', 'N/A'],
         head: ['AS', 'KP', 'K', 'C'],
         unique: {
             J: 'odd',
@@ -105,6 +107,10 @@ let SMS = {
                 [fullText, theCode, thePrice] = app.format.short.exec(item);
 
                 app.parsing(item, theCode, theLoop, thePrice, 'filtered');
+            } else if (app.format.ncode.test(item)) {
+                [fullText, theLoop, thePrice] = app.format.ncode.exec(item);
+
+                app.parsing(item, 'N/A', theLoop, thePrice, 'filtered');
             } else {
                 app.filtered.inCorrect.push(item);
             }
@@ -135,6 +141,10 @@ let SMS = {
                 [fullText, theCode, thePrice] = app.format.short.exec(item);
 
                 app.parsing(item, theCode, theLoop, thePrice);
+            } else if (app.format.ncode.test(item)) {
+                [fullText, theLoop, thePrice] = app.format.ncode.exec(item);
+
+                app.parsing(item, 'N/A', theLoop, thePrice);
             } else {
                 app.messages.inCorrect.push(item);
             }
@@ -144,9 +154,9 @@ let SMS = {
     },
     parsing(theItem, theCode, theLoop, thePrice, property = 'messages') {
         let index   = theCode.split('.');
-        let isJitu  = index.length > 1 ? true : false;
-        let maxLoop = 999;
         theCode     = index[0].toUpperCase();
+        let isJitu  = (index.length > 1 && theCode == 'C') ? true : false;
+        let maxLoop = 999;
 
         if (this.code.available.includes(theCode)) {
             if (theCode in this.code.unique) {
@@ -175,6 +185,14 @@ let SMS = {
                 this.mustHaveLoop(theItem, theCode, theLoop, thePrice, 2, maxLoop, property);
             } else if (theCode == 'CN') {
                 this.mustHaveLoop(theItem, theCode, theLoop, thePrice, 3, maxLoop, property);
+            } else if (theCode == 'N/A') {
+                this.addToCorrect(theItem, theLoop, theCode, thePrice, property);
+            } else if (theCode == 'M') {
+                if (this.format.mformat.test(index[1])) {
+                    this.addToCorrect(theItem, theLoop, theCode, thePrice, property);
+                } else {
+                    this.addToInCorrect(theItem, property);
+                }
             }
         } else {
             this.addToInCorrect(theItem, property);
@@ -212,20 +230,27 @@ let SMS = {
 
             items.forEach(item => {
                 let message = item == "N/A"
-                    ? code + " " + price
-                    : code + " " + item + " " + price;
+                    ? code == 'M'
+                        ? app.searchCode(format, true).code + " " + app.searchCode(format, true).head + " " + price
+                        : code + " " + price
+                    : code == "N/A"
+                        ? item + " " + price
+                        : code + " " + item + " " + price;
 
-                // app.messages.correct.push(message);
                 app.messages.correct[format].push(message);
             });
         } else if (property == 'filtered') {
             code = code.replace(' ', '.');
             let separator   = app.format.default;
-            let format      = (typeof data == "undefined" || data == '')
-                ? code + separator[1] + price
-                : code + separator[0] + data + separator[1] + price;
+            let item        = code == 'M'
+                ? format
+                : code == 'N/A'
+                    ? data + separator[1] + price
+                    : (typeof data == "undefined" || data == '')
+                        ? code + separator[1] + price
+                        : code + separator[0] + data + separator[1] + price;
 
-            app.filtered.correct.push(format);
+            app.filtered.correct.push(item);
         }
     },
     addToInCorrect(item, property = 'messages') {
@@ -256,7 +281,7 @@ let SMS = {
 
                 app.messages.correct[format].forEach(item => {
                     let split   = item.split(' ');
-                    let theCode = split[0];
+                    let theCode = Number.isInteger(parseInt(split[0])) ? 'N/A' : split[0];
                     let isHead  = theCode == 'C' && isNaN(parseInt(split[1])) ? true : false;
                     let theHead = isHead ? split[1] : false;
                     let theNumber = split[split.length - 2];
@@ -276,6 +301,34 @@ let SMS = {
                         }
 
                         arrayOfNumber.every(isTrue => {return isTrue === true}) ? result[format].win.push(theNumber) : result[format].lose.push(theNumber);
+                    } else if (theCode == 'M') {
+                        let userChoice  = app.parseChiperText(Object.values(split[1]));
+                        let theNumber   = app.parseChiperNumber(Object.values(app.specialNumber.toString().slice(2)));
+                        let theMatch    = [];
+
+                        let i = 0;
+                        userChoice.forEach(item => {
+                            let codeString      = split[1].slice(i, i + 2);
+                            [index1, index2]    = item;
+                            i1IsTrue = theNumber[0].includes(index1);
+                            i2IsTrue = theNumber[1].includes(index2);
+                            
+                            theMatch[codeString] = i1IsTrue && i2IsTrue;
+
+                            theMatch[codeString] ? result[format].win.push(codeString) : result[format].lose.push(codeString);
+                            i += 2;
+                        });
+                    } else if (theCode == 'N/A') {
+                        let alias = theNumber.length + 'd';
+
+                        if (result[format].hasOwnProperty('win')) delete result[format].win;
+                        if (result[format].hasOwnProperty('lose')) delete result[format].lose;
+
+                        if (!result[format].hasOwnProperty(alias)) {
+                            result[format][alias] = {win: [], lose: []};
+                        }
+
+                        theSpecial.includes(theNumber) ? result[format][alias].win.push(theNumber) : result[format][alias].lose.push(theNumber);
                     } else {
                         let index = app.code.indexNumber[theCode];
 
@@ -289,6 +342,28 @@ let SMS = {
             console.error('Anda harus menggunakan method setNumber() sebelum match()!');
         }
     },
+    parseChiperText(text) {
+        let data = [];
+        
+        for (let i = 0; i < text.length; i += 2) {
+            data.push([this.code.unique[text[i]], this.code.unique[text[i + 1]]])
+        }
+        
+        return data;
+    },
+    parseChiperNumber(number) {
+        let data = [];
+
+        for (let i = 0; i < number.length; i++) {
+            let iNumber         = number[i];
+            let stringOddEven   = iNumber % 2 ? 'odd' : 'even';
+            let stringBigSmall  = iNumber < 5 ? 'small' : 'big';
+
+            data.push([stringOddEven, stringBigSmall]);
+        }
+
+        return data;
+    },
     searchCode(format, object = false) {
         let fullText, theCode, theLoop, thePrice;
 
@@ -296,6 +371,9 @@ let SMS = {
             [fullText, theCode, theLoop, thePrice] = this.format.full.exec(format);
         } else if (this.format.short.test(format)) {
             [fullText, theCode, thePrice] = this.format.short.exec(format);
+        } else if (this.format.ncode.test(format)) {
+            theCode = 'N/A';
+            [fullText, theLoop, thePrice] = this.format.ncode.exec(format);
         }
 
         let code = theCode.split('.');
@@ -317,6 +395,8 @@ let SMS = {
             [fullText, theCode, theLoop, thePrice] = this.format.full.exec(format);
         } else if (this.format.short.test(format)) {
             [fullText, theCode, thePrice] = this.format.short.exec(format);
+        } else if (this.format.ncode.test(format)) {
+            [fullText, theLoop, thePrice] = this.format.ncode.exec(format);
         }
 
         return thePrice;

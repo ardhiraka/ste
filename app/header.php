@@ -1,3 +1,5 @@
+<?php require_once 'db.php'; ?>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -8,12 +10,12 @@
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
     <!-- Bootstrap core CSS -->
-    <link href="../css/bootstrap.min.css" rel="stylesheet">
+    <link href="../assets/css/bootstrap.min.css" rel="stylesheet">
     <!-- Material Design Bootstrap -->
-    <link href="../css/mdb.min.css" rel="stylesheet">
+    <link href="../assets/css/mdb.min.css" rel="stylesheet">
     <!-- Your custom styles (optional) -->
-    <link href="../css/style.css" rel="stylesheet">
-    <link href="../css/addons/datatables.min.css" rel="stylesheet">
+    <link href="../assets/css/style.css" rel="stylesheet">
+    <link href="../assets/css/addons/datatables.min.css" rel="stylesheet">
     <style type="text/css">
     .table-wrapper-scroll-y {
       display: block;

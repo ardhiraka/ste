@@ -2,11 +2,7 @@
 
 include('header.php');
 
-require_once 'db.php';
-
-$angkaoutq = "SELECT angka FROM `angkakeluar` where id = 1;";
-$result = mysqli_query($conn, $angkaoutq) or die(mysqli_error($conn));
-$angkaout = mysqli_fetch_array($result);
+$angkaout = $db->fetch_var("select angka from angkakeluar where id = ?", 1);
 
 ?>
 
@@ -17,7 +13,7 @@ $angkaout = mysqli_fetch_array($result);
 
 
 		<div class="row form-group">
-			<input type="text" class="form-control" id="angkaout" name="angkaout" value="<?= $angkaout['angka'] ;?>" readonly/>
+			<input type="text" class="form-control" id="angkaout" name="angkaout" value="<?= $angkaout ;?>" readonly/>
 		</div>
 		
 		<div class="row form-group">
@@ -103,7 +99,7 @@ $angkaout = mysqli_fetch_array($result);
 				<button class="btn btn-info btn-block my-4" type="submit">Submit Server</button>
 			</div>
 			<div class="col-md-3">
-				<button class="btn btn-default btn-block my-4" type="submit">Submit SMS</button>
+				<button id="submitSms" class="btn btn-default btn-block my-4">Submit SMS</button>
 			</div>
 			<div class="col-md-3">
 				<button class="btn btn-warning btn-block my-4" type="submit">Cancel SMS</button>
