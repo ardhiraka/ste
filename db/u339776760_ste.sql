@@ -2,8 +2,8 @@
 -- version 4.7.9
 -- https://www.phpmyadmin.net/
 --
--- Host: localhost:3306
--- Generation Time: Aug 26, 2018 at 07:40 AM
+-- Host: 127.0.0.1
+-- Generation Time: Aug 30, 2018 at 03:12 PM
 -- Server version: 10.2.16-MariaDB
 -- PHP Version: 7.1.20
 
@@ -95,9 +95,10 @@ CREATE TABLE `inbox` (
 --
 
 INSERT INTO `inbox` (`UpdatedInDB`, `ReceivingDateTime`, `Text`, `SenderNumber`, `Coding`, `UDH`, `SMSCNumber`, `Class`, `TextDecoded`, `ID`, `RecipientID`, `Processed`) VALUES
-('2018-08-24 14:09:21', '2018-08-24 21:09:21', '', '089647793930', 'Default_No_Compression', 'Aris', '', -1, 'CM,,12.34/10000', 17, '', 'false'),
-('2018-08-24 14:10:05', '2018-08-24 21:10:05', '', '089647793930', 'Default_No_Compression', 'Aris', '', -1, 'CM..12.34x10000 CM...12.23/10000', 18, '', 'false'),
-('2018-08-24 14:10:39', '2018-08-24 21:10:39', '', '089647793930', 'Default_No_Compression', 'Aris', '', -1, 'CM,,12.34x10000 CM,,,12.23/10000', 19, '', 'false'),
+('2018-08-30 07:56:48', '2018-08-30 14:56:48', '', '089668615914', 'Default_No_Compression', 'raka', '', -1, 'M.TSST@100', 28, '', 'false'),
+('2018-08-28 07:40:55', '2018-08-28 14:40:55', '', '089668615914', 'Default_No_Compression', 'raka', '', -1, '45@10', 27, '', 'false'),
+('2018-08-27 13:29:46', '2018-08-27 20:25:43', '', '089668615914', 'Default_No_Compression', 'raka', '', -1, '12.23.345.234.4567.45.458@100', 26, '', 'false'),
+('2018-08-26 11:12:29', '2018-08-26 18:12:29', '', '089647793930', 'Default_No_Compression', 'aris', '', -1, 'J@100', 25, '', 'false'),
 ('2018-08-25 10:15:32', '2018-08-25 17:15:32', '', '089668615914', 'Default_No_Compression', 'raka', '', -1, 'C;8.9.0@100 T@100 J@100 CM;45.43.84.81@100 CN;458.451.452@100 C.AS;5.4.3@100 C.KP;5.4.3@100', 22, '', 'false'),
 ('2018-08-25 10:23:24', '2018-08-25 17:23:24', '', '089647793930', 'Default_No_Compression', 'Aris', '', -1, 'C;8.9.0@100', 23, '', 'false'),
 ('2018-08-26 06:35:55', '2018-08-26 13:35:55', '', '089647793930', 'Default_No_Compression', 'aris', '', -1, 'T@100', 24, '', 'false');
@@ -325,6 +326,22 @@ END
 $$
 DELIMITER ;
 
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `split`
+--
+
+CREATE TABLE `split` (
+  `id` int(11) NOT NULL,
+  `member_id` int(11) NOT NULL,
+  `kode` varchar(4) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `angka` varchar(4) COLLATE utf8_unicode_ci NOT NULL,
+  `nominal` varchar(4) COLLATE utf8_unicode_ci NOT NULL,
+  `inbox_id` int(11) NOT NULL,
+  `tanggal` date NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
 --
 -- Indexes for dumped tables
 --
@@ -390,6 +407,12 @@ ALTER TABLE `sentitems`
   ADD KEY `sentitems_sender` (`SenderID`);
 
 --
+-- Indexes for table `split`
+--
+ALTER TABLE `split`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- AUTO_INCREMENT for dumped tables
 --
 
@@ -403,7 +426,7 @@ ALTER TABLE `angkakeluar`
 -- AUTO_INCREMENT for table `inbox`
 --
 ALTER TABLE `inbox`
-  MODIFY `ID` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
+  MODIFY `ID` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
 
 --
 -- AUTO_INCREMENT for table `member`
@@ -428,6 +451,12 @@ ALTER TABLE `pbk`
 --
 ALTER TABLE `pbk_groups`
   MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `split`
+--
+ALTER TABLE `split`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
