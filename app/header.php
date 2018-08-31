@@ -17,13 +17,23 @@
     <link href="../assets/css/style.css" rel="stylesheet">
     <link href="../assets/css/addons/datatables.min.css" rel="stylesheet">
     <style type="text/css">
-    .table-wrapper-scroll-y {
-      display: block;
-      max-height: 200px;
-      overflow-y: auto;
-      -ms-overflow-style: -ms-autohiding-scrollbar;
-  }
-</style>
+        .table-wrapper-scroll-y {
+            display: block;
+            max-height: 200px;
+            overflow-y: auto;
+            -ms-overflow-style: -ms-autohiding-scrollbar;
+        }
+    </style>
+    <!-- SCRIPTS -->
+    <!-- JQuery -->
+    <script type="text/javascript" src="../assets/js/jquery-3.3.1.min.js"></script>
+    <!-- Bootstrap tooltips -->
+    <script type="text/javascript" src="../assets/js/popper.min.js"></script>
+    <!-- Bootstrap core JavaScript -->
+    <script type="text/javascript" src="../assets/js/bootstrap.min.js"></script>
+    <!-- MDB core JavaScript -->
+    <script type="text/javascript" src="../assets/js/mdb.min.js"></script>
+    <script type="text/javascript" src="../assets/js/addons/datatables.min.js"></script>
 </head>
 <body>
     <nav class="navbar fixed-top navbar-expand-lg navbar-dark primary-color">

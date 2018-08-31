@@ -1,6 +1,6 @@
 <?php
 
-require_once '../db.php';
+require_once '../../db.php';
 
 $delete = $db->delete('inbox', ['ID' => $_POST['id']]);
 

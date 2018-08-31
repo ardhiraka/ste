@@ -14,13 +14,14 @@ include('header.php');
 	</div>
 
 	<div class="form-group"><br />
-		<form id="#" action="">
+		<form id="formRekap">
 			<div class="row">
 				<div class="col">
-					<select name="kode" type="text" class="form-control" required="required" aria-describedby="basic-addon2">
-					<option hidden>Code Type</option>
-					<option>All</option>
-					<option>4D</option>
+					<select name="kode" type="text" class="form-control" required="required" aria-describedby="basic-addon2" required="required">
+						<option value="_all_" selected="selected">All</option>
+						<option value="2d">2D</option>
+						<option value="3d">3D</option>
+						<option value="4d">4D</option>
 					</select>
 				</div>
 				<div class="col">
@@ -32,11 +33,22 @@ include('header.php');
 			</div>
 		</form>
 	</div>
+
+	<div id="hasilrekap">
+		<table class="table">
+			<thead>
+				<tr>
+					<th>Kode</th>
+					<th>Angka</th>
+					<th>Nominal</th>
+				</tr>
+			</thead>
+			<tbody id="showRekapData"></tbody>
+		</table>
+	</div>
 </div>
 
-<div id="hasilrekap">
-	
-</div>
+<script src="../assets/js/pages/rekap.js"></script>
 
 <?php
 include('footer.php');

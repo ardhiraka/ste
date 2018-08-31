@@ -1,6 +1,6 @@
 <?php
 
-require_once '../db.php';
+require_once '../../db.php';
 
 $messages = $db->fetch_all("SELECT ID, UDH, SenderNumber, TextDecoded FROM inbox ORDER BY ReceivingDateTime ASC");
 
