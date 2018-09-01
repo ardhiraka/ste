@@ -17,10 +17,11 @@ let SMS = {
         digit2: new RegExp("^[0-9]{2}(\\.[0-9]{2})*$"),
         digit3: new RegExp("^[0-9]{3}(\\.[0-9]{3})*$"),
         mformat: new RegExp("^([JPTS]{2}(?:|[JPTS]{2}))$"),
+        hformat: new RegExp("^([JPTS]{1})$"),
         default: [';', '@']
     },
     code: {
-        available: ['CM', 'CN', 'J', 'P', 'T', 'S', 'C', 'M', 'N/A'],
+        available: ['CM', 'CN', 'J', 'P', 'T', 'S', 'C', 'M', 'H', 'N/A'],
         head: ['AS', 'KP', 'K', 'C'],
         unique: {
             J: 'odd',
@@ -193,6 +194,12 @@ let SMS = {
                 } else {
                     this.addToInCorrect(theItem, property);
                 }
+            } else if (theCode == 'H') {
+                if (this.format.hformat.test(index[1])) {
+                    this.addToCorrect(theItem, theLoop, theCode, thePrice, property);
+                } else {
+                    this.addToInCorrect(theItem, property);
+                }
             }
         } else {
             this.addToInCorrect(theItem, property);
@@ -230,7 +237,7 @@ let SMS = {
 
             items.forEach(item => {
                 let message = item == "N/A"
-                    ? code == 'M'
+                    ? code == 'M' || code == 'H'
                         ? app.searchCode(format, true).code + " " + app.searchCode(format, true).head + " " + price
                         : code + " " + price
                     : code == "N/A"
@@ -242,7 +249,7 @@ let SMS = {
         } else if (property == 'filtered') {
             code = code.replace(' ', '.');
             let separator   = app.format.default;
-            let item        = code == 'M'
+            let item        = code == 'M' || code == 'H'
                 ? format
                 : code == 'N/A'
                     ? data + separator[1] + price
@@ -318,6 +325,11 @@ let SMS = {
                             theMatch[codeString] ? result[format].win.push(codeString) : result[format].lose.push(codeString);
                             i += 2;
                         });
+                    } else if (theCode == 'H') {
+                        let userChoice  = app.parseChiperText(Object.values(split[1]), 'H');
+                        let theNumber   = app.parseChiperNumber(Object.values(app.specialNumber.toString().slice(2)), 'H');
+
+                        theNumber[0].includes(userChoice[0]) ? result[format].win.push(split[1]) : result[format].lose.push(split[1]);
                     } else if (theCode == 'N/A') {
                         let alias = theNumber.length + 'd';
 
@@ -342,22 +354,34 @@ let SMS = {
             console.error('Anda harus menggunakan method setNumber() sebelum match()!');
         }
     },
-    parseChiperText(text) {
+    parseChiperText(text, theCode = 'M') {
         let data = [];
         
-        for (let i = 0; i < text.length; i += 2) {
-            data.push([this.code.unique[text[i]], this.code.unique[text[i + 1]]])
+        if (theCode == 'M') {
+            for (let i = 0; i < text.length; i += 2) {
+                data.push([this.code.unique[text[i]], this.code.unique[text[i + 1]]])
+            }
+        } else if (theCode == 'H') {
+            data.push(this.code.unique[text[0]]);
         }
         
         return data;
     },
-    parseChiperNumber(number) {
+    parseChiperNumber(number, theCode = 'M') {
         let data = [];
 
-        for (let i = 0; i < number.length; i++) {
-            let iNumber         = number[i];
-            let stringOddEven   = iNumber % 2 ? 'odd' : 'even';
-            let stringBigSmall  = iNumber < 5 ? 'small' : 'big';
+        if (theCode == 'M') {
+            for (let i = 0; i < number.length; i++) {
+                let iNumber         = number[i];
+                let stringOddEven   = iNumber % 2 ? 'odd' : 'even';
+                let stringBigSmall  = iNumber < 5 ? 'small' : 'big';
+
+                data.push([stringOddEven, stringBigSmall]);
+            }
+        } else if (theCode == 'H') {
+            let theNumber       = number[0] + number[1];
+            let stringOddEven   = theNumber % 2 ? 'odd' : 'even';
+            let stringBigSmall  = theNumber < 5 ? 'small' : 'big';
 
             data.push([stringOddEven, stringBigSmall]);
         }
