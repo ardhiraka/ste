@@ -34,6 +34,11 @@ include('header.php');
 		</form>
 	</div>
 
+	<div class="btn-section">
+		<button class="btn btn-default waves-effect m-0">Nominal</button>
+		<button class="btn btn-default waves-effect m-0">Persentase</button>
+	</div>
+
 	<div id="hasilrekap">
 		<table class="table">
 			<thead>
