@@ -4,8 +4,8 @@ include('header.php');
 
 require_once 'db.php';
 
-$diskonq = "SELECT * FROM `member` where 1;";
-$result = mysqli_query($conn, $diskonq) or die(mysqli_error($conn));
+$diskonq = $db->fetch_var("SELECT * FROM `member` where 1;");
+// $result = mysqli_query($db, $diskonq) or die(mysqli_error($db));
 ?>
 
 	<div class="container">
@@ -26,10 +26,16 @@ $result = mysqli_query($conn, $diskonq) or die(mysqli_error($conn));
 						<input name="winningnumber" type="text" class="form-control" placeholder="Winning Number" required="required" aria-describedby="basic-addon2">
 					</div>
 					<div class="col-2 input-group-append">
-						<button class="btn btn-info waves-effect m-0" type="submit">Submit</button>
+						<button class="btn btn-info waves-effect m-0" type="submit" onclick="alert('Berhasil disimpan!');">Submit</button>
 					</div>
 				</div>
 			</form>
+		</div>
+		
+		<div class="row">
+			<div class="col-sm-12">
+				<a href="new_member.php" class="btn btn-primary">Tambah Member</a>
+			</div>
 		</div>
 		
 		
@@ -43,7 +49,7 @@ $result = mysqli_query($conn, $diskonq) or die(mysqli_error($conn));
 							<th>No HP</th>
 							<th>Kode</th>
 							<th>Deposit</th>
-							<th>Win 2d</th>
+<!-- 							<th>Win 2d</th>
 							<th>Win 3d</th>
 							<th>Win 4d</th>
 							<th>Disc 2d</th>
@@ -66,11 +72,11 @@ $result = mysqli_query($conn, $diskonq) or die(mysqli_error($conn));
 							<th>Win T</th>
 							<th>Disc T</th>
 							<th>Win S</th>
-							<th>Disc S</th>
+							<th>Disc S</th> -->
 						</tr>
 					</thead>
 					<tbody>
-						<?php while($diskon = mysqli_fetch_array($result)) :?>
+						<?php while($diskon = mysqli_fetch_array($diskonq)) :?>
 						<tr>
 							<td>
 								<?= $diskon['nama'] ;?>
@@ -84,7 +90,7 @@ $result = mysqli_query($conn, $diskonq) or die(mysqli_error($conn));
 							<td>
 								<?= $diskon['deposit'] ;?>
 							</td>
-							<td>
+<!-- 							<td>
 								<?= $diskon['2d_win'] ;?>
 							</td>
 							<td>
@@ -155,7 +161,7 @@ $result = mysqli_query($conn, $diskonq) or die(mysqli_error($conn));
 							</td>
 							<td>
 								<?= $diskon['S_disc'] ;?>
-							</td>
+							</td> -->
 						</tr>
 						<?php endwhile; ?>
 					</tbody>
