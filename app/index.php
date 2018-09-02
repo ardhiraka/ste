@@ -14,6 +14,14 @@ include('header.php');
 	</div>
 
 	<div class="form-group"><br />
+
+		<button class="btn btn-primary">Nominal</button>
+
+		<button class="btn btn-primary">Persentase</button>
+
+	</div>
+
+	<div class="form-group"><br />
 		<form id="formRekap">
 			<div class="row">
 				<div class="col">
@@ -22,6 +30,7 @@ include('header.php');
 						<option value="2d">2D</option>
 						<option value="3d">3D</option>
 						<option value="4d">4D</option>
+						<option value="other">Other</option>
 					</select>
 				</div>
 				<div class="col">
