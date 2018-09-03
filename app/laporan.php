@@ -9,16 +9,13 @@ include('header.php');
 
 	<div align="center">
 		<h3>
-			List Recap
+			Laporan
 		</h3>
 	</div>
 
 	<div class="form-group"><br />
-
-		<button class="btn btn-primary">Nominal</button>
-
-		<button class="btn btn-primary">Persentase</button>
-
+		<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#basicExampleModal">Nominal</button>
+		<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#basicExampleModal">Persentase</button>
 	</div>
 
 	<div class="form-group"><br />
@@ -53,10 +50,36 @@ include('header.php');
 				</tr>
 			</thead>
 			<tbody id="showRekapData"></tbody>
+			<tfoot>
+				<tr>
+					<td>Total</td>
+					<td></td>
+					<td>700</td>
+				</tr>
+			</tfoot>
 		</table>
 	</div>
 </div>
 
+<!-- Modal -->
+<div class="modal fade" id="basicExampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="exampleModalLabel">Masukan Nominal Potongan</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+			</div>
+			<div class="modal-body">
+				<input type="text" class="form-control" placeholder="nominal">
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+				<a href="hasilpotongan.php" class="btn btn-primary">Ambil</a>
+			</div>
+		</div>
+	</div>
+</div>
+	
 <script src="../assets/js/pages/rekap.js"></script>
 
 <?php

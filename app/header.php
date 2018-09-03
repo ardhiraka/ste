@@ -17,14 +17,6 @@
 	<!-- Your custom styles (optional) -->
 	<link href="../assets/css/style.css" rel="stylesheet">
 	<link href="../assets/css/addons/datatables.min.css" rel="stylesheet">
-	<style type="text/css">
-		.table-wrapper-scroll-y {
-			display: block;
-			max-height: 200px;
-			overflow-y: auto;
-			-ms-overflow-style: -ms-autohiding-scrollbar;
-		}
-	</style>
 	<!-- SCRIPTS -->
 	<!-- JQuery -->
 	<script type="text/javascript" src="../assets/js/jquery-3.3.1.min.js"></script>
@@ -52,13 +44,6 @@
 					<a class="nav-link dropdown-toggle" href="#!" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Master</a>
 					<div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
 						<a class="dropdown-item" href="config.php">Config</a>
-						<!--                     <a class="dropdown-item" href="master_angka.php">Angka</a>
-                    <a class="dropdown-item" href="master_colokjitu.php">Colok Jitu</a>
-                    <a class="dropdown-item" href="master_colokbebas.php">Colok Bebas</a>
-                    <a class="dropdown-item" href="#">Genap Ganjil</a>
-                    <a class="dropdown-item" href="#">Besar Kecil</a>
-                    <a class="dropdown-item" href="master_makao.php">Makao</a>
-                    <a class="dropdown-item" href="master_naga.php">Naga</a> -->
 					</div>
 				</li>
 				<li class="nav-item dropdown">
@@ -75,6 +60,9 @@
 					<div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
 						<a class="dropdown-item" href="filter.php">Filter SMS</a>
 					</div>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" href="smsout.php">SMS Out</a>
 				</li>
 				<li class="nav-item">
 					<a class="nav-link" href="../">Keluar</a>

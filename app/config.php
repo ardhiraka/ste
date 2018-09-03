@@ -5,7 +5,6 @@ include('header.php');
 require_once 'db.php';
 
 $diskonq = $db->fetch_var("SELECT * FROM `member` where 1;");
-// $result = mysqli_query($db, $diskonq) or die(mysqli_error($db));
 ?>
 
 	<div class="container">
@@ -31,17 +30,11 @@ $diskonq = $db->fetch_var("SELECT * FROM `member` where 1;");
 				</div>
 			</form>
 		</div>
-		
+
 		<div class="row">
-			<div class="col-sm-12">
-				<a href="new_member.php" class="btn btn-primary">Tambah Member</a>
-			</div>
-		</div>
-		
-		
-		
-		<div class="row">
-			<div class="col-sm-12"><br />
+			<div class="col-sm-6">
+				<a href="new_member.php" class="btn btn-primary">Tambah Member</a><br />
+
 				<table class="table table-sm table-bordered table-hover">
 					<thead>
 						<tr>
@@ -49,7 +42,7 @@ $diskonq = $db->fetch_var("SELECT * FROM `member` where 1;");
 							<th>No HP</th>
 							<th>Kode</th>
 							<th>Deposit</th>
-<!-- 							<th>Win 2d</th>
+							<!-- 							<th>Win 2d</th>
 							<th>Win 3d</th>
 							<th>Win 4d</th>
 							<th>Disc 2d</th>
@@ -90,7 +83,7 @@ $diskonq = $db->fetch_var("SELECT * FROM `member` where 1;");
 							<td>
 								<?= $diskon['deposit'] ;?>
 							</td>
-<!-- 							<td>
+							<!-- 							<td>
 								<?= $diskon['2d_win'] ;?>
 							</td>
 							<td>
@@ -166,9 +159,33 @@ $diskonq = $db->fetch_var("SELECT * FROM `member` where 1;");
 						<?php endwhile; ?>
 					</tbody>
 				</table>
-			</div>
-		</div>
 
+			</div>
+			<div class="col-sm-6">
+				<h4>
+					Masukan Kode Custom
+				</h4>
+				<div class="form">
+					<div class="row">
+						<div class="col">
+							<select class="form-control">
+								<option hidden>Masukan Kode Awal</option>
+								<option>CN</option>
+								<option>CM</option>
+								<option>J</option>
+							</select>
+						</div>
+						<div class="col">
+							<input type="text" class="form-control" placeholder="Masukan Kode Custom">
+						</div>
+					</div>
+					<button class="btn btn-primary">
+						Submit
+					</button>
+				</div>
+			</div>
+
+		</div>
 	</div>
 	<?php
 	include('footer.php');
