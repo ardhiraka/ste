@@ -17,14 +17,6 @@
 	<!-- Your custom styles (optional) -->
 	<link href="../assets/css/style.css" rel="stylesheet">
 	<link href="../assets/css/addons/datatables.min.css" rel="stylesheet">
-	<style type="text/css">
-		.table-wrapper-scroll-y {
-			display: block;
-			max-height: 300px;
-			overflow-y: auto;
-			-ms-overflow-style: -ms-autohiding-scrollbar;
-		}
-	</style>
 	<!-- SCRIPTS -->
 	<!-- JQuery -->
 	<script type="text/javascript" src="../assets/js/jquery-3.3.1.min.js"></script>
@@ -68,6 +60,9 @@
 					<div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
 						<a class="dropdown-item" href="filter.php">Filter SMS</a>
 					</div>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" href="smsout.php">SMS Out</a>
 				</li>
 				<li class="nav-item">
 					<a class="nav-link" href="../">Keluar</a>
