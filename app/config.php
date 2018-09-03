@@ -5,7 +5,6 @@ include('header.php');
 require_once 'db.php';
 
 $diskonq = $db->fetch_var("SELECT * FROM `member` where 1;");
-// $result = mysqli_query($db, $diskonq) or die(mysqli_error($db));
 ?>
 
 	<div class="container">
@@ -33,15 +32,9 @@ $diskonq = $db->fetch_var("SELECT * FROM `member` where 1;");
 		</div>
 		
 		<div class="row">
-			<div class="col-sm-12">
-				<a href="new_member.php" class="btn btn-primary">Tambah Member</a>
-			</div>
-		</div>
-		
-		
-		
-		<div class="row">
-			<div class="col-sm-12"><br />
+			<div class="col-sm-6">
+				<a href="new_member.php" class="btn btn-primary">Tambah Member</a><br />
+				
 				<table class="table table-sm table-bordered table-hover">
 					<thead>
 						<tr>
@@ -166,9 +159,16 @@ $diskonq = $db->fetch_var("SELECT * FROM `member` where 1;");
 						<?php endwhile; ?>
 					</tbody>
 				</table>
+				
+			</div>
+			<div class="col-sm-6">
+				<h4>
+					Masukan Kode Custom
+				</h4><br />
+				<input type="text" class="form-control">
 			</div>
 		</div>
-
+		
 	</div>
 	<?php
 	include('footer.php');

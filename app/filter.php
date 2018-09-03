@@ -49,7 +49,7 @@ $angkaout = $db->fetch_var("select angka from angkakeluar where id = ?", 1);
 		</div>
 
 		<div class="row form-group">
-			<div class="col-md-7">
+			<div class="col-md-8">
 				<div class="card card-body">
 					<table id="tablesms" class="table table-striped table-hover table-sm" cellspacing="0" width="100%">
 						<!-- <table class="table table-hover table-stripped table-sm"> -->
@@ -66,7 +66,7 @@ $angkaout = $db->fetch_var("select angka from angkakeluar where id = ?", 1);
 				</div>
 			</div>
 
-			<div class="col-md-5">
+			<div class="col-md-4">
 				<div class="card card-body">
 					<label for="smsedit">SMS Edit</label>
 					<textarea class="form-control" id="smsedit" rows="10"></textarea>

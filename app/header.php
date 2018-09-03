@@ -20,7 +20,7 @@
 	<style type="text/css">
 		.table-wrapper-scroll-y {
 			display: block;
-			max-height: 200px;
+			max-height: 300px;
 			overflow-y: auto;
 			-ms-overflow-style: -ms-autohiding-scrollbar;
 		}
@@ -52,13 +52,6 @@
 					<a class="nav-link dropdown-toggle" href="#!" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Master</a>
 					<div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
 						<a class="dropdown-item" href="config.php">Config</a>
-						<!--                     <a class="dropdown-item" href="master_angka.php">Angka</a>
-                    <a class="dropdown-item" href="master_colokjitu.php">Colok Jitu</a>
-                    <a class="dropdown-item" href="master_colokbebas.php">Colok Bebas</a>
-                    <a class="dropdown-item" href="#">Genap Ganjil</a>
-                    <a class="dropdown-item" href="#">Besar Kecil</a>
-                    <a class="dropdown-item" href="master_makao.php">Makao</a>
-                    <a class="dropdown-item" href="master_naga.php">Naga</a> -->
 					</div>
 				</li>
 				<li class="nav-item dropdown">
