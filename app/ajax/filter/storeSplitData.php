@@ -45,6 +45,10 @@ if ($isNotExist) :
 
     $store      = $db->insert('split', $insert);
     $response   = $store ? $response : ['status' => 'error', 'error' => 'Gagal menyimpan!'];
+
+    if ($store) :
+        $db->update('inbox', ['isFiltered' => 1], ['ID' => $_POST['id']]);
+    endif;
 else :
     $response   = ['status' => 'error', 'error' => 'Pesan sudah disumbit!'];
 endif;

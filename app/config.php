@@ -19,20 +19,20 @@ $diskonq = $db->fetch_var("SELECT * FROM `member` where 1;");
 		</div>
 
 		<div class="md-form">
-			<form id="#" action="">
+			<form id="#" action="hitung.php" method="post">
 				<div class="row">
 					<div class="col">
 						<input name="winningnumber" type="text" class="form-control" placeholder="Winning Number" required="required" aria-describedby="basic-addon2">
 					</div>
 					<div class="col-2 input-group-append">
-						<button class="btn btn-info waves-effect m-0" type="submit" onclick="alert('Berhasil disimpan!');">Submit</button>
+						<button class="btn btn-info waves-effect m-0" type="submit">Submit</button>
 					</div>
 				</div>
 			</form>
 		</div>
 
 		<div class="row">
-			<div class="col-sm-6">
+			<div class="col-sm-12">
 				<a href="new_member.php" class="btn btn-primary">Tambah Member</a><br />
 
 				<table class="table table-sm table-bordered table-hover">
@@ -160,29 +160,6 @@ $diskonq = $db->fetch_var("SELECT * FROM `member` where 1;");
 					</tbody>
 				</table>
 
-			</div>
-			<div class="col-sm-6">
-				<h4>
-					Masukan Kode Custom
-				</h4>
-				<div class="form">
-					<div class="row">
-						<div class="col">
-							<select class="form-control">
-								<option hidden>Masukan Kode Awal</option>
-								<option>CN</option>
-								<option>CM</option>
-								<option>J</option>
-							</select>
-						</div>
-						<div class="col">
-							<input type="text" class="form-control" placeholder="Masukan Kode Custom">
-						</div>
-					</div>
-					<button class="btn btn-primary">
-						Submit
-					</button>
-				</div>
 			</div>
 
 		</div>
