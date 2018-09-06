@@ -2,7 +2,7 @@ let SMS = {
     data: '',
     pattern: {
         '...'   : ';',
-        '..'    : ';',
+        '..'    : ' ',
         ',,,'   : ';',
         ',,'    : ';',
         'x'     : '@',
@@ -72,7 +72,7 @@ let SMS = {
         return this;
     },
     getObjects() {
-        this.objects = this.data.split(' ');
+        this.objects = this.data.split('..').join(" ").trim(" ").split(" ");
 
         return this.objects;
     },
@@ -82,7 +82,7 @@ let SMS = {
 
         this.getObjects().forEach(item => {
             Object.entries(app.pattern).forEach(([search, change]) => {
-                item = item.replace(search, change);
+                item = item.split(search).join(change);
             });
             
             objects.push(item);
