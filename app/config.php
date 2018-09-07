@@ -18,6 +18,20 @@ $diskonq = $db->fetch_var("SELECT * FROM `member` where 1;");
 			</h3>
 		</div>
 
+		<?php
+			if (isset($_GET['error'])) :
+				if ($_GET['error'] == 'numeric') :
+					$message = "Winning Number harus angka!";
+				elseif ($_GET['error'] == 'length') :
+					$message = "Winning Number harus 4 huruf!";
+				endif;
+
+				echo "<div class=\"alert\">{$message}</div>";
+			elseif (isset($_GET['success'])) :
+				echo "<div class=\"alert\">Data berhasil disimpan!</div>";
+			endif;
+		?>
+
 		<div class="md-form">
 			<form id="#" action="hitung.php" method="post">
 				<div class="row">

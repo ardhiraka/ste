@@ -111,8 +111,8 @@ jQuery(function($) {
                     hasil.push(code + ": " + icode.win.length + "/" + icode.lose.length + " | " + formatNumber(cWin) + "/" + formatNumber(cLose));
                 }
 
-                totalPWin   = hasilWin;
-                totalPLose  = hasilLose;
+                totalPWin   += hasilWin;
+                totalPLose  += hasilLose;
                 hasilTotal  = hasilWin - hasilLose;
             } else {
                 totalWin    += result[i].win.length;
@@ -175,6 +175,8 @@ jQuery(function($) {
         wait = setTimeout(function() {
             SMS.setData(message).filter().parse().setNumber(finalNum).match();
 
+            $('#submitSms').attr('data-message', message);
+
             $('#smsasli').val(SMS.data);
             $('#smssalah').val(SMS.filtered.inCorrect.join("\n"));
             $('#smsbenar').val(SMS.filtered.correct.join("\n"));
@@ -190,6 +192,7 @@ jQuery(function($) {
         $.post(ajaxTo('storeSplitData'), {...data, split: sms.messages.correct}, response => {
             if (response.status == 'success') {
                 alert("Data berhasil disimpan!");
+                window.location.reload();
             } else {
                 alert(response.error);
             }

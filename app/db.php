@@ -9,8 +9,8 @@ use vielhuber\dbhelper\dbhelper;
 $db = new dbhelper();
 
 $dbhost = 'localhost';
-$dbuser = 'u339776760_ardhi';
-$dbpass = 'seruni';
-$dbname = 'u339776760_ste';
+$dbuser = 'root';
+$dbpass = '';
+$dbname = 'io_ste';
 
 $db->connect('pdo', 'mysql', $dbhost, $dbuser, $dbpass, $dbname, 3306);

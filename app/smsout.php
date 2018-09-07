@@ -1,6 +1,8 @@
 <?php
 include('header.php');
 
+$lists = $db->fetch_all("SELECT so.id as so_id, so.inbox_id, so.member_id, so.win, so.lose, so.total, m.* FROM sms_out AS so LEFT JOIN member AS m ON m.id = so.member_id");
+
 ?>
 
 <div class="container">
@@ -28,8 +30,15 @@ include('header.php');
 					</tr>
 				</thead>
 				<tbody>
-					<tr>
-					</tr>
+					<?php foreach($lists as $sms) : ?>
+						<tr>
+							<td><?= $sms['nohp'] ?></td>
+							<td><?= $sms['kodeid'] ?></td>
+							<td><?= $sms['win'] ?></td>
+							<td><?= $sms['lose'] ?></td>
+							<td><?= $sms['total'] ?></td>
+						</tr>
+					<?php endforeach; ?>
 				</tbody>
 			</table>
 		</div>
