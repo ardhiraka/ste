@@ -23,6 +23,7 @@ endif;
 $list       = $db->fetch_all("SELECT s.id AS split_id, s.*, m.id AS user, m.* FROM split AS s LEFT JOIN member AS m ON m.id = s.member_id WHERE s.isProcessed = 0");
 $ids        = array_column($list, 'split_id');
 $storages   = [];
+// echo "<pre>";print_r($list);die();
 
 function getDNumber($kode, $number) {
     $format = [
@@ -47,9 +48,18 @@ function getDisc($totalLose, $price, $dbDisc)
     return $total - $disc;
 }
 
-foreach ($list as $item) :
-    // harus ada: $isNumberValid dan $result
+function getTax($totalLose, $price, $dbDisc)
+{
+    $total = $totalLose * $price;
+    $disc  = $total * ($dbDisc / 100);
 
+    return $total + $disc;
+}
+
+foreach ($list as $item) :
+    $storages[$item['inbox_id']]['info']['member_id'] = $item['member_id'];
+
+    // harus ada: $result
     if (in_array($item['kode'], ['2d', '3d', '4d'])) :
         $validNumber    = getDNumber($item['kode'], $number);
         $isNumberValid  = $item['angka'] == $validNumber;
@@ -57,14 +67,42 @@ foreach ($list as $item) :
         $lose       = $isNumberValid ? 0 : 1;
         $getWin     = getWin($win, $item['nominal'], $item[$item['kode'] . '_win']);
         $getDisc    = getDisc($lose, $item['nominal'], $item[$item['kode'] . '_disc']);
-
         $result     = $getWin - $getDisc;
+
+        $storages[$item['inbox_id']]['info'][$isNumberValid ? 'win' : 'lose'][] = $item['angka'];
+
+    elseif (in_array($item['kode'], ['J', 'P', 'T', 'S'])) :
+        $nType = [
+            'J' => [1, 3, 5, 7, 9],
+            'P' => [0, 2, 4, 6, 8],
+            'T' => [5, 6, 7, 8, 9],
+            'S' => [0, 1, 2, 3, 4]
+        ];
+
+        $validNumber    = in_array($item['kode'], ['J', 'P']) ? $number[3] : $number[2];
+        $isNumberValid  = in_array($validNumber, $nType[$item['kode']]);
+        $win        = $isNumberValid ? 1 : 0;
+        $getWin     = $win > 0 ? getWin(1, $item['nominal'], $item[$item['kode'] . '_win']) : 0;
+        $getTax     = $win > 0 ? 0 : getTax(5, $item['nominal'], $item[$item['kode'] . '_disc']);
+        $result     = $getWin - $getTax;
+
+        if ($isNumberValid) :
+            $storages[$item['inbox_id']]['info']['win'][] = $item['angka'];
+            
+            for ($i = 1; $i <= 4; $i++) :
+                $storages[$item['inbox_id']]['info']['lose'][] = $item['angka'];
+            endfor;
+        else :
+            for ($i = 1; $i <= 5; $i++) :
+                $storages[$item['inbox_id']]['info']['lose'][] = $item['angka'];
+            endfor;
+        endif;
     endif;
 
-    $storages[$item['inbox_id']]['info']['member_id'] = $item['member_id'];
-    $storages[$item['inbox_id']]['info'][$isNumberValid ? 'win' : 'lose'][] = $item['angka'];
+    // $storages[$item['inbox_id']]['info'][$isNumberValid ? 'win' : 'lose'][] = $item['angka'];
     $storages[$item['inbox_id']]['result'][$item['kode']][] = $result;
 endforeach;
+// echo "<pre>";print_r($storages);die();
 
 $result = [];
 
@@ -83,6 +121,7 @@ foreach ($storages as $inbox_id => $list) :
         'total'     => array_sum($_result[$inbox_id])
     ];
 endforeach;
+// echo "<pre>";print_r($result);die();
 
 $db->insert('sms_out', array_values($result));
 
@@ -93,6 +132,5 @@ foreach ($ids as $id) :
 endforeach;
 
 $db->update('split', $isProcessed);
-
 
 return header('location: ' . $prev . "?success=true");

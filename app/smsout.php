@@ -1,7 +1,7 @@
 <?php
 include('header.php');
 
-$lists = $db->fetch_all("SELECT so.id as so_id, so.inbox_id, so.member_id, so.win, so.lose, so.total, m.* FROM sms_out AS so LEFT JOIN member AS m ON m.id = so.member_id");
+$lists = $db->fetch_all("SELECT so.id as so_id, so.inbox_id, so.member_id, so.win, so.lose, so.total, m.* FROM sms_out AS so LEFT JOIN member AS m ON m.id = so.member_id ORDER BY so.id ASC");
 
 ?>
 
