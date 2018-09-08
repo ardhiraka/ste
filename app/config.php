@@ -24,6 +24,8 @@ $diskonq = $db->fetch_var("SELECT * FROM `member` where 1;");
 					$message = "Winning Number harus angka!";
 				elseif ($_GET['error'] == 'length') :
 					$message = "Winning Number harus 4 huruf!";
+				elseif ($_GET['error'] == 'empty') :
+					$message = "Belum ada data!";
 				endif;
 
 				echo "<div class=\"alert\">{$message}</div>";

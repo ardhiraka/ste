@@ -23,7 +23,9 @@ endif;
 $list       = $db->fetch_all("SELECT s.id AS split_id, s.*, m.id AS user, m.* FROM split AS s LEFT JOIN member AS m ON m.id = s.member_id WHERE s.isProcessed = 0");
 $ids        = array_column($list, 'split_id');
 $storages   = [];
-// echo "<pre>";print_r($list);die();
+
+if (empty($list))
+    return header('location: ' . $prev . "?error=empty");
 
 function getDNumber($kode, $number) {
     $format = [
@@ -58,6 +60,7 @@ function getTax($totalLose, $price, $dbDisc)
 
 foreach ($list as $item) :
     $storages[$item['inbox_id']]['info']['member_id'] = $item['member_id'];
+    $multiCode = explode('.', $item['kode']);
 
     // harus ada: $result
     if (in_array($item['kode'], ['2d', '3d', '4d'])) :
@@ -111,6 +114,24 @@ foreach ($list as $item) :
         $lose       = $isNumberValid ? 0 : 1;
         $getWin     = getWin($win, $item['nominal'], $item[$item['kode'] . ($item['kode'] == 'CM' ? '1' : '') . '_win']);
         $getDisc    = getDisc($lose, $item['nominal'], $item[$item['kode'] . '_disc']);
+        $result     = $getWin - $getDisc;
+
+        $storages[$item['inbox_id']]['info'][$isNumberValid ? 'win' : 'lose'][] = $item['angka'];
+    elseif ($multiCode[0] == 'C') :
+        $theHead    = isset($multiCode[1]) ? $multiCode[1] : false;
+        $iHead      = ['AS' => '0', 'KP' => '1', 'K' => '2', 'E' => '3'];
+        $index      = $theHead ? (int) $iHead[$theHead] : 'C';
+
+        if ($index == 'C') :
+            $isNumberValid = in_array($item['angka'], str_split($number));
+        else :
+            $isNumberValid = $item['angka'] == $number[$index];
+        endif;
+
+        $win        = $isNumberValid ? 1 : 0;
+        $lose       = $isNumberValid ? 0 : 1;
+        $getWin     = getWin($win, $item['nominal'], $item[($theHead ? 'Jitu' : $item['kode']) . '_win']);
+        $getDisc    = getDisc($lose, $item['nominal'], $item[($theHead ? 'Jitu' : $item['kode']) . '_disc']);
         $result     = $getWin - $getDisc;
 
         $storages[$item['inbox_id']]['info'][$isNumberValid ? 'win' : 'lose'][] = $item['angka'];
