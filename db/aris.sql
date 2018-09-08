@@ -469,7 +469,7 @@ DROP TABLE IF EXISTS `split`;
 CREATE TABLE IF NOT EXISTS `split` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `member_id` int(11) NOT NULL,
-  `kode` varchar(4) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `kode` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
   `angka` varchar(5) COLLATE utf8_unicode_ci NOT NULL,
   `nominal` varchar(4) COLLATE utf8_unicode_ci NOT NULL,
   `inbox_id` int(11) NOT NULL,
