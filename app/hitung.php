@@ -58,6 +58,68 @@ function getTax($totalLose, $price, $dbDisc)
     return $total + $disc;
 }
 
+$nType = [
+    'J' => [1, 3, 5, 7, 9],
+    'P' => [0, 2, 4, 6, 8],
+    'T' => [5, 6, 7, 8, 9],
+    'S' => [0, 1, 2, 3, 4]
+];
+
+$sType = [
+    'J' => 'odd',
+    'P' => 'even',
+    'T' => 'big',
+    'S' => 'small',
+];
+
+function nToSType($number)
+{
+    global $nType;
+
+    $result = [];
+    foreach ($nType as $type => $list) :
+        if (in_array($number, $list)) :
+            $result[] = getSType($type);
+        endif;
+    endforeach;
+
+    return $result;
+}
+
+function getNType($number, $code = 'M')
+{
+    global $nType;
+
+    $number = (string) $number;
+
+    if (strlen($number) == 2) :
+        if ($code == 'M') :
+            $result = [nToSType($number[0]), nToSType($number[1])];
+        elseif ($code == 'H') :
+            $result = ["big", ($number % 2 ? "odd" : "even")];
+        endif;
+    elseif (strlen($number) == 1) :
+        $result = nToSType($number);
+    endif;
+
+    return $result;
+}
+
+function getSType($string)
+{
+    global $sType;
+
+    if (strlen($string) == 4) :
+        $result = [[$sType[$string[0]], $sType[$string[1]]], [$sType[$string[2]], $sType[$string[3]]]];
+    elseif (strlen($string) == 2) :
+        $result = [$sType[$string[0]], $sType[$string[1]]];
+    elseif (strlen($string) == 1) :
+        $result = $sType[$string[0]];
+    endif;
+
+    return $string ? $result : false;
+}
+
 foreach ($list as $item) :
     $storages[$item['inbox_id']]['info']['member_id'] = $item['member_id'];
     $multiCode = explode('.', $item['kode']);
@@ -75,13 +137,6 @@ foreach ($list as $item) :
         $storages[$item['inbox_id']]['info'][$isNumberValid ? 'win' : 'lose'][] = $item['angka'];
 
     elseif (in_array($item['kode'], ['J', 'P', 'T', 'S'])) :
-        $nType = [
-            'J' => [1, 3, 5, 7, 9],
-            'P' => [0, 2, 4, 6, 8],
-            'T' => [5, 6, 7, 8, 9],
-            'S' => [0, 1, 2, 3, 4]
-        ];
-
         $validNumber    = in_array($item['kode'], ['J', 'P']) ? $number[3] : $number[2];
         $isNumberValid  = in_array($validNumber, $nType[$item['kode']]);
         $win        = $isNumberValid ? 1 : 0;
@@ -135,6 +190,38 @@ foreach ($list as $item) :
         $result     = $getWin - $getDisc;
 
         $storages[$item['inbox_id']]['info'][$isNumberValid ? 'win' : 'lose'][] = $item['angka'];
+    elseif ($multiCode[0] == 'M' || $multiCode[0] == 'H') :
+        $theHead    = $multiCode[1];
+        $theHeadIs  = getSType($theHead);
+
+        if ($multiCode[0] == 'M') :
+            $numberConcat   = $number[2].$number[3];
+            $theNumberIs    = getNType($numberConcat, 'M');
+        elseif ($multiCode[0] == 'H') :
+            $numberAdd = (int) $number[2] + (int) $number[3];
+            $theNumberIs    = getNType($numberAdd, 'H');
+        endif;
+        
+        if (strlen($theHead) == 4) :
+            $kondisi1 = in_array($theHeadIs[0][0], $theNumberIs[0]) && in_array($theHeadIs[0][1], $theNumberIs[1]);
+            $storages[$item['inbox_id']]['info'][$kondisi1 ? 'win' : 'lose'][] = $numberConcat;
+            
+            $kondisi2 = in_array($theHeadIs[1][0], $theNumberIs[0]) && in_array($theHeadIs[1][1], $theNumberIs[1]);
+            $storages[$item['inbox_id']]['info'][$kondisi2 ? 'win' : 'lose'][] = $numberConcat;
+            
+            $isNumberValid  = $kondisi1 || $kondisi2;
+        elseif (strlen($theHead) == 2) :
+            $isNumberValid  = in_array($theHeadIs[0], $theNumberIs[0]) && in_array($theHeadIs[1], $theNumberIs[1]);
+            $storages[$item['inbox_id']]['info'][$isNumberValid ? 'win' : 'lose'][] = $numberConcat;
+        elseif (strlen($theHead) == 1) :
+            $isNumberValid  = in_array($theHeadIs, $theNumberIs);
+            $storages[$item['inbox_id']]['info'][$isNumberValid ? 'win' : 'lose'][] = $numberAdd;
+        endif;
+
+        $win        = $isNumberValid ? 1 : 0;
+        $getWin     = $win > 0 ? getWin(1, $item['nominal'], $item[$multiCode[0] . '_win']) : 0;
+        $getTax     = $win > 0 ? 0 : getTax(1, $item['nominal'], $item[$multiCode[0] . '_disc']);
+        $result     = $getWin - $getTax;
     endif;
 
     $storages[$item['inbox_id']]['result'][$item['kode']][] = $result;

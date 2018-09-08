@@ -45,7 +45,7 @@ if ($isNotExist) :
                     $theHead = is_numeric($split[1]) ? false : true;
                     $number  = $theHead ? $split[2] : $split[1];
                     $theCode = $theHead ? "{$theCode}.{$split[1]}" : $theCode;
-                elseif ($theCode == 'M') :
+                elseif ($theCode == 'M' || $theCode == 'H') :
                     $theCode = "{$theCode}.{$split[1]}";
                 else :
                     $number = $split[1];

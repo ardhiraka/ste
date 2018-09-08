@@ -36,7 +36,14 @@ $lists = $db->fetch_all("SELECT so.id as so_id, so.inbox_id, so.member_id, so.wi
 							<td><?= $sms['kodeid'] ?></td>
 							<td><?= $sms['win'] ?></td>
 							<td><?= $sms['lose'] ?></td>
-							<td><?= $sms['total'] ?></td>
+							<td>
+								<?php
+									$total 		= abs($sms['total']);
+									$isNegative = $sms['total'] < 0;
+
+									echo ($isNegative ? '-- Rp' : 'Rp') . number_format(($total * 1000), 0, ',', '.');
+								?>
+							</td>
 						</tr>
 					<?php endforeach; ?>
 				</tbody>
