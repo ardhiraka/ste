@@ -88,7 +88,7 @@ foreach ($list as $item) :
 
         if ($isNumberValid) :
             $storages[$item['inbox_id']]['info']['win'][] = $item['angka'];
-            
+
             for ($i = 1; $i <= 4; $i++) :
                 $storages[$item['inbox_id']]['info']['lose'][] = $item['angka'];
             endfor;
@@ -97,9 +97,25 @@ foreach ($list as $item) :
                 $storages[$item['inbox_id']]['info']['lose'][] = $item['angka'];
             endfor;
         endif;
+    elseif (in_array($item['kode'], ['CM', 'CN'])) :
+        $availableNumber    = str_split($number);
+        $selectedNumber     = str_split($item['angka']);
+        $isValid            = [];
+
+        foreach ($selectedNumber as $select) :
+            $isValid[] = in_array($select, $availableNumber);
+        endforeach;
+
+        $isNumberValid      = array_sum($isValid) == count($selectedNumber) ? true : false;
+        $win        = $isNumberValid ? 1 : 0;
+        $lose       = $isNumberValid ? 0 : 1;
+        $getWin     = getWin($win, $item['nominal'], $item[$item['kode'] . ($item['kode'] == 'CM' ? '1' : '') . '_win']);
+        $getDisc    = getDisc($lose, $item['nominal'], $item[$item['kode'] . '_disc']);
+        $result     = $getWin - $getDisc;
+
+        $storages[$item['inbox_id']]['info'][$isNumberValid ? 'win' : 'lose'][] = $item['angka'];
     endif;
 
-    // $storages[$item['inbox_id']]['info'][$isNumberValid ? 'win' : 'lose'][] = $item['angka'];
     $storages[$item['inbox_id']]['result'][$item['kode']][] = $result;
 endforeach;
 // echo "<pre>";print_r($storages);die();

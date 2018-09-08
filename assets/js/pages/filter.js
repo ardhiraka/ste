@@ -119,11 +119,11 @@ jQuery(function($) {
                 totalLose   += result[i].lose.length;
                 let theCodeRumusWin     = SMS.code.head.includes(theCode.head) ? 'Jitu' : theCode.code == 'CM' ? 'CM1' : theCode.code;
                 let theCodeRumusLose    = SMS.code.head.includes(theCode.head) ? 'Jitu' : theCode.code;
-                let unique      = ['J', 'P', 'T', 'S'];
+                let unique      = ['J', 'P', 'T', 'S', 'M', 'H'];
                 let rumusWin    = 0;
                 let rumusLose   = 0;
 
-                if (unique.includes(theCode.code) || theCode.code == 'M') {
+                if (unique.includes(theCode.code)) {
                     rumusWin    = result[i].win.length > 0 ? result[i].win.length * thePrice * response[theCodeRumusWin + '_win'] : 0;
                     rumusLose   = result[i].win.length > 0 ? 0 : (result[i].lose.length * thePrice) + ((result[i].lose.length * thePrice) * (response[theCodeRumusLose + '_disc'] / 100));
                 } else {
