@@ -41,7 +41,7 @@ include('header.php');
 	</div>
 
 	<div id="hasilrekap">
-		<table class="table">
+		<table class="table table-sm">
 			<thead>
 				<tr>
 					<th>Kode</th>
@@ -54,7 +54,7 @@ include('header.php');
 				<tr>
 					<td>Total</td>
 					<td></td>
-					<td>700</td>
+					<td></td>
 				</tr>
 			</tfoot>
 		</table>

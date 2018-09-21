@@ -60,11 +60,10 @@ $angkaout = $db->fetch_var("select angka from angkakeluar where id = ?", 1);
 					<table id="tablesms" class="table table-striped table-bordered table-hover">
 						<thead>
 							<tr>
-								<th>No</th>
+								<th width="20px;">No</th>
 								<th>No HP</th>
 								<th>Nama</th>
 								<th>SMS</th>
-								<th>Action</th>
 							</tr>
 						</thead>
 					</table>

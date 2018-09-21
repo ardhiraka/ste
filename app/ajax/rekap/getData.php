@@ -3,9 +3,9 @@
 require_once '../../db.php';
 
 if ($_POST['kode'] == '_all_') :
-    $rows = $db->fetch_all('select * from split where tanggal = ? group by kode, angka, nominal', $_POST['recapdate']);
+    $rows = $db->fetch_all('select * from split where tanggal = ? group by kode, angka, nominal order by nominal desc', $_POST['recapdate']);
 else :
-    $rows = $db->fetch_all('select * from split where kode = ? and tanggal = ? group by kode, angka, nominal', $_POST['kode'], $_POST['recapdate']);
+    $rows = $db->fetch_all('select * from split where kode = ? and tanggal = ? group by kode, angka, nominal order by nominal desc', $_POST['kode'], $_POST['recapdate']);
 endif;
 
 foreach ($rows as $row) :

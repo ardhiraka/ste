@@ -18,12 +18,20 @@ jQuery(function($) {
             { data: 'ID' },
             { data: 'SenderNumber' },
             { data: 'UDH' },
-            { data: 'TextDecoded' },
             {
-                data: 'id',
-                render() {
-                    return '<a href="javascript:;" message-delete class="btn btn-danger btn-sm" title="Delete SMS"><i class="fa fa-trash"></i></a>\
-                            <a href="javascript:;" message-view class="btn btn-default btn-sm" title="View SMS"><i class="fa fa-eye"></i></a>';
+                data: 'TextDecoded',
+                render(data) {
+                    let maxString   = 10;
+                    let strLength   = data.length;
+                    let preview     = '';
+
+                    if (strLength > maxString) {
+                        preview = data.substr(0, maxString) + '...';
+                    } else {
+                        preview = data;
+                    }
+
+                    return preview;
                 }
             }
         ],
