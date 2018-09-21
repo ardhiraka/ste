@@ -25,7 +25,7 @@ jQuery(function($) {
             let totalNominal = noms.reduce((accumulator, currentValue) => accumulator + currentValue);
 
             $('#totalNominal').html(totalNominal);
-            $('#hasilrekap').attr('data-split-id', splits);
+            $('input[name="ids"]').val(splits);
         }, 'html');
     });
 });

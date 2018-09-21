@@ -1,6 +1,13 @@
 <?php
+
+if (!$_POST || empty($_POST['ids'])) header('location:laporan.php');
+
 include('header.php');
 
+$tipe 	= $_POST['tipe'];
+$ids  	= $_POST['ids'];
+$jumlah = $_POST['jumlah'];
+$list 	= $db->fetch_all("SELECT * FROM split WHERE id IN ({$ids})");
 ?>
 
 <div class="container">
