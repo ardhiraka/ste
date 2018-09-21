@@ -11,7 +11,7 @@ else :
 endif;
 
 foreach ($rows as $row) :
-    echo "<tr>";
+    echo "<tr data-id='" . $row['id'] . "'>";
     echo "<td>{$row['kode']}</td>";
     echo "<td><a href='info.php?data=" . $row['inbox_id'] . "'>{$row['angka']}</a></td>";
     echo "<td>{$row['nominal']}</td>";

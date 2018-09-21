@@ -9,16 +9,23 @@ jQuery(function($) {
 
         $.post(ajaxTo('getData'), $(this).serialize(), response => {
             $('tbody#showRekapData').html(response);
-            let nominal = $('tbody#showRekapData').find('tr td:last-child');
-            let noms = [];
+            let nominal     = $('tbody#showRekapData').find('tr td:last-child');
+            let split_id    = $('tbody#showRekapData').find('tr');
+            let noms    = [];
+            let splits  = [];
 
             nominal.each((el, item) => {
                 noms.push(parseInt($(item).text()));
             });
 
+            split_id.each((el, item) => {
+                splits.push(parseInt($(item).data('id')));
+            });
+
             let totalNominal = noms.reduce((accumulator, currentValue) => accumulator + currentValue);
 
             $('#totalNominal').html(totalNominal);
+            $('#hasilrekap').attr('data-split-id', splits);
         }, 'html');
     });
 });
