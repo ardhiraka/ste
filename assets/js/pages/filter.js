@@ -17,7 +17,7 @@ jQuery(function($) {
         columns: [
             { data: 'ID' },
             { data: 'SenderNumber' },
-            { data: 'UDH' },
+            { data: 'userName' },
             {
                 data: 'TextDecoded',
                 render(data) {
@@ -39,8 +39,41 @@ jQuery(function($) {
             $(el).attr('data-id', data.ID);
             $(el).attr('data-message', data.TextDecoded);
             $(el).attr('data-number', data.SenderNumber);
+        },
+        fnInitComplete() {
+            return filterSms();
         }
     });
+
+    let filterSms = function() {
+        let container   = $('#tablesms').find('tbody tr').first();
+        let finalNum    = $('#angkaout').val();
+        let message     = {
+            id: container.data('id'),
+            data: container.data('message')
+        };
+
+        $('#submitSms').attr('data-id', message.id).attr('data-message', message.data);
+
+        SMS.setData(message.data).filter().parse().setNumber(finalNum).match();
+
+        $('#smsedit').val(SMS.data);
+        $('#smsasli').val(SMS.data);
+        $('#smssalah').val(SMS.filtered.inCorrect.join("\n"));
+        $('#smsbenar').val(SMS.filtered.correct.join("\n"));
+
+        $.post(ajaxTo('getDataByNumber'), {number: container.data('number')}, response => {
+            if (response) {
+                $('#smsedit').attr('data-user', JSON.stringify(response));
+                
+                calcMessages(SMS, response);
+            } else {
+                alert('Nomor belum terdaftar di database!');
+                
+                $('#hasildapat').val('Nomor belum terdaftar di database!');
+            }
+        }, 'json');
+    }
 
     $('.dataTables_length').addClass('bs-select');
 
@@ -58,6 +91,7 @@ jQuery(function($) {
         }, 'json');
     });
 
+    /*
     $(document).on('click', '[message-view]', function() {
         let container   = $(this).closest('tr');
         let finalNum    = $('#angkaout').val();
@@ -87,6 +121,7 @@ jQuery(function($) {
             }
         }, 'json');
     });
+    */
 
     let calcMessages = (SMS, response) => {
         let hasil       = [];
@@ -152,6 +187,7 @@ jQuery(function($) {
         $('#hasildapat').val(hasil.join("\n"));
     }
 
+    /*
     $(document).on('click', '[message-delete]', function() {
         let container   = $(this).closest('tr');
         let message     = {
@@ -171,10 +207,11 @@ jQuery(function($) {
             }, 'json');
         }
     });
+    */
 
     let wait = null;
     $('#smsedit').keyup(function() {
-        let message     = $(this).val();
+        let message     = $(this).val().split("\n").join('..');
         let finalNum    = $('#angkaout').val();
         let dataUser    = $(this).data('user');
 

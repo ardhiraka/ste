@@ -20,6 +20,7 @@ include('header.php');
 
 	<div class="form-group"><br />
 		<form id="formRekap">
+			<input type="hidden" name="recapdate" value="<?= date('Y-m-d') ?>">
 			<div class="row">
 				<div class="col">
 					<select name="kode" type="text" class="form-control" required="required" aria-describedby="basic-addon2" required="required">
@@ -27,11 +28,8 @@ include('header.php');
 						<option value="2d">2D</option>
 						<option value="3d">3D</option>
 						<option value="4d">4D</option>
-						<option value="other">Other</option>
+						<option value="_other_">Other</option>
 					</select>
-				</div>
-				<div class="col">
-					<input name="recapdate" type="date" class="form-control" placeholder="date" required="required" aria-describedby="basic-addon2">
 				</div>
 				<div class="col-2 input-group-append">
 					<button class="btn btn-info waves-effect m-0" type="submit">Submit</button>
@@ -52,9 +50,8 @@ include('header.php');
 			<tbody id="showRekapData"></tbody>
 			<tfoot>
 				<tr>
-					<td>Total</td>
-					<td></td>
-					<td></td>
+					<td colspan="2">Total</td>
+					<td id="totalNominal"></td>
 				</tr>
 			</tfoot>
 		</table>

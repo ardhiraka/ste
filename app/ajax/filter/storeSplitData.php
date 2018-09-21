@@ -5,6 +5,7 @@ require_once '../../db.php';
 $checkInDB  = $db->fetch_all('select * from split where inbox_id = ?', $_POST['id']);
 $isNotExist = count($checkInDB) > 0 ? false : true;
 $response   = ['status' => 'success'];
+$dateOnSave = date('Y-m-d');
 
 if ($isNotExist) :
     $inbox  = $db->fetch_row('select * from inbox where ID = ?', $_POST['id']);
@@ -29,7 +30,7 @@ if ($isNotExist) :
                 'kode'      => $xpl[0],
                 'angka'     => join($nType[$xpl[0]]),
                 'nominal'   => $xpl[1],
-                'tanggal'   => date('Y-m-d', strtotime($inbox['UpdatedInDB']))
+                'tanggal'   => $dateOnSave
             ];
         else :
             foreach ($items as $item) :
@@ -57,7 +58,7 @@ if ($isNotExist) :
                     'kode'      => $theCode,
                     'angka'     => $number,
                     'nominal'   => $thePrice,
-                    'tanggal'   => date('Y-m-d', strtotime($inbox['UpdatedInDB']))
+                    'tanggal'   => $dateOnSave
                 ];
             endforeach;
         endif;
