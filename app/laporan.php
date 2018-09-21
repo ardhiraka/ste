@@ -88,13 +88,17 @@ include('header.php');
 				<h5 class="modal-title" id="exampleModalLabel">Masukan Persentase Potongan</h5>
 				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
 			</div>
-			<div class="modal-body">
-				<input type="text" class="form-control" placeholder="nominal">
-			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-				<a href="hasilpotongan.php" class="btn btn-primary">Ambil</a>
-			</div>
+			<form action="hasilpotongan.php" method="post">
+				<div class="modal-body">
+					<input type="hidden" name="tipe" value="persen">
+					<input type="hidden" name="ids">
+					<input type="text" name="jumlah" class="form-control" placeholder="nominal" required="required">
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+					<button type="submit" class="btn btn-primary">Ambil</button>
+				</div>
+			</form>
 		</div>
 	</div>
 </div>

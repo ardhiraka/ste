@@ -8,6 +8,27 @@ $tipe 	= $_POST['tipe'];
 $ids  	= $_POST['ids'];
 $jumlah = $_POST['jumlah'];
 $list 	= $db->fetch_all("SELECT * FROM split WHERE id IN ({$ids})");
+
+foreach ($list as $split) :
+	$nominal 	= $split['nominal'];
+	$nom_makan 	= 0;
+	$nom_dealer	= 0;
+
+	if ($tipe == 'nominal') :
+		$nom_makan 	= ($jumlah >= $nominal) ? $nominal : $jumlah;
+		$sisa 		= $nominal - $jumlah;
+		$nom_dealer = $sisa <= 0 ? 0 : $sisa;
+	elseif ($tipe == 'persen') :
+		$jumlah 	= ($jumlah >= 100) ? 100 : $jumlah;
+		$nom_makan 	= ceil($nominal * ($jumlah / 100));
+		$sisa 		= $nominal - $nom_makan;
+		$nom_dealer = $sisa <= 0 ? 0 : $sisa;
+	endif;
+
+	$db->update('split', ['nom_makan' => $nom_makan, 'nom_dealer' => $nom_dealer], ['id' => $split['id']]);
+endforeach;
+
+$result	= $db->fetch_all("SELECT * FROM split WHERE id IN ({$ids})");
 ?>
 
 <div class="container">
@@ -36,8 +57,13 @@ $list 	= $db->fetch_all("SELECT * FROM split WHERE id IN ({$ids})");
 					</tr>
 				</thead>
 				<tbody>
-					<tr>
-					</tr>
+					<?php foreach($result as $data) : ?>
+						<tr>
+							<td><?= $data['kode'] ?></td>
+							<td><?= $data['angka'] ?></td>
+							<td><?= $data['nom_makan'] ?></td>
+						</tr>
+					<?php endforeach; ?>
 				</tbody>
 			</table>
 		</div>
@@ -55,8 +81,13 @@ $list 	= $db->fetch_all("SELECT * FROM split WHERE id IN ({$ids})");
 					</tr>
 				</thead>
 				<tbody>
-					<tr>
-					</tr>
+					<?php foreach($result as $data) : ?>
+						<tr>
+							<td><?= $data['kode'] ?></td>
+							<td><?= $data['angka'] ?></td>
+							<td><?= $data['nom_dealer'] ?></td>
+						</tr>
+					<?php endforeach; ?>
 				</tbody>
 			</table>
 		</div>
