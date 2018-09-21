@@ -21,15 +21,17 @@ $data       = $db->fetch_all("select * from inbox where ID = ?", $inbox_id);
 				<table class="table table-sm table-bordered table-hover">
 					<thead>
 					<tr>
-						<th>Kode</th>
 						<th>Nomor Hp</th>
 						<th>Isi SMS</th>
 					</tr>
 					</thead>
 					<tbody>
-					<tr>
-						
-					</tr>
+						<?php foreach ($data as $info) : ?>
+							<tr>
+								<td><?= $info['SenderNumber'] ?></td>
+								<td><?= $info['TextDecoded'] ?></td>
+							</tr>
+						<?php endforeach; ?>
 					</tbody>
 				</table>
 		</div>
