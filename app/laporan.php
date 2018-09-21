@@ -45,6 +45,8 @@ include('header.php');
 					<th>Kode</th>
 					<th>Angka</th>
 					<th>Nominal</th>
+					<th>Potongan Makan</th>
+					<th>Potongan Dealer</th>
 				</tr>
 			</thead>
 			<tbody id="showRekapData"></tbody>
@@ -52,6 +54,8 @@ include('header.php');
 				<tr>
 					<td colspan="2">Total</td>
 					<td id="totalNominal"></td>
+					<td id="totalMakan"></td>
+					<td id="totalDealer"></td>
 				</tr>
 			</tfoot>
 		</table>

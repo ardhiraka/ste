@@ -15,5 +15,7 @@ foreach ($rows as $row) :
     echo "<td>{$row['kode']}</td>";
     echo "<td><a href='info.php?data=" . $row['inbox_id'] . "'>{$row['angka']}</a></td>";
     echo "<td>{$row['nominal']}</td>";
+    echo "<td>" . $row['nom_makan'] . "</td>";
+    echo "<td>" . $row['nom_dealer'] . "</td>";
     echo "</tr>";
 endforeach;
