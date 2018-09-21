@@ -14,8 +14,8 @@ include('header.php');
 	</div>
 
 	<div class="form-group"><br />
-		<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#basicExampleModal">Nominal</button>
-		<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#basicExampleModal">Persentase</button>
+		<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#ModalNominal">Nominal</button>
+		<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#ModalPersentase">Persentase</button>
 	</div>
 
 	<div class="form-group"><br />
@@ -59,11 +59,29 @@ include('header.php');
 </div>
 
 <!-- Modal -->
-<div class="modal fade" id="basicExampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="ModalNominal" tabindex="-1" role="dialog" aria-labelledby="ModalNominal" aria-hidden="true">
 	<div class="modal-dialog" role="document">
 		<div class="modal-content">
 			<div class="modal-header">
-				<h5 class="modal-title" id="exampleModalLabel">Masukan Nominal Potongan</h5>
+				<h5 class="modal-title" id="ModalNominal">Masukan Nominal Potongan</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+			</div>
+			<div class="modal-body">
+				<input type="text" class="form-control" placeholder="nominal">
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+				<a href="hasilpotongan.php" class="btn btn-primary">Ambil</a>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="modal fade" id="ModalPersentase" tabindex="-1" role="dialog" aria-labelledby="ModalPersentase" aria-hidden="true">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="exampleModalLabel">Masukan Persentase Potongan</h5>
 				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
 			</div>
 			<div class="modal-body">
