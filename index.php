@@ -1,3 +1,10 @@
+<?php
+if (file_exists('install')) header('location:install');
+
+session_start();
+
+if (isset($_SESSION['isLoggedIn'])) header('location:app');
+?>
 
 <!DOCTYPE html>
 <html lang="en">
