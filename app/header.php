@@ -1,4 +1,4 @@
-<?php require_once 'db.php'; ?>
+<?php require_once 'session.php'; require_once 'db.php'; ?>
 
 <!DOCTYPE html>
 <html>
@@ -66,7 +66,7 @@
 					<a class="nav-link" href="smsout.php">SMS Out</a>
 				</li>
 				<li class="nav-item">
-					<a class="nav-link" href="../">Keluar</a>
+					<a class="nav-link" href="../logout.php">Keluar</a>
 				</li>
 			</ul>
 		</div>

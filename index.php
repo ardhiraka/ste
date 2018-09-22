@@ -24,15 +24,15 @@
         <br />
         <div class="col-md-4 offset-md-4">
             <!-- Default form login -->
-            <form class="text-center border border-light p-5">
+            <form class="text-center border border-light p-5" method="post" action="login.php">
 
                 <p class="h4 mb-4">SGP Sign in</p>
 
                 <!-- Email -->
-                <input type="email" id="defaultLoginFormEmail" class="form-control mb-4" placeholder="E-mail">
+                <input name="username" type="text" id="defaultLoginFormEmail" class="form-control mb-4" placeholder="Username" required="required">
 
                 <!-- Password -->
-                <input type="password" id="defaultLoginFormPassword" class="form-control mb-4" placeholder="Password">
+                <input name="password" type="password" id="defaultLoginFormPassword" class="form-control mb-4" placeholder="Password" required="required">
 
                 <div class="d-flex justify-content-around">
                     <div>
@@ -49,8 +49,8 @@
                 </div>
 
                 <!-- Sign in button -->
-                <!-- <button class="btn btn-info btn-block my-4" type="submit">Sign in</button> -->
-                <a class="btn btn-info btn-block my-4" href="app/">Sign in</a>
+                <button class="btn btn-info btn-block my-4" type="submit">Sign in</button>
+                <!-- <a class="btn btn-info btn-block my-4" href="app/">Sign in</a> -->
 
             </form>
             <!-- Default form login -->
