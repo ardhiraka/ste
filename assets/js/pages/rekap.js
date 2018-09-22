@@ -6,6 +6,8 @@ jQuery(function($) {
     $('#formRekap').on('submit', function(event) {
         event.preventDefault();
         $('#totalNominal').html('');
+        $('#totalMakan').html('');
+        $('#totalDealer').html('');
 
         $.post(ajaxTo('getData'), $(this).serialize(), response => {
             $('tbody#showRekapData').html(response);

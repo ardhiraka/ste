@@ -124,7 +124,7 @@ foreach ($list as $item) :
     $storages[$item['inbox_id']]['info']['member_id'] = $item['member_id'];
     $multiCode = explode('.', $item['kode']);
 
-    // harus ada: $result
+    // harus ada: $result, $resultMakan, $resultDealer
     if (in_array($item['kode'], ['2d', '3d', '4d'])) :
         $validNumber    = getDNumber($item['kode'], $number);
         $isNumberValid  = $item['angka'] == $validNumber;
@@ -133,6 +133,14 @@ foreach ($list as $item) :
         $getWin     = getWin($win, $item['nominal'], $item[$item['kode'] . '_win']);
         $getDisc    = getDisc($lose, $item['nominal'], $item[$item['kode'] . '_disc']);
         $result     = $getWin - $getDisc;
+
+        $getWinMakan     = getWin($win, $item['nom_makan'], $item[$item['kode'] . '_win']);
+        $getDiscMakan    = getDisc($lose, $item['nom_makan'], $item[$item['kode'] . '_disc']);
+        $resultMakan     = $getWinMakan - $getDiscMakan;
+
+        $getWinDealer     = getWin($win, $item['nom_dealer'], $item[$item['kode'] . '_win']);
+        $getDiscDealer    = getDisc($lose, $item['nom_dealer'], $item[$item['kode'] . '_disc']);
+        $resultDealer     = $getWinDealer - $getDiscDealer;
 
         $storages[$item['inbox_id']]['info'][$isNumberValid ? 'win' : 'lose'][] = $item['angka'];
 
@@ -143,6 +151,14 @@ foreach ($list as $item) :
         $getWin     = $win > 0 ? getWin(1, $item['nominal'], $item[$item['kode'] . '_win']) : 0;
         $getTax     = $win > 0 ? 0 : getTax(5, $item['nominal'], $item[$item['kode'] . '_disc']);
         $result     = $getWin - $getTax;
+
+        $getWinMakan     = $win > 0 ? getWin(1, $item['nom_makan'], $item[$item['kode'] . '_win']) : 0;
+        $getTaxMakan     = $win > 0 ? 0 : getTax(5, $item['nom_makan'], $item[$item['kode'] . '_disc']);
+        $resultMakan     = $getWinMakan - $getTaxMakan;
+
+        $getWinDealer     = $win > 0 ? getWin(1, $item['nom_dealer'], $item[$item['kode'] . '_win']) : 0;
+        $getTaxDealer     = $win > 0 ? 0 : getTax(5, $item['nom_dealer'], $item[$item['kode'] . '_disc']);
+        $resultDealer     = $getWinDealer - $getTaxDealer;
 
         if ($isNumberValid) :
             $storages[$item['inbox_id']]['info']['win'][] = $item['angka'];
@@ -171,6 +187,14 @@ foreach ($list as $item) :
         $getDisc    = getDisc($lose, $item['nominal'], $item[$item['kode'] . '_disc']);
         $result     = $getWin - $getDisc;
 
+        $getWinMakan     = getWin($win, $item['nom_makan'], $item[$item['kode'] . ($item['kode'] == 'CM' ? '1' : '') . '_win']);
+        $getDiscMakan    = getDisc($lose, $item['nom_makan'], $item[$item['kode'] . '_disc']);
+        $resultMakan     = $getWinMakan - $getDiscMakan;
+
+        $getWinDealer     = getWin($win, $item['nom_dealer'], $item[$item['kode'] . ($item['kode'] == 'CM' ? '1' : '') . '_win']);
+        $getDiscDealer    = getDisc($lose, $item['nom_dealer'], $item[$item['kode'] . '_disc']);
+        $resultDealer     = $getWinDealer - $getDiscDealer;
+
         $storages[$item['inbox_id']]['info'][$isNumberValid ? 'win' : 'lose'][] = $item['angka'];
     elseif ($multiCode[0] == 'C') :
         $theHead    = isset($multiCode[1]) ? $multiCode[1] : false;
@@ -188,6 +212,14 @@ foreach ($list as $item) :
         $getWin     = getWin($win, $item['nominal'], $item[($theHead ? 'Jitu' : $item['kode']) . '_win']);
         $getDisc    = getDisc($lose, $item['nominal'], $item[($theHead ? 'Jitu' : $item['kode']) . '_disc']);
         $result     = $getWin - $getDisc;
+
+        $getWinMakan     = getWin($win, $item['nom_makan'], $item[($theHead ? 'Jitu' : $item['kode']) . '_win']);
+        $getDiscMakan    = getDisc($lose, $item['nom_makan'], $item[($theHead ? 'Jitu' : $item['kode']) . '_disc']);
+        $resultMakan     = $getWinMakan - $getDiscMakan;
+
+        $getWinDealer     = getWin($win, $item['nom_dealer'], $item[($theHead ? 'Jitu' : $item['kode']) . '_win']);
+        $getDiscDealer    = getDisc($lose, $item['nom_dealer'], $item[($theHead ? 'Jitu' : $item['kode']) . '_disc']);
+        $resultDealer     = $getWinDealer - $getDiscDealer;
 
         $storages[$item['inbox_id']]['info'][$isNumberValid ? 'win' : 'lose'][] = $item['angka'];
     elseif ($multiCode[0] == 'M' || $multiCode[0] == 'H') :
@@ -222,9 +254,19 @@ foreach ($list as $item) :
         $getWin     = $win > 0 ? getWin(1, $item['nominal'], $item[$multiCode[0] . '_win']) : 0;
         $getTax     = $win > 0 ? 0 : getTax(1, $item['nominal'], $item[$multiCode[0] . '_disc']);
         $result     = $getWin - $getTax;
+
+        $getWinMakan     = $win > 0 ? getWin(1, $item['nom_makan'], $item[$multiCode[0] . '_win']) : 0;
+        $getTaxMakan     = $win > 0 ? 0 : getTax(1, $item['nom_makan'], $item[$multiCode[0] . '_disc']);
+        $resultMakan     = $getWinMakan - $getTaxMakan;
+
+        $getWinDealer     = $win > 0 ? getWin(1, $item['nom_dealer'], $item[$multiCode[0] . '_win']) : 0;
+        $getTaxDealer     = $win > 0 ? 0 : getTax(1, $item['nom_dealer'], $item[$multiCode[0] . '_disc']);
+        $resultDealer     = $getWinDealer - $getTaxDealer;
     endif;
 
     $storages[$item['inbox_id']]['result'][$item['kode']][] = $result;
+    $storages[$item['inbox_id']]['result_makan'][$item['kode']][] = $resultMakan;
+    $storages[$item['inbox_id']]['result_dealer'][$item['kode']][] = $resultDealer;
 endforeach;
 // echo "<pre>";print_r($storages);die();
 
@@ -232,9 +274,19 @@ $result = [];
 
 foreach ($storages as $inbox_id => $list) :
     $_result[$inbox_id] = [];
+    $_resultMakan[$inbox_id] = [];
+    $_resultDealer[$inbox_id] = [];
 
     foreach ($list['result'] as $kode => $item) :
         $_result[$inbox_id][$kode] = array_sum($item);
+    endforeach;
+
+    foreach ($list['result_makan'] as $kode => $item) :
+        $_resultMakan[$inbox_id][$kode] = array_sum($item);
+    endforeach;
+
+    foreach ($list['result_dealer'] as $kode => $item) :
+        $_resultDealer[$inbox_id][$kode] = array_sum($item);
     endforeach;
 
     $result[$inbox_id] = [
@@ -242,7 +294,9 @@ foreach ($storages as $inbox_id => $list) :
         'member_id' => $list['info']['member_id'],
         'win'       => isset($list['info']['win']) ? count($list['info']['win']) : 0,
         'lose'      => isset($list['info']['lose']) ? count($list['info']['lose']) : 0,
-        'total'     => array_sum($_result[$inbox_id])
+        'total'     => array_sum($_result[$inbox_id]),
+        'total_makan'   => array_sum($_resultMakan[$inbox_id]),
+        'total_dealer'  => array_sum($_resultDealer[$inbox_id])
     ];
 endforeach;
 // echo "<pre>";print_r($result);die();
