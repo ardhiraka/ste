@@ -6,36 +6,54 @@ $listPotongan = $db->fetch_all("SELECT so.id as so_id, so.inbox_id, so.member_id
 
 ?>
 
-<div class="container">
-	<br />
-	<br />
-	<br />
+	<div class="container">
+		<br />
+		<br />
+		<br />
 
-	<div align="center">
-		<h3>
-			SMS OUT
-		</h3>
-	</div>
-	<div class="row">
+		<div align="center">
+			<h3>
+				SMS OUT
+			</h3>
+		</div>
 
-		<div class="col-sm-12" align="center">
-			<table class="table table-bordered">
-				<thead>
-					<tr>
-						<th>Nomor HP</th>
-						<th>Kode</th>
-						<th>Win</th>
-						<th>Lose</th>
-						<th>Total Transaksi</th>
-					</tr>
-				</thead>
-				<tbody>
-					<?php foreach($lists as $sms) : ?>
+		<div class="row">
+			<div class="col-md-6">
+				<button class="btn btn-warning btn-block my-4" type="submit">Cancel SMS</button>
+			</div>
+			<div class="col-md-6">
+				<button id="submitSms" class="btn btn-default btn-block my-4">Submit SMS</button>
+			</div>
+		</div>
+
+		<div class="row">
+
+			<div class="col-sm-12" align="center">
+				<table class="table table-bordered">
+					<thead>
 						<tr>
-							<td><?= $sms['nohp'] ?></td>
-							<td><?= $sms['kodeid'] ?></td>
-							<td><?= $sms['win'] ?></td>
-							<td><?= $sms['lose'] ?></td>
+							<th>Nomor HP</th>
+							<th>Kode</th>
+							<th>Win</th>
+							<th>Lose</th>
+							<th>Total Transaksi</th>
+						</tr>
+					</thead>
+					<tbody>
+						<?php foreach($lists as $sms) : ?>
+						<tr>
+							<td>
+								<?= $sms['nohp'] ?>
+							</td>
+							<td>
+								<?= $sms['kodeid'] ?>
+							</td>
+							<td>
+								<?= $sms['win'] ?>
+							</td>
+							<td>
+								<?= $sms['lose'] ?>
+							</td>
 							<td>
 								<?php
 									$total 		= abs($sms['total']);
@@ -45,27 +63,31 @@ $listPotongan = $db->fetch_all("SELECT so.id as so_id, so.inbox_id, so.member_id
 								?>
 							</td>
 						</tr>
-					<?php endforeach; ?>
-				</tbody>
-			</table>
-		</div>
-	
-		<div class="col-sm-12 table-group row" style="margin-top: 2rem">
-			<div class="col-sm-6" align="center">
-				<h2>Potongan Makan</h2>
-				<table class="table table-bordered">
-					<thead>
-						<tr>
-							<th>Total Win</th>
-							<th>Total Lose</th>
-							<th>Total Transaksi</th>
-						</tr>
-					</thead>
-					<tbody>
-						<?php foreach($listPotongan as $sms) : ?>
+						<?php endforeach; ?>
+					</tbody>
+				</table>
+			</div>
+
+			<div class="col-sm-12 table-group row" style="margin-top: 2rem">
+				<div class="col-sm-6" align="center">
+					<h2>Potongan Makan</h2>
+					<table class="table table-bordered">
+						<thead>
 							<tr>
-								<td><?= $sms['win'] ?></td>
-								<td><?= $sms['lose'] ?></td>
+								<th>Total Win</th>
+								<th>Total Lose</th>
+								<th>Total Transaksi</th>
+							</tr>
+						</thead>
+						<tbody>
+							<?php foreach($listPotongan as $sms) : ?>
+							<tr>
+								<td>
+									<?= $sms['win'] ?>
+								</td>
+								<td>
+									<?= $sms['lose'] ?>
+								</td>
 								<td>
 									<?php
 									$total 		= abs($sms['total_makan']);
@@ -75,26 +97,30 @@ $listPotongan = $db->fetch_all("SELECT so.id as so_id, so.inbox_id, so.member_id
 									?>
 								</td>
 							</tr>
-						<?php endforeach; ?>
-					</tbody>
-				</table>
-			</div>
+							<?php endforeach; ?>
+						</tbody>
+					</table>
+				</div>
 
-			<div class="col-sm-6" align="center">
-				<h2>Potongan Dealer</h2>
-				<table class="table table-bordered">
-					<thead>
-						<tr>
-							<th>Total Win</th>
-							<th>Total Lose</th>
-							<th>Total Transaksi</th>
-						</tr>
-					</thead>
-					<tbody>
-						<?php foreach($listPotongan as $sms) : ?>
+				<div class="col-sm-6" align="center">
+					<h2>Potongan Dealer</h2>
+					<table class="table table-bordered">
+						<thead>
 							<tr>
-								<td><?= $sms['win'] ?></td>
-								<td><?= $sms['lose'] ?></td>
+								<th>Total Win</th>
+								<th>Total Lose</th>
+								<th>Total Transaksi</th>
+							</tr>
+						</thead>
+						<tbody>
+							<?php foreach($listPotongan as $sms) : ?>
+							<tr>
+								<td>
+									<?= $sms['win'] ?>
+								</td>
+								<td>
+									<?= $sms['lose'] ?>
+								</td>
 								<td>
 									<?php
 									$total 		= abs($sms['total_dealer']);
@@ -104,17 +130,17 @@ $listPotongan = $db->fetch_all("SELECT so.id as so_id, so.inbox_id, so.member_id
 									?>
 								</td>
 							</tr>
-						<?php endforeach; ?>
-					</tbody>
-				</table>
+							<?php endforeach; ?>
+						</tbody>
+					</table>
+				</div>
 			</div>
 		</div>
+
 	</div>
 
-</div>
+	<script src="../assets/js/pages/rekap.js"></script>
 
-<script src="../assets/js/pages/rekap.js"></script>
-
-<?php
+	<?php
 include('footer.php');
 ?>
