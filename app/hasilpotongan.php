@@ -31,72 +31,93 @@ endforeach;
 $result	= $db->fetch_all("SELECT * FROM split WHERE id IN ({$ids})");
 ?>
 
-<div class="container">
-	<br />
-	<br />
-	<br />
+	<div class="container">
+		<br />
+		<br />
+		<br />
 
-	<div align="center">
-		<h3>
-			Hasil Recap
-		</h3>
-	</div>
-	<br />
-	<div class="row">
+		<div align="center">
+			<h3>
+				Hasil Recap
+			</h3>
+		</div>
+		<br />
 
-		<div class="col-sm-6">
-			<h4>
-				Angka Makan
-			</h4>
-			<table class="table table-bordered">
-				<thead>
-					<tr>
-						<th>Kode</th>
-						<th>Angka</th>
-						<th>Nominal</th>
-					</tr>
-				</thead>
-				<tbody>
-					<?php foreach($result as $data) : ?>
-						<tr>
-							<td><?= $data['kode'] ?></td>
-							<td><?= $data['angka'] ?></td>
-							<td><?= $data['nom_makan'] ?></td>
-						</tr>
-					<?php endforeach; ?>
-				</tbody>
-			</table>
+		<div class="row">
+			<div class="col-md-6">
+				<button class="btn btn-warning btn-block my-4" type="submit">Cancel SMS</button>
+			</div>
+			<div class="col-md-6">
+				<button id="submitSms" class="btn btn-default btn-block my-4">Submit SMS</button>
+			</div>
 		</div>
 
-		<div class="col-sm-6">
-			<h4>
-				Angka Dealer
-			</h4>
-			<table class="table table-bordered">
-				<thead>
-					<tr>
-						<th>Kode</th>
-						<th>Angka</th>
-						<th>Nominal</th>
-					</tr>
-				</thead>
-				<tbody>
-					<?php foreach($result as $data) : ?>
+		<div class="row">
+			<div class="col-sm-6">
+				<h4>
+					Angka Makan
+				</h4>
+				<table class="table table-bordered">
+					<thead>
 						<tr>
-							<td><?= $data['kode'] ?></td>
-							<td><?= $data['angka'] ?></td>
-							<td><?= $data['nom_dealer'] ?></td>
+							<th>Kode</th>
+							<th>Angka</th>
+							<th>Nominal</th>
 						</tr>
-					<?php endforeach; ?>
-				</tbody>
-			</table>
+					</thead>
+					<tbody>
+						<?php foreach($result as $data) : ?>
+						<tr>
+							<td>
+								<?= $data['kode'] ?>
+							</td>
+							<td>
+								<?= $data['angka'] ?>
+							</td>
+							<td>
+								<?= $data['nom_makan'] ?>
+							</td>
+						</tr>
+						<?php endforeach; ?>
+					</tbody>
+				</table>
+			</div>
+
+			<div class="col-sm-6">
+				<h4>
+					Angka Dealer
+				</h4>
+				<table class="table table-bordered">
+					<thead>
+						<tr>
+							<th>Kode</th>
+							<th>Angka</th>
+							<th>Nominal</th>
+						</tr>
+					</thead>
+					<tbody>
+						<?php foreach($result as $data) : ?>
+						<tr>
+							<td>
+								<?= $data['kode'] ?>
+							</td>
+							<td>
+								<?= $data['angka'] ?>
+							</td>
+							<td>
+								<?= $data['nom_dealer'] ?>
+							</td>
+						</tr>
+						<?php endforeach; ?>
+					</tbody>
+				</table>
+			</div>
 		</div>
+
 	</div>
 
-</div>
+	<script src="../assets/js/pages/rekap.js"></script>
 
-<script src="../assets/js/pages/rekap.js"></script>
-
-<?php
+	<?php
 include('footer.php');
 ?>
