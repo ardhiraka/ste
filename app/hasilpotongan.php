@@ -28,7 +28,32 @@ foreach ($list as $split) :
 	$db->update('split', ['nom_makan' => $nom_makan, 'nom_dealer' => $nom_dealer], ['id' => $split['id']]);
 endforeach;
 
-$result	= $db->fetch_all("SELECT * FROM split WHERE id IN ({$ids})");
+$result	= $db->fetch_all("SELECT * FROM split WHERE id IN ({$ids}) order by cast(nom_dealer as SIGNED) desc");
+
+$outBox = $db->fetch_all("SELECT kode, group_concat(angka SEPARATOR '.') as nominal, nom_dealer FROM split WHERE id IN ({$ids}) GROUP BY nom_dealer,kode ORDER BY cast(nom_dealer as SIGNED) DESC");
+
+$sms = "";
+foreach ($outBox as $ob) :
+	$pecah = explode('.', $ob['kode']);
+	$theCode = $pecah[0];
+	$theHead = isset($pecah[1]) ? $pecah[1] : false;
+
+	if (in_array($theCode, ['2d', '3d', '4d'])) :
+		$sms .= "{$ob['nominal']}@{$ob['nom_dealer']} ";
+	elseif (in_array($theCode, ['J', 'P', 'T', 'S'])) :
+		$sms .= "{$theCode}@{$ob['nom_dealer']} ";
+	elseif (in_array($theCode, ['CM', 'CN', 'C'])) :
+		if ($theHead) :
+			$sms .= "{$ob['kode']};{$ob['nominal']}@{$ob['nom_dealer']} ";
+		else :
+			$sms .= "{$theCode};{$ob['nominal']}@{$ob['nom_dealer']} ";
+		endif;
+	elseif (in_array($theCode, ['M', 'H'])) :
+		$sms .= "{$ob['kode']}@{$ob['nom_dealer']} ";
+	endif;
+endforeach;
+$sms = rtrim($sms, ' ');
+
 ?>
 
 	<div class="container">
@@ -43,12 +68,15 @@ $result	= $db->fetch_all("SELECT * FROM split WHERE id IN ({$ids})");
 		</div>
 		<br />
 
-		<div class="row">
+		<div id="submitSmsOutbox" class="row">
 			<div class="col-md-6">
 				<button class="btn btn-warning btn-block my-4" type="submit">Cancel SMS</button>
 			</div>
 			<div class="col-md-6">
-				<button id="submitSms" class="btn btn-default btn-block my-4">Submit SMS</button>
+				<form id="sendToNumber">
+					<input type="hidden" name="sms" value="<?= $sms ?>">
+					<button type="submit" id="submitSms" class="btn btn-default btn-block my-4">Submit SMS</button>
+				</form>
 			</div>
 		</div>
 
