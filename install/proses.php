@@ -63,17 +63,18 @@ echo json_encode([
 $installDir = __DIR__;
 
 function delete_files($target) {
-    if(is_dir($target)){
-        $files = glob( $target . '*', GLOB_MARK );
-        foreach( $files as $file )
-        {
-            delete_files( $file );      
-        }
-        rmdir( $target );
-    } elseif(is_file($target)) {
-        unlink( $target );  
-    }
+    if (is_dir($target)) :
+        $files = glob($target . '*', GLOB_MARK);
+        
+        foreach($files as $file) :
+            delete_files($file);      
+        endforeach;
+
+        rmdir($target);
+    elseif (is_file($target)) :
+        unlink($target);  
+    endif;
 }
 
-// For Production Only
+// Uncomment thi For Production Only
 // delete_files($installDir);
