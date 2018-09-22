@@ -17,12 +17,15 @@ $listPotongan = $db->fetch_all("SELECT so.id as so_id, so.inbox_id, so.member_id
 			</h3>
 		</div>
 
-		<div class="row">
+		<div id="submitSmsOutbox" class="row">
 			<div class="col-md-6">
 				<button class="btn btn-warning btn-block my-4" type="submit">Cancel SMS</button>
 			</div>
 			<div class="col-md-6">
-				<button id="submitSms" class="btn btn-default btn-block my-4">Submit SMS</button>
+				<form id="sendToMember">
+					<input type="hidden" name="sms_id" value="<?= join(',', array_column($lists, 'so_id')) ?>">
+					<button id="submitSms" class="btn btn-default btn-block my-4">Submit SMS</button>
+				</form>
 			</div>
 		</div>
 
@@ -139,7 +142,19 @@ $listPotongan = $db->fetch_all("SELECT so.id as so_id, so.inbox_id, so.member_id
 
 	</div>
 
-	<script src="../assets/js/pages/rekap.js"></script>
+	<script>
+		let ajaxTo = file => {
+			return 'ajax/smsout/' + file + '.php';
+		}
+
+		$('#sendToMember').on('submit', function(event) {
+			event.preventDefault();
+			$.post(ajaxTo('sendToMember'), $(this).serialize(), response => {
+				$('#submitSmsOutbox').remove();
+				alert(response.message);
+			}, 'json');
+		});
+	</script>
 
 	<?php
 include('footer.php');
