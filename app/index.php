@@ -122,6 +122,7 @@ $angkaout = $db->fetch_var("select angka from angkakeluar where id = ?", 1);
 	</div>
 
 	<!-- SMS Parse Module - Aris - Techarea -->
+	<script type="text/javascript" src="../assets/js/combinatorial.js"></script>
 	<script type="text/javascript" src="../assets/js/sms.js"></script>
 	<!-- Page Scripts -->
 	<script src="../assets/js/pages/filter.js"></script>

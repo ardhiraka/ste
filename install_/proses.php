@@ -52,6 +52,17 @@ if ($_POST) :
             'password'  => password_hash($_POST['admin_password'], PASSWORD_BCRYPT, ['cost' => 11]),
         ]);
         // End - Insert Dealer & User
+
+        // Start - Create DB Configuration
+        $fileConfig = 'db.example';
+        $config     = file_get_contents($fileConfig);
+        $search     = ["%DBHOST%", "%DBUSER%", "%DBPASS%", "%DBBASE%"];
+        $replace    = [$_POST['db_host'], $_POST['db_user'], $_POST['db_pass'], $_POST['db_base']];
+        $newConfig  = str_replace($search, $replace, $config);
+        
+        file_put_contents($fileConfig, $newConfig);
+        copy($fileConfig, "../app/db.php");
+        // End - Create DB Configuration
     endif;
 endif;
 
