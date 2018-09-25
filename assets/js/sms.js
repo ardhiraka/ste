@@ -200,6 +200,8 @@ let SMS = {
                 let isKExist    = dHeads.includes('K');
                 let isEExist    = dHeads.includes('E');
 
+                if (!isNaN(parseInt(theCode.toString()))) isCorrect = false;
+
                 if (hCount.number >= 2 && dHeads.length >= 3) {
                     isCorrect = false;
                 } else if (dHeads[0] == 'A') {
@@ -211,6 +213,8 @@ let SMS = {
                         } else if (hCount.number != 1) {
                             isCorrect = false;
                         }
+                    } else if (isKpExist && (!isKExist || !isEExist)) {
+                        isCorrect = false;
                     }
                 } else if (dHeads[0] == 'Kp') {
                     if (hCount.hasOwnProperty('number')) {
