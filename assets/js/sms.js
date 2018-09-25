@@ -7,7 +7,7 @@ let SMS = {
         ',,'    : ';',
         'x'  	: '@',
         'X'     : '@',
-        '/'     : '@',
+        // '/'     : '@',
         'NJ1'	 : '01.10',
         'NJ2'	 : '02.11.20',
         'NJ3'	 : '03.12.21.30',
@@ -61,6 +61,7 @@ let SMS = {
         mformat: new RegExp("^([JPTS]{2}(?:|[JPTS]{2}))$"),
         hformat: new RegExp("^([JPTS]{1})$"),
         bbformat: new RegExp("^BB([2-4]+);([0-9.]{4})@([0-9]+)$"),
+        headformat: new RegExp("^([A-Za-z0-9;\/.]+)@([0-9]+)$"),
         default: [';', '@']
     },
     code: {
@@ -141,7 +142,7 @@ let SMS = {
         app.isFilter = true;
 
         this.replace().forEach(item => {
-            let fullText, theCode, theLoop, thePrice;
+            let fullText, theCode, theLoop, thePrice, thePerm;
 
             if (app.format.full.test(item)) {
                 [fullText, theCode, theLoop, thePrice] = app.format.full.exec(item);
@@ -161,6 +162,48 @@ let SMS = {
                 let loopData = theLoop.split('').permutation(thePerm);
 
                 app.parsing(item, 'N/A', loopData, thePrice, 'filtered');
+            } else if (app.format.headformat.test(item)) {
+                [fullText, theCode, thePrice] = app.format.headformat.exec(item);
+
+                let theHead = theCode.split('/');
+                let isHeadFormat = new RegExp("^([A-Za-z]+);([0-9]{1,4}(?:\\.[0-9]{1,4})*)$");
+                let dHeads = [];
+                let dNumbs = [];
+                let hCount = {};
+                let isCorrect = true;
+
+                theHead.forEach(item => {
+                    if (isHeadFormat.test(item)) {
+                        [ifull, iHead, iNum] = isHeadFormat.exec(item);
+                        dHeads.push(iHead);
+                        dNumbs.push(iNum.split('.'));
+                    } else {
+                        dHeads.push('number');
+                        dNumbs.push(item.split('.'));
+                    }
+                });
+
+                dHeads.forEach(function(i) { hCount[i] = (hCount[i] || 0) + 1;});
+
+                if (hCount.number >= 2 && dHeads.length >= 3) {
+                    isCorrect = false;
+                } else if (dHeads[0] == 'A') {
+                    let isKpExist = dHeads.includes('Kp');
+
+                    if (!isKpExist || hCount.number != 1) {
+                        isCorrect = false;
+                    }
+                } else if (dHeads[0] == 'Kp') {
+                    if (!hCount.hasOwnProperty('number') || hCount.number > 2) {
+                        isCorrect = false;
+                    }
+                }
+
+                if (isCorrect) {
+                    app.parsing(item, 'N/A', dNumbs.treePath(), thePrice, 'filtered');
+                } else {
+                    app.filtered.inCorrect.push(item);
+                }
             } else {
                 app.filtered.inCorrect.push(item);
             }

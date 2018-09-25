@@ -74,3 +74,25 @@ Array.prototype.permutation = function(number) {
 
     return converts.join('.');
 }
+
+Array.prototype.treePath = function() {
+    let array   = this;
+    let result  = [];
+
+    function recursive(node = 0, prefix = []) {
+        let rootData    = array[node];
+        let nextNode    = node + 1;
+
+        if (typeof rootData != 'undefined') {
+            for (let i = 0; i < rootData.length; i++) {
+                recursive(nextNode, prefix.concat([rootData[i]]));
+            }
+        } else {
+            result.push(prefix.join(''));
+        }
+    }
+
+    recursive();
+
+    return result.join('.');
+}
