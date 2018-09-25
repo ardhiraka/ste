@@ -196,16 +196,30 @@ let SMS = {
 
                 dHeads.forEach(function(i) { hCount[i] = (hCount[i] || 0) + 1;});
 
+                let isKpExist   = dHeads.includes('Kp');
+                let isKExist    = dHeads.includes('K');
+                let isEExist    = dHeads.includes('E');
+
                 if (hCount.number >= 2 && dHeads.length >= 3) {
                     isCorrect = false;
                 } else if (dHeads[0] == 'A') {
-                    let isKpExist = dHeads.includes('Kp');
+                    if (!isKpExist) isCorrect = false;
 
-                    if (!isKpExist || hCount.number != 1) {
-                        isCorrect = false;
+                    if (hCount.hasOwnProperty('number')) {
+                        if (isKExist || isEExist) {
+                            isCorrect = false;
+                        } else if (hCount.number != 1) {
+                            isCorrect = false;
+                        }
                     }
                 } else if (dHeads[0] == 'Kp') {
-                    if (!hCount.hasOwnProperty('number') || hCount.number > 2) {
+                    if (hCount.hasOwnProperty('number')) {
+                        if (hCount.number > 2) {
+                            isCorrect = false;
+                        } else if (isKExist && isEExist && hCount.number >= 1) {
+                            isCorrect = false
+                        }
+                    } else if (!isKExist || !isEExist) {
                         isCorrect = false;
                     }
                 }

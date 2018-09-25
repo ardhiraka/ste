@@ -92,7 +92,10 @@ Array.prototype.treePath = function() {
         }
     }
 
-    recursive();
+    for (let i = 0; i < (this.length - 1); i++) {
+        array = this.slice(i);
+        recursive();
+    }
 
     return result.join('.');
 }
