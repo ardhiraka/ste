@@ -60,8 +60,8 @@ let SMS = {
         digit3: new RegExp("^[0-9]{3}(\\.[0-9]{3})*$"),
         mformat: new RegExp("^([JPTS]{2}(?:|[JPTS]{2}))$"),
         hformat: new RegExp("^([JPTS]{1})$"),
-        bbformat: new RegExp("^BB([2-4]+);([0-9]{4})@([0-9]+)$"),
-        bbsformat: new RegExp("^BBS;([0-9]{4})@([0-9]+)$"),
+        bbformat: new RegExp("^[bB]{2}([2-4]+);([0-9]{4})@([0-9]+)$"),
+        bbsformat: new RegExp("^[bB]{2}[sS]{1};([0-9]{4})@([0-9]+)$"),
         headformat: new RegExp("^([A-Za-z0-9;\/.]+)@([0-9]+)$"),
         default: [';', '@']
     },

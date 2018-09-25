@@ -88,11 +88,12 @@ Array.prototype.treePath = function() {
                 recursive(nextNode, prefix.concat([rootData[i]]));
             }
         } else {
-            result.push(prefix.join(''));
+            if (prefix.toString().length != 1)
+                result.push(prefix.join(''));
         }
     }
 
-    for (let i = 0; i < (this.length - 1); i++) {
+    for (let i = 0; i < this.length; i++) {
         array = this.slice(i);
         recursive();
     }
