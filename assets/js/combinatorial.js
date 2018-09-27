@@ -69,8 +69,12 @@ Array.prototype.permutation = function(number) {
     var converts        = [];
 
     permutations.forEach(function(data) {
-        converts.push(data.join(''));
-    })
+        let num = data.join('');
+        
+        if (!converts.includes(num)) {
+            converts.push(num);
+        }
+    });
 
     return converts.join('.');
 }

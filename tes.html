@@ -1,34 +1,9 @@
-<!-- <script src="assets/js/combinatorial"></script> -->
+<!-- <script src="assets/js/combinatorial.js"></script> -->
+<!-- <script src="assets/js/sms.js"></script> -->
 <script type="text/javascript">
-    Array.prototype.treePath = function() {
-        let array   = this;
-        let result  = [];
-
-        function recursive(node = 0, prefix = []) {
-            let rootData    = array[node];
-            let nextNode    = node + 1;
-
-            if (typeof rootData != 'undefined') {
-                for (let i = 0; i < rootData.length; i++) {
-                    recursive(nextNode, prefix.concat([rootData[i]]));
-                }
-            } else {
-                if (prefix.toString().length != 1)
-                    result.push(prefix.join(''));
-            }
-        }
-
-        for (let i = 0; i < this.length; i++) {
-            array = this.slice(i);
-            recursive();
-        }
-
-        return result.join('.');
-    }
-
-    let a = [[1,2],[3],[45,67,89]];
-    // let a = [[1],[2],[3,4],[5,6]];
-    // let a = A;1/Kp;2/K;3.4/E;5.6@10
-
-    console.log(a.treePath());
+    // let format = "BB2;1214@10";
+    // SMS.setData(format).filter();
+    // console.log(SMS);
+    // let tes = [1,2,1,4].permutation(2);
+    // console.log(tes);
 </script>
