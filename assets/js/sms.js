@@ -58,16 +58,17 @@ let SMS = {
         digit1: new RegExp("^[0-9]{1}(\\.[0-9]{1})*$"),
         digit2: new RegExp("^[0-9]{2}(\\.[0-9]{2})*$"),
         digit3: new RegExp("^[0-9]{3}(\\.[0-9]{3})*$"),
-        mformat: new RegExp("^([JPTS]{2}(?:|[JPTS]{2}))$"),
-        hformat: new RegExp("^([JPTS]{1})$"),
-        bbformat: new RegExp("^[bB]{2}([2-4]+);([0-9]{4})@([0-9]+)$"),
-        bbsformat: new RegExp("^[bB]{2}[sS]{1};([0-9]{4})@([0-9]+)$"),
+        mformat: new RegExp("^([JjPpTtSs]{2}(?:|[JjPpTtSs]{2}))$"),
+        hformat: new RegExp("^([JjPpTtSs]{1})$"),
+        bbformat: new RegExp("^[bB]{2}([2-4]{1});([0-9]{2,})@([0-9]+)$"),
+        bbdetect: new RegExp("^[bB]{2}"),
+        bbsformat: new RegExp("^[bB]{2}[sS]{1};([0-9]{3,})@([0-9]+)$"),
         headformat: new RegExp("^([A-Za-z0-9;\/.]+)@([0-9]+)$"),
         default: [';', '@']
     },
     code: {
         available: ['CM', 'CN', 'J', 'P', 'T', 'S', 'C', 'M', 'H', 'N/A'],
-        head: ['AS', 'KP', 'K', 'C'],
+        head: ['AS', 'KP', 'K', 'E'],
         unique: {
             J: 'odd',
             P: 'even',
@@ -147,14 +148,21 @@ let SMS = {
 
             if (app.format.bbsformat.test(item)) {
                 [fullText, theLoop, thePrice] = app.format.bbsformat.exec(item);
+                let digits = theLoop.length < 4 ? [2, 3] : [2, 3, 4];
 
                 let loopData = [];
-                [2, 3, 4].forEach(number => {
+                digits.forEach(number => {
                     let thisPerm = theLoop.split('').permutation(number);
                     loopData.push(thisPerm);
                 });
 
                 app.parsing(item, 'N/A', loopData.join('.'), thePrice, 'filtered');
+            } else if (app.format.bbformat.test(item)) {
+                [fullText, thePerm, theLoop, thePrice] = app.format.bbformat.exec(item);
+
+                let loopData = theLoop.split('').permutation(thePerm);
+
+                app.parsing(item, 'N/A', loopData, thePrice, 'filtered');
             } else if (app.format.full.test(item)) {
                 [fullText, theCode, theLoop, thePrice] = app.format.full.exec(item);
 
@@ -162,18 +170,35 @@ let SMS = {
             } else if (app.format.short.test(item)) {
                 [fullText, theCode, thePrice] = app.format.short.exec(item);
 
+                let split = theCode.split('.');
+                if (split.length > 1) {
+                    let iCode = split[0].toUpperCase();
+                    let iHead = split[1].toUpperCase();
+
+                    if (['J', 'P'].includes(iCode)) {
+                        if (!['AS', 'KP', 'K'].includes(iHead)) {
+                            app.filtered.inCorrect.push(item);
+                            return;
+                        }
+                    } else if (['T', 'S'].includes(iCode)) {
+                        if (!['AS', 'KP', 'E'].includes(iHead)) {
+                            app.filtered.inCorrect.push(item);
+                            return;
+                        }
+                    }
+                }
+
                 app.parsing(item, theCode, theLoop, thePrice, 'filtered');
             } else if (app.format.ncode.test(item)) {
                 [fullText, theLoop, thePrice] = app.format.ncode.exec(item);
 
                 app.parsing(item, 'N/A', theLoop, thePrice, 'filtered');
-            } else if (app.format.bbformat.test(item)) {
-                [fullText, thePerm, theLoop, thePrice] = app.format.bbformat.exec(item);
-
-                let loopData = theLoop.split('').permutation(thePerm);
-
-                app.parsing(item, 'N/A', loopData, thePrice, 'filtered');
             } else if (app.format.headformat.test(item)) {
+                if (app.format.bbdetect.test(item)) {
+                    app.filtered.inCorrect.push(item);
+                    return;
+                }
+
                 [fullText, theCode, thePrice] = app.format.headformat.exec(item);
 
                 let theHead = theCode.split('/');
@@ -285,11 +310,14 @@ let SMS = {
                 if (typeof theLoop != "undefined") {
                     this.addToInCorrect(theItem, property);
                 } else {
-                    let data = '';
+                    let theHead = index.length > 1 ? index[1].toUpperCase() : false;
+                    let data    = '';
 
                     if (property == 'messages') {
                         data = this.number[this.code.unique[theCode]];
                     }
+
+                    theCode     = theHead ? theCode + '.' + theHead : theCode;
 
                     this.addToCorrect(theItem, data, theCode, thePrice, property);
                 }
@@ -463,9 +491,23 @@ let SMS = {
                             result[format][alias] = {win: [], lose: []};
                         }
 
-                        theSpecial.includes(theNumber) ? result[format][alias].win.push(theNumber) : result[format][alias].lose.push(theNumber);
+                        theSpecial.slice(-theNumber.length).includes(theNumber) ? result[format][alias].win.push(theNumber) : result[format][alias].lose.push(theNumber);
                     } else {
+                        let split = theCode.split('.');
                         let index = app.code.indexNumber[theCode];
+
+                        if (split.length > 1) {
+                            let iCode = split[0];
+                            let iHead = split[1];
+
+                            if (['J', 'P'].includes(iCode)) {
+                                let indexHead = {AS: 0, KP: 1, K: 2};
+                                index = indexHead[iHead];
+                            } else if (['T', 'S'].includes(iCode)) {
+                                let indexHead = {AS: 0, KP: 1, E: 3};
+                                index = indexHead[iHead];
+                            }
+                        }
 
                         theSpecial.charAt(index).includes(theNumber) ? result[format].win.push(theNumber) : result[format].lose.push(theNumber);
                     }

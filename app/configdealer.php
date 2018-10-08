@@ -4,7 +4,7 @@ include('header.php');
 
 require_once 'db.php';
 
-$diskonq = $db->fetch_var("SELECT * FROM `member` where 1;");
+$member = $db->fetch_all("SELECT * FROM member ORDER BY downline ASC");
 ?>
 
 	<div class="container">
@@ -38,22 +38,22 @@ $diskonq = $db->fetch_var("SELECT * FROM `member` where 1;");
 						</tr>
 					</thead>
 					<tbody>
-						<?php while($diskon = mysqli_fetch_array($diskonq)) :?>
+						<?php foreach ($member as $user) :?>
 						<tr>
 							<td>
-								<?= $diskon['nama'] ;?>
+								<?= $user['nama'] ;?>
 							</td>
 							<td>
-								<?= $diskon['nohp'] ;?>
+								<?= $user['nohp'] ;?>
 							</td>
 							<td>
-								<?= $diskon['kodeid'] ;?>
+								<?= $user['kodeid'] ;?>
 							</td>
 							<td>
-								<?= $diskon['deposit'] ;?>
+								<?= $user['deposit'] ;?>
 							</td>
 						</tr>
-						<?php endwhile; ?>
+						<?php endforeach; ?>
 					</tbody>
 				</table>
 			</div>
