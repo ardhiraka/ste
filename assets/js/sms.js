@@ -72,6 +72,8 @@ let SMS = {
         'UE8'	 : '08.18.28.38.48.58.68.78.88.98',
         'UE9'	 : '09.19.29.39.49.59.69.79.89.99'
     },
+    json: '/app/custom_json.php',
+    customs: {},
     format: {
         full: new RegExp("^([a-zA-Z.]+);([0-9.]+)@([0-9]+)$"),
         short: new RegExp("^([a-zA-Z.]+)@([0-9]+)$"),
@@ -92,7 +94,7 @@ let SMS = {
         default: [';', '@']
     },
     code: {
-        available: ['CM', 'CN', 'J', 'P', 'T', 'S', 'C', 'M', 'H', 'N/A', 'PING', 'TENG', 'TS', 'TT'],
+        available: ['CM', 'CN', 'J', 'P', 'T', 'S', 'C', 'M', 'H', 'N/A', 'PING', 'TENG', 'TS', 'TT', 'JP', 'JJ'],
         head: ['AS', 'KP', 'K', 'E'],
         unique: {
             J: 'odd',
@@ -133,7 +135,15 @@ let SMS = {
     setData(message) {
         this.restart();
 
-        this.data = message;
+        this.data   = message;
+
+        let app     = this;
+
+        fetch(app.json)
+            .then(resp => resp.json())
+            .then(data => {
+                app.customs = data;
+            }).catch(err => console.log(err));
 
         return this;
     },
@@ -143,15 +153,24 @@ let SMS = {
         return this;
     },
     getObjects() {
-        this.objects = this.data.split('..').join(" ").trim(" ").split(" ");
+        this.objects = this.data.toUpperCase().split('..').join(" ").trim(" ").split(" ");
 
         return this.objects;
     },
     replace() {
         let app     = this;
         let objects = [];
+        let customs = [];
 
         this.getObjects().forEach(item => {
+            Object.entries(app.customs).forEach(([search, change]) => {
+                item = item.split(search).join(change);
+            });
+            
+            customs.push(item);
+        });
+
+        customs.forEach(item => {
             Object.entries(app.pattern).forEach(([search, change]) => {
                 item = item.split(search).join(change);
             });
@@ -425,12 +444,11 @@ let SMS = {
 
                     this.addToCorrect(theItem, data, theCode, thePrice, property);
                 }
-            } else if (['TS', 'TT'].includes(theCode)) {
+            } else if (['TS', 'TT', 'JP', 'JJ'].includes(theCode)) {
                 if (typeof theLoop != "undefined") {
                     this.addToInCorrect(theItem, property);
                 } else {
                     if (index.length > 1) {
-                        // theCode = 'N/A';
                         theLoop = index.slice(1).join('.').toUpperCase();
                     }
 
@@ -493,7 +511,7 @@ let SMS = {
         } else if (property == 'filtered') {
             code = code.replace(' ', '.');
             let separator   = app.format.default;
-            let item        = code == 'M' || code == 'H' || ['TS', 'TT'].includes(code)
+            let item        = code == 'M' || code == 'H' || ['TS', 'TT', 'JP', 'JJ'].includes(code)
                 ? format.toUpperCase()
                 : code == 'N/A'
                     ? data + separator[1] + price
@@ -552,14 +570,16 @@ let SMS = {
                         }
 
                         arrayOfNumber.every(isTrue => {return isTrue === true}) ? result[format].win.push(theNumber) : result[format].lose.push(theNumber);
-                    } else if (['TS', 'TT'].includes(theCode)) {
+                    } else if (['TS', 'TT', 'JP', 'JJ'].includes(theCode)) {
                         let len     = split.length;
                         let index1  = 2;
                         let index2  = 3;
                         let sNumber = app.specialNumber.toString();
                         let alias   = {
                             TS: 'TSST',
-                            TT: 'TTSS'
+                            TT: 'TTSS',
+                            JP: 'JPPJ',
+                            JJ: 'JJPP'
                         }
 
                         if (len == 3) {
