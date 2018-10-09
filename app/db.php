@@ -11,6 +11,6 @@ $db = new dbhelper();
 $dbhost = 'localhost';
 $dbuser = 'root';
 $dbpass = '';
-$dbname = 'io_ste';
+$dbname = 'project_io';
 
 $db->connect('pdo', 'mysql', $dbhost, $dbuser, $dbpass, $dbname, 3306);

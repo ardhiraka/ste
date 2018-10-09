@@ -2,9 +2,12 @@
 
 include('header.php');
 
-require_once 'db.php';
+$customs = $db->fetch_all("SELECT custom, asli FROM custom ORDER BY CHAR_LENGTH(asli) DESC");
+echo "<pre>";
+print_r($customs);
+echo "</pre>";
 
-$diskonq = $db->fetch_var("SELECT * FROM `member` where 1;");
+// $diskonq = $db->fetch_var("SELECT * FROM `member` where 1;");
 ?>
 
 	<div class="container">

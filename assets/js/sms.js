@@ -1,3 +1,25 @@
+Array.prototype.difference = function(a) {
+    return this.filter(x => !a.includes(x));
+};
+
+Array.prototype.intersection = function(a) {
+    return this.filter(x => a.includes(x));
+};
+
+let range = function(start, end, step, offset) {
+  
+    let len = (Math.abs(end - start) + ((offset || 0) * 2)) / (step || 1) + 1;
+    let direction = start < end ? 1 : -1;
+    let startingPoint = start - (direction * (offset || 0));
+    let stepSize = direction * (step || 1);
+  
+    return Array(len).fill(0).map(function(_, index) {
+        let number = startingPoint + (stepSize * index);
+
+        return number.toString().padStart(2, '0');
+    });
+}
+
 let SMS = {
     data: '',
     pattern: {
@@ -64,10 +86,13 @@ let SMS = {
         bbdetect: new RegExp("^[bB]{2}"),
         bbsformat: new RegExp("^[bB]{2}[sS]{1};([0-9]{3,})@([0-9]+)$"),
         headformat: new RegExp("^([A-Za-z0-9;\/.]+)@([0-9]+)$"),
+        pingformat: new RegExp("^([pPiInNgG]+)@([0-9]+)$"),
+        tengformat: new RegExp("^([tTeEnNgG]+)@([0-9]+)$"),
+        ggformat: new RegExp("^((?:[tTsS]{2}|[jJpP]{2})(?:\.[a-zA-Z]+)*?)@([0-9]+)$"),
         default: [';', '@']
     },
     code: {
-        available: ['CM', 'CN', 'J', 'P', 'T', 'S', 'C', 'M', 'H', 'N/A'],
+        available: ['CM', 'CN', 'J', 'P', 'T', 'S', 'C', 'M', 'H', 'N/A', 'PING', 'TENG', 'TS', 'TT'],
         head: ['AS', 'KP', 'K', 'E'],
         unique: {
             J: 'odd',
@@ -146,7 +171,34 @@ let SMS = {
         this.replace().forEach(item => {
             let fullText, theCode, theLoop, thePrice, thePerm;
 
-            if (app.format.bbsformat.test(item)) {
+            if (app.format.ggformat.test(item)) {
+                [fullText, theCode, thePrice] = app.format.ggformat.exec(item);
+
+                let split = theCode.toUpperCase().split('.');
+
+                if (split.length > 3) {
+                    app.filtered.inCorrect.push(item);
+                    return
+                } else if (split.length > 1 && split.length <= 3) {
+                    let same    = app.code.head.intersection(split);
+                    let isValid = same.length != (split.length - 1) ? false : true;
+
+                    if (!isValid) {
+                        app.filtered.inCorrect.push(item);
+                        return
+                    }
+                }
+
+                app.parsing(item, theCode.toUpperCase(), theLoop, thePrice, 'filtered');
+            } else if (app.format.pingformat.test(item)) {
+                [fullText, theCode, thePrice] = app.format.pingformat.exec(item);
+
+                app.parsing(item, theCode, theLoop, thePrice, 'filtered');
+            } else if (app.format.tengformat.test(item)) {
+                [fullText, theCode, thePrice] = app.format.tengformat.exec(item);
+
+                app.parsing(item, theCode, theLoop, thePrice, 'filtered');
+            } else if (app.format.bbsformat.test(item)) {
                 [fullText, theLoop, thePrice] = app.format.bbsformat.exec(item);
                 let digits = theLoop.length < 4 ? [2, 3] : [2, 3, 4];
 
@@ -349,8 +401,41 @@ let SMS = {
                 } else {
                     this.addToInCorrect(theItem, property);
                 }
-            } else if (theCode in ['BB2', 'BB3', 'BB4']) {
-                console.log('BB');
+            } else if (theCode == 'PING') {
+                if (typeof theLoop != "undefined") {
+                    this.addToInCorrect(theItem, property);
+                } else {
+                    let data    = '';
+
+                    if (property == 'messages') {
+                        data = range(0, 24).concat(range(75, 99));
+                    }
+
+                    this.addToCorrect(theItem, data, theCode, thePrice, property);
+                }
+            } else if (theCode == 'TENG') {
+                if (typeof theLoop != "undefined") {
+                    this.addToInCorrect(theItem, property);
+                } else {
+                    let data    = '';
+
+                    if (property == 'messages') {
+                        data = range(25, 74);
+                    }
+
+                    this.addToCorrect(theItem, data, theCode, thePrice, property);
+                }
+            } else if (['TS', 'TT'].includes(theCode)) {
+                if (typeof theLoop != "undefined") {
+                    this.addToInCorrect(theItem, property);
+                } else {
+                    if (index.length > 1) {
+                        // theCode = 'N/A';
+                        theLoop = index.slice(1).join('.').toUpperCase();
+                    }
+
+                    this.addToCorrect(theItem, theLoop, theCode, thePrice, property);
+                }
             }
         } else {
             this.addToInCorrect(theItem, property);
@@ -386,22 +471,30 @@ let SMS = {
                     ? ['N/A']
                     : data.split('.');
 
-            items.forEach(item => {
-                let message = item == "N/A"
-                    ? code == 'M' || code == 'H'
-                        ? app.searchCode(format, true).code + " " + app.searchCode(format, true).head + " " + price
-                        : code + " " + price
-                    : code == "N/A"
-                        ? item + " " + price
-                        : code + " " + item + " " + price;
-
+            if (['TT', 'TS'].includes(code)) {
+                let message = typeof data == 'undefined'
+                    ? code + " " + price
+                    : code + " " + data.split('.').join(" ") + " " + price;
+                
                 app.messages.correct[format].push(message);
-            });
+            } else {
+                items.forEach(item => {
+                    let message = item == "N/A"
+                        ? code == 'M' || code == 'H'
+                            ? app.searchCode(format, true).code + " " + app.searchCode(format, true).head + " " + price
+                            : code + " " + price
+                        : code == "N/A"
+                            ? item + " " + price
+                            : code + " " + item + " " + price;
+
+                    app.messages.correct[format].push(message);
+                });
+            }
         } else if (property == 'filtered') {
             code = code.replace(' ', '.');
             let separator   = app.format.default;
-            let item        = code == 'M' || code == 'H'
-                ? format
+            let item        = code == 'M' || code == 'H' || ['TS', 'TT'].includes(code)
+                ? format.toUpperCase()
                 : code == 'N/A'
                     ? data + separator[1] + price
                     : (typeof data == "undefined" || data == '')
@@ -459,6 +552,42 @@ let SMS = {
                         }
 
                         arrayOfNumber.every(isTrue => {return isTrue === true}) ? result[format].win.push(theNumber) : result[format].lose.push(theNumber);
+                    } else if (['TS', 'TT'].includes(theCode)) {
+                        let len     = split.length;
+                        let index1  = 2;
+                        let index2  = 3;
+                        let sNumber = app.specialNumber.toString();
+                        let alias   = {
+                            TS: 'TSST',
+                            TT: 'TTSS'
+                        }
+
+                        if (len == 3) {
+                            index1 = app.code.head.indexOf(split[1]);
+                        } else if (len == 4) {
+                            index1 = app.code.head.indexOf(split[1]);
+                            index2 = app.code.head.indexOf(split[2]);
+                        }
+
+                        let iNumber = sNumber.charAt(index1) + sNumber.charAt(index2);
+                        let iChoice = alias[theCode];
+
+                        let userChoice  = app.parseChiperText(iChoice);
+                        let theNumber   = app.parseChiperNumber(iNumber);
+                        let theMatch    = [];
+
+                        let i = 0;
+                        userChoice.forEach(item => {
+                            let codeString      = iChoice.slice(i, i + 2);
+                            [ix1, ix2]          = item;
+                            i1IsTrue = theNumber[0].includes(ix1);
+                            i2IsTrue = theNumber[1].includes(ix2);
+                            
+                            theMatch[codeString] = i1IsTrue && i2IsTrue;
+
+                            theMatch[codeString] ? result[format].win.push(codeString) : result[format].lose.push(codeString);
+                            i += 2;
+                        });
                     } else if (theCode == 'M') {
                         let userChoice  = app.parseChiperText(Object.values(split[1]));
                         let theNumber   = app.parseChiperNumber(Object.values(app.specialNumber.toString().slice(2)));
@@ -492,6 +621,8 @@ let SMS = {
                         }
 
                         theSpecial.slice(-theNumber.length).includes(theNumber) ? result[format][alias].win.push(theNumber) : result[format][alias].lose.push(theNumber);
+                    } else if (["PING", "TENG"].includes(theCode)) {
+                        theSpecial.slice(-2).includes(theNumber) ? result[format].win.push(theNumber) : result[format].lose.push(theNumber);
                     } else {
                         let split = theCode.split('.');
                         let index = app.code.indexNumber[theCode];
@@ -570,8 +701,8 @@ let SMS = {
         if (object) {
             return {
                 code: code[0],
-                head: code.length > 1 ? code[1] : false,
-                full: code[0] + (code.length > 1 ? '.' + code[1] : '')
+                head: code.length > 1 ? code.slice(1).join('.') : false,
+                full: code[0] + (code.length > 1 ? '.' + code.slice(1).join('.') : '')
             }
         } else {
             return code[0];
