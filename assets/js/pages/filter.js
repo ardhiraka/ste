@@ -64,9 +64,9 @@ jQuery(function($) {
 
         $.post(ajaxTo('getDataByNumber'), {number: container.data('number')}, response => {
             if (response) {
-                $('#smsedit').attr('data-user', JSON.stringify(response));
+                $('#smsedit').attr('data-config', JSON.stringify(response.config));
                 
-                calcMessages(SMS, response);
+                calcMessages(SMS, response.config);
             } else {
                 alert('Nomor belum terdaftar di database!');
                 
@@ -143,13 +143,16 @@ jQuery(function($) {
                 let hasilTotal  = 0;
 
                 for (let code in result[i]) {
+                    console.log(code);
+                    console.log(response);
+                    console.log(response['WIN_'+code]);
                     let icode   = result[i][code];
                     totalWin    += icode.win.length;
                     totalLose   += icode.lose.length;
-                    hasilWin    += icode.win.length * thePrice * response[code + '_win'];
-                    hasilLose   += (icode.lose.length * thePrice) - ((icode.lose.length * thePrice) * (response[code + '_disc'] / 100));
-                    let cWin    = icode.win.length * thePrice * response[code + '_win'];
-                    let cLose   = (icode.lose.length * thePrice) - ((icode.lose.length * thePrice) * (response[code + '_disc'] / 100));
+                    hasilWin    += icode.win.length * thePrice * response['WIN_'+code];
+                    hasilLose   += (icode.lose.length * thePrice) - ((icode.lose.length * thePrice) * (response['DISC_'+code] / 100));
+                    let cWin    = icode.win.length * thePrice * response['WIN_'+code];
+                    let cLose   = (icode.lose.length * thePrice) - ((icode.lose.length * thePrice) * (response['DISC_'+code] / 100));
 
                     hasil.push(code + ": " + icode.win.length + "/" + icode.lose.length + " | " + formatNumber(cWin) + "/" + formatNumber(cLose));
                 }
@@ -160,18 +163,18 @@ jQuery(function($) {
             } else {
                 totalWin    += result[i].win.length;
                 totalLose   += result[i].lose.length;
-                let theCodeRumusWin     = SMS.code.head.includes(theCode.head) ? 'Jitu' : theCode.code == 'CM' ? 'CM1' : theCode.code;
+                let theCodeRumusWin     = SMS.code.head.includes(theCode.head) ? 'Jitu' : theCode.code == 'CM' ? 'CM' : theCode.code;
                 let theCodeRumusLose    = SMS.code.head.includes(theCode.head) ? 'Jitu' : theCode.code;
                 let unique      = ['J', 'P', 'T', 'S', 'M', 'H'];
                 let rumusWin    = 0;
                 let rumusLose   = 0;
 
                 if (unique.includes(theCode.code)) {
-                    rumusWin    = result[i].win.length > 0 ? result[i].win.length * thePrice * response[theCodeRumusWin + '_win'] : 0;
-                    rumusLose   = result[i].win.length > 0 ? 0 : (result[i].lose.length * thePrice) + ((result[i].lose.length * thePrice) * (response[theCodeRumusLose + '_disc'] / 100));
+                    rumusWin    = result[i].win.length > 0 ? result[i].win.length * thePrice * response['WIN_'+theCodeRumusWin] : 0;
+                    rumusLose   = result[i].win.length > 0 ? 0 : (result[i].lose.length * thePrice) + ((result[i].lose.length * thePrice) * (response['DISC_'+theCodeRumusLose] / 100));
                 } else {
-                    rumusWin    = result[i].win.length * thePrice * response[theCodeRumusWin + '_win'];
-                    rumusLose   = (result[i].lose.length * thePrice) - ((result[i].lose.length * thePrice) * (response[theCodeRumusLose + '_disc'] / 100));
+                    rumusWin    = result[i].win.length * thePrice * response['WIN_'+theCodeRumusWin];
+                    rumusLose   = (result[i].lose.length * thePrice) - ((result[i].lose.length * thePrice) * (response['DISC_'+theCodeRumusLose] / 100));
                 }
 
                 let rumus   = rumusWin - rumusLose;
@@ -213,7 +216,7 @@ jQuery(function($) {
     $('#smsedit').keyup(function() {
         let message     = $(this).val().split("\n").join('..');
         let finalNum    = $('#angkaout').val();
-        let dataUser    = $(this).data('user');
+        let dataConfig  = $(this).data('config');
 
         if (wait != null) clearTimeout(wait);
 
@@ -226,7 +229,7 @@ jQuery(function($) {
             $('#smssalah').val(SMS.filtered.inCorrect.join("\n"));
             $('#smsbenar').val(SMS.filtered.correct.join("\n"));
 
-            calcMessages(SMS, dataUser);
+            calcMessages(SMS, dataConfig);
         }, 500);
     });
 

@@ -29,9 +29,9 @@ if (empty($list))
 
 function getDNumber($kode, $number) {
     $format = [
-        '2d' => $number[2].$number[3],
-        '3d' => $number[1].$number[2].$number[3],
-        '4d' => $number
+        '2D' => $number[2].$number[3],
+        '3D' => $number[1].$number[2].$number[3],
+        '4D' => $number
     ];
 
     return $format[$kode];
@@ -125,21 +125,21 @@ foreach ($list as $item) :
     $multiCode = explode('.', $item['kode']);
 
     // harus ada: $result, $resultMakan, $resultDealer
-    if (in_array($item['kode'], ['2d', '3d', '4d'])) :
+    if (in_array($item['kode'], ['2D', '3D', '4D'])) :
         $validNumber    = getDNumber($item['kode'], $number);
         $isNumberValid  = $item['angka'] == $validNumber;
         $win        = $isNumberValid ? 1 : 0;
         $lose       = $isNumberValid ? 0 : 1;
-        $getWin     = getWin($win, $item['nominal'], $item[$item['kode'] . '_win']);
-        $getDisc    = getDisc($lose, $item['nominal'], $item[$item['kode'] . '_disc']);
+        $getWin     = getWin($win, $item['nominal'], $item['WIN_' . $item['kode']]);
+        $getDisc    = getDisc($lose, $item['nominal'], $item['DISC_' . $item['kode']]);
         $result     = $getWin - $getDisc;
 
-        $getWinMakan     = getWin($win, $item['nom_makan'], $item[$item['kode'] . '_win']);
-        $getDiscMakan    = getDisc($lose, $item['nom_makan'], $item[$item['kode'] . '_disc']);
+        $getWinMakan     = getWin($win, $item['nom_makan'], $item['WIN_' . $item['kode']]);
+        $getDiscMakan    = getDisc($lose, $item['nom_makan'], $item['DISC_' . $item['kode']]);
         $resultMakan     = $getWinMakan - $getDiscMakan;
 
-        $getWinDealer     = getWin($win, $item['nom_dealer'], $item[$item['kode'] . '_win']);
-        $getDiscDealer    = getDisc($lose, $item['nom_dealer'], $item[$item['kode'] . '_disc']);
+        $getWinDealer     = getWin($win, $item['nom_dealer'], $item['WIN_' . $item['kode']]);
+        $getDiscDealer    = getDisc($lose, $item['nom_dealer'], $item['DISC_' . $item['kode']]);
         $resultDealer     = $getWinDealer - $getDiscDealer;
 
         $storages[$item['inbox_id']]['info'][$isNumberValid ? 'win' : 'lose'][] = $item['angka'];
@@ -148,16 +148,16 @@ foreach ($list as $item) :
         $validNumber    = in_array($item['kode'], ['J', 'P']) ? $number[3] : $number[2];
         $isNumberValid  = in_array($validNumber, $nType[$item['kode']]);
         $win        = $isNumberValid ? 1 : 0;
-        $getWin     = $win > 0 ? getWin(1, $item['nominal'], $item[$item['kode'] . '_win']) : 0;
-        $getTax     = $win > 0 ? 0 : getTax(5, $item['nominal'], $item[$item['kode'] . '_disc']);
+        $getWin     = $win > 0 ? getWin(1, $item['nominal'], $item['WIN_' . $item['kode']]) : 0;
+        $getTax     = $win > 0 ? 0 : getTax(5, $item['nominal'], $item['DISC_' . $item['kode']]);
         $result     = $getWin - $getTax;
 
-        $getWinMakan     = $win > 0 ? getWin(1, $item['nom_makan'], $item[$item['kode'] . '_win']) : 0;
-        $getTaxMakan     = $win > 0 ? 0 : getTax(5, $item['nom_makan'], $item[$item['kode'] . '_disc']);
+        $getWinMakan     = $win > 0 ? getWin(1, $item['nom_makan'], $item['WIN_' . $item['kode']]) : 0;
+        $getTaxMakan     = $win > 0 ? 0 : getTax(5, $item['nom_makan'], $item['DISC_' . $item['kode']]);
         $resultMakan     = $getWinMakan - $getTaxMakan;
 
-        $getWinDealer     = $win > 0 ? getWin(1, $item['nom_dealer'], $item[$item['kode'] . '_win']) : 0;
-        $getTaxDealer     = $win > 0 ? 0 : getTax(5, $item['nom_dealer'], $item[$item['kode'] . '_disc']);
+        $getWinDealer     = $win > 0 ? getWin(1, $item['nom_dealer'], $item['WIN_' . $item['kode']]) : 0;
+        $getTaxDealer     = $win > 0 ? 0 : getTax(5, $item['nom_dealer'], $item['DISC_' . $item['kode']]);
         $resultDealer     = $getWinDealer - $getTaxDealer;
 
         if ($isNumberValid) :
@@ -183,22 +183,22 @@ foreach ($list as $item) :
         $isNumberValid      = array_sum($isValid) == count($selectedNumber) ? true : false;
         $win        = $isNumberValid ? 1 : 0;
         $lose       = $isNumberValid ? 0 : 1;
-        $getWin     = getWin($win, $item['nominal'], $item[$item['kode'] . ($item['kode'] == 'CM' ? '1' : '') . '_win']);
-        $getDisc    = getDisc($lose, $item['nominal'], $item[$item['kode'] . '_disc']);
+        $getWin     = getWin($win, $item['nominal'], $item['WIN_' . $item['kode']]);
+        $getDisc    = getDisc($lose, $item['nominal'], $item['DISC_' . $item['kode']]);
         $result     = $getWin - $getDisc;
 
-        $getWinMakan     = getWin($win, $item['nom_makan'], $item[$item['kode'] . ($item['kode'] == 'CM' ? '1' : '') . '_win']);
-        $getDiscMakan    = getDisc($lose, $item['nom_makan'], $item[$item['kode'] . '_disc']);
+        $getWinMakan     = getWin($win, $item['nom_makan'], $item['WIN_' . $item['kode']]);
+        $getDiscMakan    = getDisc($lose, $item['nom_makan'], $item['DISC_' . $item['kode']]);
         $resultMakan     = $getWinMakan - $getDiscMakan;
 
-        $getWinDealer     = getWin($win, $item['nom_dealer'], $item[$item['kode'] . ($item['kode'] == 'CM' ? '1' : '') . '_win']);
-        $getDiscDealer    = getDisc($lose, $item['nom_dealer'], $item[$item['kode'] . '_disc']);
+        $getWinDealer     = getWin($win, $item['nom_dealer'], $item['WIN_' . $item['kode']]);
+        $getDiscDealer    = getDisc($lose, $item['nom_dealer'], $item['DISC_' . $item['kode']]);
         $resultDealer     = $getWinDealer - $getDiscDealer;
 
         $storages[$item['inbox_id']]['info'][$isNumberValid ? 'win' : 'lose'][] = $item['angka'];
     elseif ($multiCode[0] == 'C') :
         $theHead    = isset($multiCode[1]) ? $multiCode[1] : false;
-        $iHead      = ['AS' => '0', 'KP' => '1', 'K' => '2', 'E' => '3'];
+        $iHead      = ['A' => '0', 'KP' => '1', 'K' => '2', 'E' => '3'];
         $index      = $theHead ? (int) $iHead[$theHead] : 'C';
 
         if ($index == 'C') :

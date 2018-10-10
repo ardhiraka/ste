@@ -642,7 +642,7 @@ let SMS = {
 
                         theNumber[0].includes(userChoice[0]) ? result[format].win.push(split[1]) : result[format].lose.push(split[1]);
                     } else if (theCode == 'N/A') {
-                        let alias = theNumber.length + 'd';
+                        let alias = theNumber.length + 'D';
 
                         if (result[format].hasOwnProperty('win')) delete result[format].win;
                         if (result[format].hasOwnProperty('lose')) delete result[format].lose;
