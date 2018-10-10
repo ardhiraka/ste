@@ -82,7 +82,8 @@ let SMS = {
         digit1: new RegExp("^[0-9]{1}(\\.[0-9]{1})*$"),
         digit2: new RegExp("^[0-9]{2}(\\.[0-9]{2})*$"),
         digit3: new RegExp("^[0-9]{3}(\\.[0-9]{3})*$"),
-        mformat: new RegExp("^([JjPpTtSs]{2}(?:|[JjPpTtSs]{2}))$"),
+        // mformat: new RegExp("^([JjPpTtSs]{2}(?:|[JjPpTtSs]{2}))$"),
+        mformat: new RegExp("^((M)\\.((?:A|KP|K|E)\\.(?:J|P|T|S)\\.(?:A|KP|K|E)\\.(?:J|P|T|S)))@([0-9]+)$"),
         hformat: new RegExp("^([JjPpTtSs]{1})$"),
         bbformat: new RegExp("^[bB]{2}([2-4]{1});([0-9]{2,})@([0-9]+)$"),
         bbdetect: new RegExp("^[bB]{2}"),
@@ -95,7 +96,7 @@ let SMS = {
     },
     code: {
         available: ['CM', 'CN', 'J', 'P', 'T', 'S', 'C', 'M', 'H', 'N/A', 'PING', 'TENG', 'TS', 'TT', 'JP', 'JJ'],
-        head: ['AS', 'KP', 'K', 'E'],
+        head: ['A', 'KP', 'K', 'E'],
         unique: {
             J: 'odd',
             P: 'even',
@@ -108,7 +109,7 @@ let SMS = {
             T: 2,
             S: 2,
             C: {
-                Head: {AS: 0, KP: 1, K: 2, E: 3}
+                Head: {A: 0, KP: 1, K: 2, E: 3}
             }
         }
     },
@@ -188,9 +189,14 @@ let SMS = {
         app.isFilter = true;
 
         this.replace().forEach(item => {
-            let fullText, theCode, theLoop, thePrice, thePerm;
+            let fullText, theCode, theLoop, thePrice, thePerm, theMIndex, theFullCode;
 
-            if (app.format.ggformat.test(item)) {
+            if (app.format.mformat.test(item)) {
+                [fullText, theFullCode, theCode, theMIndex, thePrice] = app.format.mformat.exec(item);
+
+                // console.log([fullText, theFullCode, theCode, theMIndex, thePrice]);
+                app.parsing(item, theCode, theMIndex, thePrice, 'filtered');
+            } else if (app.format.ggformat.test(item)) {
                 [fullText, theCode, thePrice] = app.format.ggformat.exec(item);
 
                 let split = theCode.toUpperCase().split('.');
@@ -247,12 +253,12 @@ let SMS = {
                     let iHead = split[1].toUpperCase();
 
                     if (['J', 'P'].includes(iCode)) {
-                        if (!['AS', 'KP', 'K'].includes(iHead)) {
+                        if (!['A', 'KP', 'K'].includes(iHead)) {
                             app.filtered.inCorrect.push(item);
                             return;
                         }
                     } else if (['T', 'S'].includes(iCode)) {
-                        if (!['AS', 'KP', 'E'].includes(iHead)) {
+                        if (!['A', 'KP', 'E'].includes(iHead)) {
                             app.filtered.inCorrect.push(item);
                             return;
                         }
@@ -409,7 +415,7 @@ let SMS = {
             } else if (theCode == 'N/A') {
                 this.addToCorrect(theItem, theLoop, theCode, thePrice, property);
             } else if (theCode == 'M') {
-                if (this.format.mformat.test(index[1])) {
+                if (this.format.mformat.test(theItem)) {
                     this.addToCorrect(theItem, theLoop, theCode, thePrice, property);
                 } else {
                     this.addToInCorrect(theItem, property);
@@ -609,13 +615,18 @@ let SMS = {
                             i += 2;
                         });
                     } else if (theCode == 'M') {
-                        let userChoice  = app.parseChiperText(Object.values(split[1]));
-                        let theNumber   = app.parseChiperNumber(Object.values(app.specialNumber.toString().slice(2)));
+                        theIndexes  = split[1].split('.');
+                        sNumber     = app.specialNumber.toString();
+                        iChoice     = theIndexes[1] + theIndexes[3];
+                        iNumber     = sNumber.charAt(app.code.head.indexOf(theIndexes[0])) + sNumber.charAt(app.code.head.indexOf(theIndexes[2]));
+
+                        let userChoice  = app.parseChiperText(iChoice);
+                        let theNumber   = app.parseChiperNumber(iNumber);
                         let theMatch    = [];
 
                         let i = 0;
                         userChoice.forEach(item => {
-                            let codeString      = split[1].slice(i, i + 2);
+                            let codeString      = iChoice;
                             [index1, index2]    = item;
                             i1IsTrue = theNumber[0].includes(index1);
                             i2IsTrue = theNumber[1].includes(index2);
@@ -652,10 +663,10 @@ let SMS = {
                             let iHead = split[1];
 
                             if (['J', 'P'].includes(iCode)) {
-                                let indexHead = {AS: 0, KP: 1, K: 2};
+                                let indexHead = {A: 0, KP: 1, K: 2};
                                 index = indexHead[iHead];
                             } else if (['T', 'S'].includes(iCode)) {
-                                let indexHead = {AS: 0, KP: 1, E: 3};
+                                let indexHead = {A: 0, KP: 1, E: 3};
                                 index = indexHead[iHead];
                             }
                         }

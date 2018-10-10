@@ -87,5 +87,5 @@ function delete_files($target) {
     endif;
 }
 
-// Uncomment thi For Production Only
+// Uncomment this For Production Only
 // delete_files($installDir);

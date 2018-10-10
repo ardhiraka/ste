@@ -40,27 +40,17 @@
 				<li class="nav-item active">
 					<a class="nav-link" href="index.php">Dashboard <span class="sr-only">(current)</span></a>
 				</li>
-				<li class="nav-item dropdown">
-					<a class="nav-link dropdown-toggle" href="#!" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Master</a>
-					<div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-						<a class="dropdown-item" href="config.php">Config</a>
-					</div>
+				<li class="nav-item">
+					<a class="nav-link" href="config.php">Member Conf.</a>
 				</li>
-				<li class="nav-item dropdown">
-					<a class="nav-link dropdown-toggle" href="#!" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Dealer</a>
-					<div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-						<a class="dropdown-item" href="configdealer.php">Config</a>
-					</div>
+				<li class="nav-item">
+					<a class="nav-link" href="configdealer.php">Dealer Conf.</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" href="custom.php">Kustom Kode</a>
 				</li>
 				<li class="nav-item">
 					<a class="nav-link" href="laporan.php">Rekap</a>
-				</li>
-				<li class="nav-item dropdown">
-					<a class="nav-link dropdown-toggle" href="#!" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Utility</a>
-					<div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-						<a class="dropdown-item" href="filter.php">Filter SMS</a>
-						<a class="dropdown-item" href="custom.php">Kode Kustom</a>
-					</div>
 				</li>
 				<li class="nav-item">
 					<a class="nav-link" href="smsout.php">SMS Out</a>

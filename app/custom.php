@@ -3,10 +3,16 @@
 include('header.php');
 
 $customs 	= $db->fetch_all("SELECT custom, asli FROM custom ORDER BY CHAR_LENGTH(custom) DESC");
+$mCustoms 	= $db->fetch_all("SELECT custom, asli FROM custom WHERE asli LIKE 'M%' ORDER BY id ASC");
 $custom 	= [];
+$mCustom 	= [];
 
 foreach ($customs as $item) :
 	$custom[$item['asli']] = $item['custom'];
+endforeach;
+
+foreach ($mCustoms as $item) :
+	$mCustom[$item['asli']] = $item['custom'];
 endforeach;
 ?>
 
@@ -58,6 +64,19 @@ endforeach;
 							.input-group-text.big-label-2X {
 								min-width: 160px;
 							}
+							.input-group-prepend input {
+								border-top-right-radius: unset;
+    							border-bottom-right-radius: unset;
+							}
+							input {
+								text-transform: uppercase;
+							}
+							/*.custom_m_item:last-child .delete_item {
+								display: none;
+							}*/
+							.custom_m_item:not(:last-child) .add_item {
+								display: none;
+							}
 						</style>
 						<div class="tab-content" id="myTabContent">
 							<div class="tab-pane fade show active" id="i-tab-50" role="tabpanel" aria-labelledby="angka-tab">
@@ -71,9 +90,9 @@ endforeach;
 										</div>
 										<div class="input-group mb-3">
 										    <div class="input-group-prepend">
-										      	<div class="input-group-text">J.AS (Ganjil)</div>
+										      	<div class="input-group-text">J.A (Ganjil)</div>
 										    </div>
-										    <input value="<?= $custom['J.AS'] ?>" name="J.AS" type="text" class="form-control" placeholder="Custom J.AS" required="required">
+										    <input value="<?= $custom['J.A'] ?>" name="J.A" type="text" class="form-control" placeholder="Custom J.A" required="required">
 										</div>
 										<div class="input-group mb-3">
 										    <div class="input-group-prepend">
@@ -97,9 +116,9 @@ endforeach;
 										</div>
 										<div class="input-group mb-3">
 										    <div class="input-group-prepend">
-										      	<div class="input-group-text">P.AS (Genap)</div>
+										      	<div class="input-group-text">P.A (Genap)</div>
 										    </div>
-										    <input value="<?= $custom['P.AS'] ?>" name="P.AS" type="text" class="form-control" placeholder="Custom P.AS" required="required">
+										    <input value="<?= $custom['P.A'] ?>" name="P.A" type="text" class="form-control" placeholder="Custom P.A" required="required">
 										</div>
 										<div class="input-group mb-3">
 										    <div class="input-group-prepend">
@@ -123,9 +142,9 @@ endforeach;
 										</div>
 										<div class="input-group mb-3">
 										    <div class="input-group-prepend">
-										      	<div class="input-group-text">T.AS (Besar)</div>
+										      	<div class="input-group-text">T.A (Besar)</div>
 										    </div>
-										    <input value="<?= $custom['T.AS'] ?>" name="T.AS" type="text" class="form-control" placeholder="Custom T.AS" required="required">
+										    <input value="<?= $custom['T.A'] ?>" name="T.A" type="text" class="form-control" placeholder="Custom T.A" required="required">
 										</div>
 										<div class="input-group mb-3">
 										    <div class="input-group-prepend">
@@ -149,9 +168,9 @@ endforeach;
 										</div>
 										<div class="input-group mb-3">
 										    <div class="input-group-prepend">
-										      	<div class="input-group-text">S.AS (Kecil)</div>
+										      	<div class="input-group-text">S.A (Kecil)</div>
 										    </div>
-										    <input value="<?= $custom['S.AS'] ?>" name="S.AS" type="text" class="form-control" placeholder="Custom S.AS" required="required">
+										    <input value="<?= $custom['S.A'] ?>" name="S.A" type="text" class="form-control" placeholder="Custom S.A" required="required">
 										</div>
 										<div class="input-group mb-3">
 										    <div class="input-group-prepend">
@@ -195,21 +214,21 @@ endforeach;
 										</div>
 										<div class="input-group mb-3">
 										    <div class="input-group-prepend">
-										      	<div class="input-group-text big-label">TS.AS.KP (TSST)</div>
+										      	<div class="input-group-text big-label">TS.A.KP (TSST)</div>
 										    </div>
-										    <input value="<?= $custom['TS.AS.KP'] ?>" name="TS.AS.KP" type="text" class="form-control" placeholder="Custom TS.AS.KP" required="required">
+										    <input value="<?= $custom['TS.A.KP'] ?>" name="TS.A.KP" type="text" class="form-control" placeholder="Custom TS.A.KP" required="required">
 										</div>
 										<div class="input-group mb-3">
 										    <div class="input-group-prepend">
-										      	<div class="input-group-text big-label">TS.AS.K (TSST)</div>
+										      	<div class="input-group-text big-label">TS.A.K (TSST)</div>
 										    </div>
-										    <input value="<?= $custom['TS.AS.K'] ?>" name="TS.AS.K" type="text" class="form-control" placeholder="Custom TS.AS.K" required="required">
+										    <input value="<?= $custom['TS.A.K'] ?>" name="TS.A.K" type="text" class="form-control" placeholder="Custom TS.A.K" required="required">
 										</div>
 										<div class="input-group mb-3">
 										    <div class="input-group-prepend">
-										      	<div class="input-group-text big-label">TS.AS.E (TSST)</div>
+										      	<div class="input-group-text big-label">TS.A.E (TSST)</div>
 										    </div>
-										    <input value="<?= $custom['TS.AS.E'] ?>" name="TS.AS.E" type="text" class="form-control" placeholder="Custom TS.AS.E" required="required">
+										    <input value="<?= $custom['TS.A.E'] ?>" name="TS.A.E" type="text" class="form-control" placeholder="Custom TS.A.E" required="required">
 										</div>
 										<div class="input-group mb-3">
 										    <div class="input-group-prepend">
@@ -233,21 +252,21 @@ endforeach;
 										</div>
 										<div class="input-group mb-3">
 										    <div class="input-group-prepend">
-										      	<div class="input-group-text big-label">TT.AS.KP (TTSS)</div>
+										      	<div class="input-group-text big-label">TT.A.KP (TTSS)</div>
 										    </div>
-										    <input value="<?= $custom['TT.AS.KP'] ?>" name="TT.AS.KP" type="text" class="form-control" placeholder="Custom TT.AS.KP" required="required">
+										    <input value="<?= $custom['TT.A.KP'] ?>" name="TT.A.KP" type="text" class="form-control" placeholder="Custom TT.A.KP" required="required">
 										</div>
 										<div class="input-group mb-3">
 										    <div class="input-group-prepend">
-										      	<div class="input-group-text big-label">TT.AS.K (TTSS)</div>
+										      	<div class="input-group-text big-label">TT.A.K (TTSS)</div>
 										    </div>
-										    <input value="<?= $custom['TT.AS.K'] ?>" name="TT.AS.K" type="text" class="form-control" placeholder="Custom TT.AS.K" required="required">
+										    <input value="<?= $custom['TT.A.K'] ?>" name="TT.A.K" type="text" class="form-control" placeholder="Custom TT.A.K" required="required">
 										</div>
 										<div class="input-group mb-3">
 										    <div class="input-group-prepend">
-										      	<div class="input-group-text big-label">TT.AS.E (TTSS)</div>
+										      	<div class="input-group-text big-label">TT.A.E (TTSS)</div>
 										    </div>
-										    <input value="<?= $custom['TT.AS.E'] ?>" name="TT.AS.E" type="text" class="form-control" placeholder="Custom TT.AS.E" required="required">
+										    <input value="<?= $custom['TT.A.E'] ?>" name="TT.A.E" type="text" class="form-control" placeholder="Custom TT.A.E" required="required">
 										</div>
 										<div class="input-group mb-3">
 										    <div class="input-group-prepend">
@@ -273,21 +292,21 @@ endforeach;
 										</div>
 										<div class="input-group mb-3">
 										    <div class="input-group-prepend">
-										      	<div class="input-group-text big-label">JP.AS.KP (JPPJ)</div>
+										      	<div class="input-group-text big-label">JP.A.KP (JPPJ)</div>
 										    </div>
-										    <input value="<?= $custom['JP.AS.KP'] ?>" name="JP.AS.KP" type="text" class="form-control" placeholder="Custom JP.AS.KP" required="required">
+										    <input value="<?= $custom['JP.A.KP'] ?>" name="JP.A.KP" type="text" class="form-control" placeholder="Custom JP.A.KP" required="required">
 										</div>
 										<div class="input-group mb-3">
 										    <div class="input-group-prepend">
-										      	<div class="input-group-text big-label">JP.AS.K (JPPJ)</div>
+										      	<div class="input-group-text big-label">JP.A.K (JPPJ)</div>
 										    </div>
-										    <input value="<?= $custom['JP.AS.K'] ?>" name="JP.AS.K" type="text" class="form-control" placeholder="Custom JP.AS.K" required="required">
+										    <input value="<?= $custom['JP.A.K'] ?>" name="JP.A.K" type="text" class="form-control" placeholder="Custom JP.A.K" required="required">
 										</div>
 										<div class="input-group mb-3">
 										    <div class="input-group-prepend">
-										      	<div class="input-group-text big-label">JP.AS.E (JPPJ)</div>
+										      	<div class="input-group-text big-label">JP.A.E (JPPJ)</div>
 										    </div>
-										    <input value="<?= $custom['JP.AS.E'] ?>" name="JP.AS.E" type="text" class="form-control" placeholder="Custom JP.AS.E" required="required">
+										    <input value="<?= $custom['JP.A.E'] ?>" name="JP.A.E" type="text" class="form-control" placeholder="Custom JP.A.E" required="required">
 										</div>
 										<div class="input-group mb-3">
 										    <div class="input-group-prepend">
@@ -311,21 +330,21 @@ endforeach;
 										</div>
 										<div class="input-group mb-3">
 										    <div class="input-group-prepend">
-										      	<div class="input-group-text big-label">JJ.AS.KP (JJPP)</div>
+										      	<div class="input-group-text big-label">JJ.A.KP (JJPP)</div>
 										    </div>
-										    <input value="<?= $custom['JJ.AS.KP'] ?>" name="JJ.AS.KP" type="text" class="form-control" placeholder="Custom JJ.AS.KP" required="required">
+										    <input value="<?= $custom['JJ.A.KP'] ?>" name="JJ.A.KP" type="text" class="form-control" placeholder="Custom JJ.A.KP" required="required">
 										</div>
 										<div class="input-group mb-3">
 										    <div class="input-group-prepend">
-										      	<div class="input-group-text big-label">JJ.AS.K (JJPP)</div>
+										      	<div class="input-group-text big-label">JJ.A.K (JJPP)</div>
 										    </div>
-										    <input value="<?= $custom['JJ.AS.K'] ?>" name="JJ.AS.K" type="text" class="form-control" placeholder="Custom JJ.AS.K" required="required">
+										    <input value="<?= $custom['JJ.A.K'] ?>" name="JJ.A.K" type="text" class="form-control" placeholder="Custom JJ.A.K" required="required">
 										</div>
 										<div class="input-group mb-3">
 										    <div class="input-group-prepend">
-										      	<div class="input-group-text big-label">JJ.AS.E (JJPP)</div>
+										      	<div class="input-group-text big-label">JJ.A.E (JJPP)</div>
 										    </div>
-										    <input value="<?= $custom['JJ.AS.E'] ?>" name="JJ.AS.E" type="text" class="form-control" placeholder="Custom JJ.AS.E" required="required">
+										    <input value="<?= $custom['JJ.A.E'] ?>" name="JJ.A.E" type="text" class="form-control" placeholder="Custom JJ.A.E" required="required">
 										</div>
 										<div class="input-group mb-3">
 										    <div class="input-group-prepend">
@@ -353,9 +372,9 @@ endforeach;
 										</div>
 										<div class="input-group mb-3">
 										    <div class="input-group-prepend">
-										      	<div class="input-group-text big-label">C.AS (Jitu AS)</div>
+										      	<div class="input-group-text big-label">C.A (Jitu A)</div>
 										    </div>
-										    <input value="<?= $custom['C.AS'] ?>" name="C.AS" type="text" class="form-control" placeholder="Custom C.AS" required="required">
+										    <input value="<?= $custom['C.A'] ?>" name="C.A" type="text" class="form-control" placeholder="Custom C.A" required="required">
 										</div>
 										<div class="input-group mb-3">
 										    <div class="input-group-prepend">
@@ -391,15 +410,70 @@ endforeach;
 										</div>
 									</div>
 								</div>
+								<div class="row">
+									<div class="col-12">
+										<p class="font-weight-normal">Custom Kode untuk M</p>
+										<hr>
+									</div>
+									<div class="col-8">
+										<div class="custom_m_list">
+											<?php if (empty($mCustom)) : ?>
+												<div class="custom_m_item mb-3">
+													<div class="input-group">
+													    <div class="input-group-prepend">
+													      	<input type="text" class="form-control in_m_asli" placeholder="Format Asli" required="required">
+													    </div>
+													    <input value="" name="" type="text" class="form-control in_m_custom" placeholder="Custom" required="required">
+													    <div class="input-group-append">
+													    	<button type="button" class="delete_item btn btn-danger btn-sm" style="margin: 0 .375rem;">Hapus</button>
+													    	<button type="button" class="add_item btn btn-default btn-sm" style="margin: 0 .375rem;">Tambah</button>
+													    </div>
+													</div>
+												</div>
+											<?php else : foreach ($mCustom as $asli => $custom) : ?>
+												<div class="custom_m_item mb-3">
+													<div class="input-group">
+													    <div class="input-group-prepend">
+													      	<input type="text" value="<?= $asli ?>" class="form-control in_m_asli" placeholder="Format Asli" required="required">
+													    </div>
+													    <input value="<?= $custom ?>" name="<?= $asli ?>" type="text" class="form-control in_m_custom" placeholder="Custom <?= $asli ?>" required="required">
+													    <div class="input-group-append">
+													    	<button type="button" class="delete_item btn btn-danger btn-sm" style="margin: 0 .375rem;">Hapus</button>
+													    	<button type="button" class="add_item btn btn-default btn-sm" style="margin: 0 .375rem;">Tambah</button>
+													    </div>
+													</div>
+												</div>
+											<?php endforeach; endif; ?>
+										</div>
+									</div>
+									<div class="col-4"></div>
+								</div>
 							</div>
 						</div>
 					</div>
 					<button type="Submit" class="btn btn-primary">Submit</button>
 				</form>
 			</div>
-
+			<div id="forClone" style="display: none;">
+				<div class="custom_m_item mb-3">
+					<div class="input-group">
+						<div class="input-group-prepend">
+							<input type="text" class="form-control in_m_asli" placeholder="Format Asli" required="required">
+						</div>
+						<input value="" name="" type="text" class="form-control in_m_custom" placeholder="Custom" required="required">
+						<div class="input-group-append">
+							<button type="button" class="delete_item btn btn-danger btn-sm" style="margin: 0 .375rem;">Hapus</button>
+							<button type="button" class="add_item btn btn-default btn-sm" style="margin: 0 .375rem;">Tambah</button>
+						</div>
+					</div>
+				</div>
+			</div>
 		</div>
 	</div>
+
+	<!-- Page Scripts -->
+	<script src="../assets/js/pages/custom.js"></script>
+
 	<?php
 	include('footer.php');
 	?>
