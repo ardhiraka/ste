@@ -259,7 +259,7 @@ endif;
 									</div>
 								</div>
 							</div>
-							<?php foreach (['AS', 'KP', 'E'] as $head) : ?>
+							<?php foreach (['A', 'KP', 'E'] as $head) : ?>
 								<div class="row mb-3">
 									<div class="col">
 										<div class="input-group">
@@ -312,6 +312,17 @@ endif;
 								</div>
 							<?php endforeach; ?>
 						</div>
+					</div>
+					<div class="row">
+						<div class="col">
+							<div class="input-group mb-3">
+								<div class="input-group-prepend">
+									<div class="input-group-text label-55-lg">Disc H</div>
+								</div>
+								<input name="DISC_H" type="text" class="form-control" placeholder="Disc H" required="required">
+							</div>
+						</div>
+						<div class="col"></div>
 					</div>
 				</div>
 

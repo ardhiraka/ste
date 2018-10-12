@@ -14,10 +14,12 @@ if ($isUser) :
 
     if ($isUserValid) :
         $_SESSION['isLoggedIn'] = true;
+        $_SESSION['uid'] 		= $isUser['id'];
+        
         header('location:app');
     else :
-        header('location:/?error=password');
+        header('location:index.php?error=password');
     endif;
 else :
-    header('location:/?error=user');
+    header('location:index.php?error=user');
 endif;

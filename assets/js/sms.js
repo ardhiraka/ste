@@ -39,18 +39,18 @@ let SMS = {
         'NJ7'	 : '07.16.25.34.43.52.61.70',
         'NJ8'	 : '08.17.26.35.44.53.62.71.80',
         'NJ9'	 : '09.18.27.36.45.54.63.72.81.90',
-        'shio01' : '01.13.25.37.49.61.73.85.97',
-        'shio02' : '02.14.26.38.50.62.74.86.98',
-        'shio03' : '03.15.27.39.51.63.75.87.99',
-        'shio04' : '04.16.28.40.52.64.76.88.00',
-        'shio05' : '05.17.29.41.53.65.77.89',
-        'shio06' : '06.18.30.42.54.66.78.90',
-        'shio07' : '07.19.31.43.55.67.79.91',
-        'shio08' : '08.20.32.44.56.68.80.92',
-        'shio09' : '09.21.33.45.57.69.81.93',
-        'shio10' : '10.22.34.46.58.70.82.94',
-        'shio11' : '11.23.35.47.59.71.83.95',
-        'shio12' : '12.24.36.48.60.72.84.96',
+        'SHIO01' : '01.13.25.37.49.61.73.85.97',
+        'SHIO02' : '02.14.26.38.50.62.74.86.98',
+        'SHIO03' : '03.15.27.39.51.63.75.87.99',
+        'SHIO04' : '04.16.28.40.52.64.76.88.00',
+        'SHIO05' : '05.17.29.41.53.65.77.89',
+        'SHIO06' : '06.18.30.42.54.66.78.90',
+        'SHIO07' : '07.19.31.43.55.67.79.91',
+        'SHIO08' : '08.20.32.44.56.68.80.92',
+        'SHIO09' : '09.21.33.45.57.69.81.93',
+        'SHIO10' : '10.22.34.46.58.70.82.94',
+        'SHIO11' : '11.23.35.47.59.71.83.95',
+        'SHIO12' : '12.24.36.48.60.72.84.96',
         'UK0'	 : '00.01.02.03.04.05.06.07.08.09',
         'UK1'	 : '10.11.12.13.14.15.16.17.18.19',
         'UK2'	 : '20.21.22.23.24.25.26.27.28.29',
@@ -82,7 +82,6 @@ let SMS = {
         digit1: new RegExp("^[0-9]{1}(\\.[0-9]{1})*$"),
         digit2: new RegExp("^[0-9]{2}(\\.[0-9]{2})*$"),
         digit3: new RegExp("^[0-9]{3}(\\.[0-9]{3})*$"),
-        // mformat: new RegExp("^([JjPpTtSs]{2}(?:|[JjPpTtSs]{2}))$"),
         mformat: new RegExp("^((M)\\.((?:A|KP|K|E)\\.(?:J|P|T|S)\\.(?:A|KP|K|E)\\.(?:J|P|T|S)))@([0-9]+)$"),
         hformat: new RegExp("^([JjPpTtSs]{1})$"),
         bbformat: new RegExp("^[bB]{2}([2-4]{1});([0-9]{2,})@([0-9]+)$"),
@@ -194,7 +193,6 @@ let SMS = {
             if (app.format.mformat.test(item)) {
                 [fullText, theFullCode, theCode, theMIndex, thePrice] = app.format.mformat.exec(item);
 
-                // console.log([fullText, theFullCode, theCode, theMIndex, thePrice]);
                 app.parsing(item, theCode, theMIndex, thePrice, 'filtered');
             } else if (app.format.ggformat.test(item)) {
                 [fullText, theCode, thePrice] = app.format.ggformat.exec(item);
@@ -279,7 +277,7 @@ let SMS = {
                 [fullText, theCode, thePrice] = app.format.headformat.exec(item);
 
                 let theHead = theCode.split('/');
-                let isHeadFormat = new RegExp("^([A-Za-z]+);([0-9]{1,4}(?:\\.[0-9]{1,4})*)$");
+                let isHeadFormat = new RegExp("^((?:A|KP|K|E));([0-9]{1,4}(?:\\.[0-9]{1,4})*)$");
                 let dHeads = [];
                 let dNumbs = [];
                 let hCount = {};
@@ -298,7 +296,7 @@ let SMS = {
 
                 dHeads.forEach(function(i) { hCount[i] = (hCount[i] || 0) + 1;});
 
-                let isKpExist   = dHeads.includes('Kp');
+                let isKpExist   = dHeads.includes('KP');
                 let isKExist    = dHeads.includes('K');
                 let isEExist    = dHeads.includes('E');
 
@@ -706,7 +704,15 @@ let SMS = {
                 data.push([stringOddEven, stringBigSmall]);
             }
         } else if (theCode == 'H') {
-            let theNumber       = number[0] + number[1];
+            let theNumber       = parseInt(number[0]) + parseInt(number[1]);
+            let length          = theNumber.toString().length;
+
+            if (length == 2) {
+                let numb    = theNumber.toString();
+                theNumber   = parseInt(numb.charAt(0)) + parseInt(numb.charAt(1));
+            }
+
+
             let stringOddEven   = theNumber % 2 ? 'odd' : 'even';
             let stringBigSmall  = theNumber < 5 ? 'small' : 'big';
 

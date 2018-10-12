@@ -2,8 +2,6 @@
 
 include('header.php');
 
-require_once 'db.php';
-
 $member = $db->fetch_all("SELECT * FROM member ORDER BY downline ASC");
 ?>
 

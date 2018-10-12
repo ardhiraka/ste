@@ -47,4 +47,8 @@ INSERT INTO `custom` (`asli`, `custom`) VALUES
 ('C.K', 'C.K'),
 ('C.E', 'C.E'),
 ('CM', 'CM'),
-('CN', 'CN');
+('CN', 'CN'),
+('A', 'A'),
+('KP', 'KP'),
+('K', 'K'),
+('E', 'E');

@@ -1,8 +1,21 @@
 <?php
 include('header.php');
 
-$inbox_id   = $_GET['data'];
-$data       = $db->fetch_all("select * from inbox where ID = ?", $inbox_id);
+$type   = $_GET['by'];
+$with   = $_GET['with'];
+
+if ($type == 'number') :
+	$data = $db->fetch_all("SELECT * FROM `split` WHERE id IN (?) GROUP BY inbox_id", $with);
+else :
+	$data = $db->fetch_all("SELECT * FROM `split` WHERE kode = ? GROUP BY inbox_id", $with);
+endif;
+
+$inboxIDs = [];
+foreach ($data as $row) :
+	$inboxIDs[] = $row['inbox_id'];
+endforeach;
+
+$inboxs = $db->fetch_all("SELECT * FROM `inbox` WHERE id IN (?)", $inboxIDs);
 ?>
 
 <div class="container">
@@ -26,7 +39,7 @@ $data       = $db->fetch_all("select * from inbox where ID = ?", $inbox_id);
 					</tr>
 					</thead>
 					<tbody>
-						<?php foreach ($data as $info) : ?>
+						<?php foreach ($inboxs as $info) : ?>
 							<tr>
 								<td><?= $info['SenderNumber'] ?></td>
 								<td><?= $info['TextDecoded'] ?></td>

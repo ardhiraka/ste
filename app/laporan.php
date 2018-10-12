@@ -32,13 +32,13 @@ include('header.php');
 					</select>
 				</div>
 				<div class="col-2 input-group-append">
-					<button class="btn btn-info waves-effect m-0" type="submit">Submit</button>
+					<button class="btn btn-info waves-effect m-0" type="submit">Lihat</button>
 				</div>
 			</div>
 		</form>
 	</div>
 
-	<div id="hasilrekap">
+	<div id="hasilrekap" class="mb-5">
 		<table class="table table-sm">
 			<thead>
 				<tr>

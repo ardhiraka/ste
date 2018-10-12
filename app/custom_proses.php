@@ -13,8 +13,8 @@ foreach ($post as $asli => $custom) :
 		['asli'		=> str_replace('_', '.', $asli)]
 	];
 	$insert[] = [
-		'asli'		=> str_replace('_', '.', $asli),
-		'custom'	=> strtoupper($custom)
+		'asli'		=> str_replace('_', '.', trim($asli, '.')),
+		'custom'	=> strtoupper(trim($custom, '.'))
 	];
 endforeach;
 

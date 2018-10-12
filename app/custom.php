@@ -51,8 +51,13 @@ endforeach;
 							Partai
 						</a>
 					</li>
+					<li class="nav-item">
+						<a class="nav-link" id="contact-tab" data-toggle="tab" href="#i-tab-head" role="tab" aria-controls="contact" aria-selected="false">
+							Head
+						</a>
+					</li>
 				</ul>
-				<form action="custom_proses.php" method="POST">
+				<form action="custom_proses.php" id="customForm" onsubmit="return false" method="POST">
 					<div class="form">
 						<style scoped>
 							.input-group-text {
@@ -449,9 +454,45 @@ endforeach;
 									<div class="col-4"></div>
 								</div>
 							</div>
+							<div class="tab-pane fade" id="i-tab-head" role="tabpanel" aria-labelledby="angka-tab">
+								<div class="row">
+									<div class="col">
+										<div class="input-group mb-3">
+										    <div class="input-group-prepend">
+										      	<div class="input-group-text">A</div>
+										    </div>
+										    <input value="<?= $custom['A'] ?>" name="A" type="text" class="form-control" placeholder="Custom A" required="required">
+										</div>
+									</div>
+									<div class="col">
+										<div class="input-group mb-3">
+										    <div class="input-group-prepend">
+										      	<div class="input-group-text">KP</div>
+										    </div>
+										    <input value="<?= $custom['KP'] ?>" name="KP" type="text" class="form-control" placeholder="Custom KP" required="required">
+										</div>
+									</div>
+									<div class="col">
+										<div class="input-group mb-3">
+										    <div class="input-group-prepend">
+										      	<div class="input-group-text">K</div>
+										    </div>
+										    <input value="<?= $custom['K'] ?>" name="K" type="text" class="form-control" placeholder="Custom K" required="required">
+										</div>
+									</div>
+									<div class="col">
+										<div class="input-group mb-3">
+										    <div class="input-group-prepend">
+										      	<div class="input-group-text">E</div>
+										    </div>
+										    <input value="<?= $custom['E'] ?>" name="E" type="text" class="form-control" placeholder="Custom E" required="required">
+										</div>
+									</div>
+								</div>
+							</div>
 						</div>
 					</div>
-					<button type="Submit" class="btn btn-primary">Submit</button>
+					<button type="Submit" class="btn btn-primary mb-4">Submit</button>
 				</form>
 			</div>
 			<div id="forClone" style="display: none;">

@@ -28,4 +28,47 @@ jQuery(function($) {
 	$(document).on('click', '.delete_item', function() {
 		$(this).closest('.custom_m_item').remove();
 	});
+
+	$('#customForm').on('submit', function(e) {
+		e.preventDefault();
+
+		let customs 		= [];
+		let customsClash 	= [];
+		$('#customForm input:not(.in_m_asli)').each(function(i, el) {
+			if (customs.includes(el.value.toUpperCase())) {
+				customsClash.push(el.value.toUpperCase());
+			} else {
+				customs.push(el.value.toUpperCase());
+			}
+		});
+
+		let mAsli 		= [];
+		let mAsliClash 	= [];
+		$('#customForm input.in_m_asli').each(function(i, el) {
+			if (mAsli.includes(el.value.toUpperCase())) {
+				mAsliClash.push(el.value.toUpperCase());
+			} else {
+				mAsli.push(el.value.toUpperCase());
+			}
+		});
+
+		if (customsClash.length != 0 || mAsliClash != 0) {
+			let message;
+
+			if (customsClash.length != 0) {
+				message = "Custom kode sama: " + customsClash.join(', ');
+
+				if (mAsliClash != 0) {
+					message += "\nM asli sama: " + mAsliClash.join(', ');
+				}
+			} else {
+				message = "M asli sama: " + mAsliClash.join(', ');
+			}
+
+			alert(message);
+			return;
+		}
+		
+		e.target.submit();
+	});
 });

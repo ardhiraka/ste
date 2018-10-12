@@ -21,7 +21,7 @@ jQuery(function($) {
             {
                 data: 'TextDecoded',
                 render(data) {
-                    let maxString   = 10;
+                    let maxString   = 50;
                     let strLength   = data.length;
                     let preview     = '';
 
@@ -143,9 +143,6 @@ jQuery(function($) {
                 let hasilTotal  = 0;
 
                 for (let code in result[i]) {
-                    console.log(code);
-                    console.log(response);
-                    console.log(response['WIN_'+code]);
                     let icode   = result[i][code];
                     totalWin    += icode.win.length;
                     totalLose   += icode.lose.length;
@@ -163,18 +160,27 @@ jQuery(function($) {
             } else {
                 totalWin    += result[i].win.length;
                 totalLose   += result[i].lose.length;
-                let theCodeRumusWin     = SMS.code.head.includes(theCode.head) ? 'Jitu' : theCode.code == 'CM' ? 'CM' : theCode.code;
-                let theCodeRumusLose    = SMS.code.head.includes(theCode.head) ? 'Jitu' : theCode.code;
-                let unique      = ['J', 'P', 'T', 'S', 'M', 'H'];
+                let theNewCode;
+
+                if (['TS', 'TT', 'JP', 'JJ'].includes(theCode.code)) {
+                    theNewCode  = theCode.head ? theCode.full.split('.').join('_') : theCode.code;
+                } else {
+                    theNewCode  = SMS.code.head.includes(theCode.head) ? theCode.full.split('.').join('_') : theCode.code;
+                }
+                // console.log(theNewCode);
+
+                // let theCodeRumusWin     = SMS.code.head.includes(theCode.head) ? 'Jitu' : theCode.code == 'CM' ? 'CM' : theCode.code;
+                // let theCodeRumusLose    = SMS.code.head.includes(theCode.head) ? 'Jitu' : theCode.code;
+                let unique      = ['J', 'P', 'T', 'S', 'H', 'PING', 'TENG', 'TS', 'TT', 'JP', 'JJ'];
                 let rumusWin    = 0;
                 let rumusLose   = 0;
 
                 if (unique.includes(theCode.code)) {
-                    rumusWin    = result[i].win.length > 0 ? result[i].win.length * thePrice * response['WIN_'+theCodeRumusWin] : 0;
-                    rumusLose   = result[i].win.length > 0 ? 0 : (result[i].lose.length * thePrice) + ((result[i].lose.length * thePrice) * (response['DISC_'+theCodeRumusLose] / 100));
+                    rumusWin    = result[i].win.length > 0 ? result[i].win.length * thePrice : 0;
+                    rumusLose   = result[i].win.length > 0 ? 0 : (result[i].lose.length * thePrice) + ((result[i].lose.length * thePrice) * (response['DISC_'+theNewCode] / 100));
                 } else {
-                    rumusWin    = result[i].win.length * thePrice * response['WIN_'+theCodeRumusWin];
-                    rumusLose   = (result[i].lose.length * thePrice) - ((result[i].lose.length * thePrice) * (response['DISC_'+theCodeRumusLose] / 100));
+                    rumusWin    = result[i].win.length * thePrice * response['WIN_'+theNewCode];
+                    rumusLose   = (result[i].lose.length * thePrice) - ((result[i].lose.length * thePrice) * (response['DISC_'+theNewCode] / 100));
                 }
 
                 let rumus   = rumusWin - rumusLose;
@@ -234,10 +240,12 @@ jQuery(function($) {
     });
 
     $(document).on('click', '#submitSms', function() {
-        let data    = this.dataset;
-        let sms     = SMS.setData(data.message).filter().parse();
+        let data        = this.dataset;
+        let finalNum    = $('#angkaout').val();
+        
+        SMS.setData(data.message).filter().parse().setNumber(finalNum).match();
 
-        $.post(ajaxTo('storeSplitData'), {...data, split: sms.messages.correct}, response => {
+        $.post(ajaxTo('storeSplitData'), {id: data.id, result: SMS.matchResult}, response => {
             if (response.status == 'success') {
                 alert("Data berhasil disimpan!");
                 window.location.reload();

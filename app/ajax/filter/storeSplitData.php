@@ -5,73 +5,73 @@ require_once '../../db.php';
 $checkInDB  = $db->fetch_all('select * from split where inbox_id = ?', $_POST['id']);
 $isNotExist = count($checkInDB) > 0 ? false : true;
 $response   = ['status' => 'success'];
-$dateOnSave = date('Y-m-d');
 
 if ($isNotExist) :
-    $inbox  = $db->fetch_row('select * from inbox where ID = ?', $_POST['id']);
-    $member = $db->fetch_row('select * from member where nohp = ?', $inbox['SenderNumber']);
-    $insert = [];
-    $splits = $_POST['split'];
+	$dateTime 	= date('Y-m-d');
+	$results 	= $_POST['result'];
+	$inData 	= [];
+	$inbox  	= $db->fetch_row('select * from inbox where ID = ?', $_POST['id']);
+	$member 	= $db->fetch_row('select * from member where nohp = ?', $inbox['SenderNumber']);
 
-    foreach ($splits as $format => $items) :
-        $xpl = explode('@', $format);
+	foreach ($results as $format => $result) :
+		list($theForm, $thePrice) = explode('@', $format);
 
-        if (in_array($xpl[0], ['J', 'P', 'T', 'S'])) :
-            $nType = [
-                'J' => [1, 3, 5, 7, 9],
-                'P' => [0, 2, 4, 6, 8],
-                'T' => [5, 6, 7, 8, 9],
-                'S' => [0, 1, 2, 3, 4]
-            ];
+		if (array_key_exists('win', $result) || array_key_exists('lose', $result)) :
+			$expl 		= explode(';', $theForm);
+			$theCode	= $expl[0];
+			$theNumber 	= count($expl) > 1 ? $expl[1] : null;
+			$isWin 		= isset($result['win']);
+			$isLose		= isset($result['lose']);
 
-            $insert[] = [
-                'member_id' => $member['id'],
-                'inbox_id'  => $inbox['ID'],
-                'kode'      => $xpl[0],
-                'angka'     => join($nType[$xpl[0]]),
-                'nominal'   => $xpl[1],
-                'tanggal'   => $dateOnSave
-            ];
-        else :
-            foreach ($items as $item) :
-                $split      = explode(' ', $item);
-                $theCode    = is_numeric($split[0]) ? "N/A" : $split[0];
-                $thePrice   = $split[count($split) - 1];
-                $number     = '';
+			$inData[] = [
+				'member_id' => $member['id'],
+				'inbox_id'  => $inbox['ID'],
+				'kode'		=> $theCode,
+				'nominal'	=> $thePrice,
+				'angka'		=> $theNumber,
+				'win'		=> $isWin ? count($result['win']) : 0,
+				'lose'		=> $isLose ? count($result['lose']) : 0,
+				'tanggal'	=> $dateTime
+			];
+		else :
+			// 2D, 3D, 4D
+			$number[$format] = [];
 
-                if ($theCode == 'N/A') :
-                    $theCode = strlen($split[0]) . 'd';
-                    $number  = $split[0];
-                elseif ($theCode == 'C') :
-                    $theHead = is_numeric($split[1]) ? false : true;
-                    $number  = $theHead ? $split[2] : $split[1];
-                    $theCode = $theHead ? "{$theCode}.{$split[1]}" : $theCode;
-                elseif ($theCode == 'M' || $theCode == 'H') :
-                    $theCode = "{$theCode}.{$split[1]}";
-                else :
-                    $number = $split[1];
-                endif;
+			foreach ($result as $kode => $item) :
+				$isWin 	= isset($item['win']);
+				$isLose	= isset($item['lose']);
 
-                $insert[] = [
-                    'member_id' => $member['id'],
-                    'inbox_id'  => $inbox['ID'],
-                    'kode'      => $theCode,
-                    'angka'     => $number,
-                    'nominal'   => $thePrice,
-                    'tanggal'   => $dateOnSave
-                ];
-            endforeach;
-        endif;
-    endforeach;
+				if ($isWin) :
+					$number[$format][$kode] = join($item['win'], '.');
+				endif;
 
-    $store      = $db->insert('split', $insert);
-    $response   = $store ? $response : ['status' => 'error', 'error' => 'Gagal menyimpan!'];
+				if ($isLose) :
+					$number[$format][$kode] = join($item['lose'], '.');
+				endif;
 
-    if ($store) :
-        $db->update('inbox', ['isFiltered' => 1], ['ID' => $_POST['id']]);
-    endif;
+				$inData[] = [
+					'member_id' => $member['id'],
+	                'inbox_id'  => $inbox['ID'],
+					'kode'		=> $kode,
+					'nominal'	=> $thePrice,
+					'angka'		=> $number[$format][$kode],
+					'win'		=> $isWin ? count($item['win']) : 0,
+					'lose'		=> $isLose ? count($item['lose']) : 0,
+					'tanggal'	=> $dateTime
+				];
+			endforeach;
+		endif;
+	endforeach;
+
+	$store = $db->insert('split', $inData);
+
+	if ($store) :
+		$db->update('inbox', ['isFiltered' => 1], ['ID' => $_POST['id']]);
+	else :
+		$response = ['status' => 'error', 'error' => 'Gagal menyimpan!'];
+	endif;
 else :
-    $response   = ['status' => 'error', 'error' => 'Pesan sudah disumbit!'];
+	$response = ['status' => 'error', 'error' => 'Pesan sudah disumbit!'];
 endif;
 
 echo json_encode($response);
