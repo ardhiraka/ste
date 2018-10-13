@@ -50,6 +50,9 @@
 					<a class="nav-link" href="custom.php">Kustom Kode</a>
 				</li>
 				<li class="nav-item">
+					<a class="nav-link" href="checkin.php">Check In</a>
+				</li>
+				<li class="nav-item">
 					<a class="nav-link" href="laporan.php">Rekap</a>
 				</li>
 				<li class="nav-item">
