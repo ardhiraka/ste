@@ -4,7 +4,7 @@ include('header.php');
 
 $admin = $db->fetch_row("SELECT * FROM `admin` WHERE id = ?", $_SESSION['uid']);
 
-$members = $db->fetch_all("SELECT * FROM member");
+$members = $db->fetch_all("SELECT * FROM member WHERE downline != ?", 0);
 ?>
 
 	<div class="container">
@@ -46,7 +46,7 @@ $members = $db->fetch_all("SELECT * FROM member");
 						</div>
 					</div>
 					<div class="col-2 input-group-append">
-						<button class="btn btn-info btn-sm waves-effect m-0" type="submit">Submit</button>
+						<button class="btn btn-info btn-sm waves-effect m-0" type="submit">Simpan</button>
 					</div>
 				</div>
 			</form>

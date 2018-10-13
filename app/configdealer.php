@@ -2,7 +2,7 @@
 
 include('header.php');
 
-$member = $db->fetch_all("SELECT * FROM member ORDER BY downline ASC");
+$member = $db->fetch_all("SELECT * FROM member WHERE downline = ?", 0);
 ?>
 
 	<div class="container">

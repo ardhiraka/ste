@@ -2,9 +2,10 @@
 
 require_once '../../db.php';
 
-$sms = $_POST['sms'];
-$send = [
-    'DestinationNumber' => '+6289647793930',
+$sms 	= $_POST['sms'];
+$dealer	= $db->fetch_row('SELECT * FROM member WHERE downline = ?', 0);
+$send 	= [
+    'DestinationNumber' => $dealer['nohp'],
     'TextDecoded'       => $sms,
     'CreatorID'         => 'Gammu'
 ];

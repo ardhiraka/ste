@@ -74,7 +74,12 @@ include('header.php');
 				<div class="modal-body">
 					<input type="hidden" name="tipe" value="nominal">
 					<input type="hidden" name="ids">
-					<input type="text" name="jumlah" class="form-control" placeholder="nominal" required="required">
+					<div class="input-group">
+						<div class="input-group-prepend">
+							<div class="input-group-text">Nominal</div>
+						</div>
+						<input type="number" name="jumlah" class="form-control" placeholder="nominal" required="required">
+					</div>
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -96,7 +101,15 @@ include('header.php');
 				<div class="modal-body">
 					<input type="hidden" name="tipe" value="persen">
 					<input type="hidden" name="ids">
-					<input type="text" name="jumlah" class="form-control" placeholder="nominal" required="required">
+					<div class="input-group">
+						<div class="input-group-prepend">
+							<div class="input-group-text">Persentase</div>
+						</div>
+						<input type="number" name="jumlah" class="form-control" placeholder="Persentase" required="required" style="border-bottom-right-radius: 0;border-top-right-radius: 0">
+						<div class="input-group-append">
+							<div class="input-group-text">%</div>
+						</div>
+					</div>
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>

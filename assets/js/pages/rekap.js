@@ -46,12 +46,4 @@ jQuery(function($) {
             $('input[name="ids"]').val(splits);
         }, 'html');
     });
-
-    $('#sendToNumber').on('submit', function(event) {
-        event.preventDefault();
-        $.post(ajaxTo('sendToNumber'), $(this).serialize(), response => {
-            $('#submitSmsOutbox').remove();
-            alert(response.message);
-        }, 'json');
-    });
 });

@@ -7,7 +7,7 @@ include('header.php');
 $tipe 	= $_POST['tipe'];
 $ids  	= $_POST['ids'];
 $jumlah = $_POST['jumlah'];
-$list 	= $db->fetch_all("SELECT * FROM rekap WHERE id IN ({$ids})");
+$list 	= $db->fetch_all("SELECT * FROM split WHERE id IN ({$ids})");
 
 foreach ($list as $split) :
 	$nominal 	= $split['nominal'];
@@ -25,23 +25,31 @@ foreach ($list as $split) :
 		$nom_dealer = $sisa <= 0 ? 0 : $sisa;
 	endif;
 
-	$db->update('rekap', ['nom_makan' => $nom_makan, 'nom_dealer' => $nom_dealer], ['id' => $split['id']]);
+	$db->update('split', ['nom_makan' => $nom_makan, 'nom_dealer' => $nom_dealer], ['id' => $split['id']]);
 endforeach;
 
-$result	= $db->fetch_all("SELECT * FROM rekap WHERE id IN ({$ids}) order by cast(nom_dealer as SIGNED) desc");
+$result	= $db->fetch_all("SELECT * FROM split WHERE id IN ({$ids}) order by cast(nom_dealer as SIGNED) desc");
 
-$outBox = $db->fetch_all("SELECT kode, group_concat(angka SEPARATOR '.') as angka, nom_dealer FROM rekap WHERE id IN ({$ids}) GROUP BY nom_dealer,kode ORDER BY cast(nom_dealer as SIGNED) DESC");
+$outBox = $db->fetch_all("SELECT kode, group_concat(angka SEPARATOR '.') as nominal, nom_dealer FROM split WHERE id IN ({$ids}) GROUP BY nom_dealer,kode ORDER BY cast(nom_dealer as SIGNED) DESC");
 
 $sms = "";
 foreach ($outBox as $ob) :
-	if (in_array($ob['kode'], ['2D', '3D', '4D'])) :
-		$sms .= "{$ob['angka']}@{$ob['nom_dealer']} ";
-	else :
-		if (is_null($ob['angka'])) :
-			$sms .= "{$ob['kode']}@{$ob['nom_dealer']} ";
+	$pecah = explode('.', $ob['kode']);
+	$theCode = $pecah[0];
+	$theHead = isset($pecah[1]) ? $pecah[1] : false;
+
+	if (in_array($theCode, ['2d', '3d', '4d'])) :
+		$sms .= "{$ob['nominal']}@{$ob['nom_dealer']} ";
+	elseif (in_array($theCode, ['J', 'P', 'T', 'S'])) :
+		$sms .= "{$theCode}@{$ob['nom_dealer']} ";
+	elseif (in_array($theCode, ['CM', 'CN', 'C'])) :
+		if ($theHead) :
+			$sms .= "{$ob['kode']};{$ob['nominal']}@{$ob['nom_dealer']} ";
 		else :
-			$sms .= "{$ob['kode']};{$ob['angka']}@{$ob['nom_dealer']} ";
+			$sms .= "{$theCode};{$ob['nominal']}@{$ob['nom_dealer']} ";
 		endif;
+	elseif (in_array($theCode, ['M', 'H'])) :
+		$sms .= "{$ob['kode']}@{$ob['nom_dealer']} ";
 	endif;
 endforeach;
 $sms = rtrim($sms, ' ');
@@ -55,24 +63,24 @@ $sms = rtrim($sms, ' ');
 
 		<div align="center">
 			<h3>
-				Hasil Rekap
+				Hasil Recap
 			</h3>
 		</div>
 		<br />
 
 		<div id="submitSmsOutbox" class="row">
 			<div class="col-md-6">
-				<button class="btn btn-warning btn-block my-4" type="button" onclick="window.location = 'laporan.php'">Cancel SMS</button>
+				<button class="btn btn-warning btn-block my-4" type="submit">Cancel SMS</button>
 			</div>
 			<div class="col-md-6">
 				<form id="sendToNumber">
 					<input type="hidden" name="sms" value="<?= $sms ?>">
-					<button type="submit" id="submitSms" class="btn btn-default btn-block my-4">Send to Dealer</button>
+					<button type="submit" id="submitSms" class="btn btn-default btn-block my-4">Submit SMS</button>
 				</form>
 			</div>
 		</div>
 
-		<div class="row mb-5">
+		<div class="row">
 			<div class="col-sm-6">
 				<h4>
 					Angka Makan
@@ -136,17 +144,7 @@ $sms = rtrim($sms, ' ');
 
 	</div>
 
-	<script>
-		jQuery(function($) {
-			$('#sendToNumber').on('submit', function(event) {
-				event.preventDefault();
-				$.post('ajax/rekap/sendToDealer.php', $(this).serialize(), response => {
-					$('#submitSmsOutbox').remove();
-					alert(response.message);
-				}, 'json');
-			});
-		});
-	</script>
+	<script src="../assets/js/pages/rekap.js"></script>
 
 	<?php
 include('footer.php');

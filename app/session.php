@@ -3,4 +3,4 @@
 session_start();
 
 if (!isset($_SESSION['isLoggedIn']))
-    header('location:/');
+    header('location:index.php');
