@@ -132,6 +132,7 @@ let SMS = {
     },
     specialNumber: 0,
     matchResult: {},
+    groups: {},
     setData(message) {
         this.restart();
 
@@ -537,6 +538,50 @@ let SMS = {
             this[property].inCorrect.push(theItem);
         }
     },
+    inGroup() {
+        let app = this;
+
+        for (let format in app.messages.correct) {
+            app.messages.correct[format].forEach(item => {
+                let split   = item.split(' ');
+                let theCode = Number.isInteger(parseInt(split[0])) ? 'isDigits' : split[0].split('.');
+
+                if (theCode == 'isDigits') {
+                    let newCode = split[0].length + 'D';
+                    
+                    app.incGroups(newCode);
+                } else if (Array.isArray(theCode)) {
+                    let iCode   = theCode[0];
+                    let newCode = iCode;
+
+                    if (['J', 'P', 'T', 'S', 'PING', 'TENG'].includes(iCode)) {
+                        newCode = theCode.join('.');
+                    } else if (['TS', 'TT', 'JP', 'JJ'].includes(iCode)) {
+                        if (item.split(' ').length > 2) {
+                            newCode = item.split(' ').slice(0, -1).join('.');
+                        }
+                    } else if (iCode == 'C') {
+                        if (item.split(' ').length > 3) {
+                            newCode = item.split(' ').slice(0, 2).join('.');
+                        }
+                    }  else if (iCode == 'M') {
+                        newCode = item.split(' ').slice(0, -1).join('.');
+                    }
+
+                    app.incGroups(newCode);
+                }
+            });
+        }
+
+        return app;
+    },
+    incGroups(theCode) {
+        if (this.groups.hasOwnProperty(theCode)) {
+            this.groups[theCode] += 1;
+        } else {
+            this.groups[theCode] = 1;
+        }
+    },
     match() {
         let app = this;
 
@@ -762,6 +807,7 @@ let SMS = {
         this.data                   = '';
         this.objects                = [];
         this.replaced               = [];
+        this.groups                 = {};
         this.messages.correct       = {};
         this.messages.inCorrect     = [];
         this.isFilter               = false;
