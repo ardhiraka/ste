@@ -116,9 +116,9 @@ jQuery(function($) {
         let data        = this.dataset;
         let finalNum    = $('#angkaout').val();
         
-        SMS.setData(data.message).filter().parse().setNumber(finalNum).match();
+        SMS.setData(data.message).filter().parse().inCluster();
 
-        $.post(ajaxTo('storeSplitData'), {id: data.id, result: SMS.matchResult}, response => {
+        $.post(ajaxTo('storeSplitData'), {id: data.id, result: SMS.clusters}, response => {
             if (response.status == 'success') {
                 alert("Data berhasil disimpan!");
                 window.location.reload();

@@ -413,6 +413,12 @@ endforeach;
 										    </div>
 										    <input value="<?= $custom['CN'] ?>" name="CN" type="text" class="form-control" placeholder="Custom CN" required="required">
 										</div>
+										<div class="input-group mb-3">
+										    <div class="input-group-prepend">
+										      	<div class="input-group-text big-label-2X">H (Penjumlahan)</div>
+										    </div>
+										    <input value="<?= $custom['H'] ?>" name="H" type="text" class="form-control" placeholder="Custom H" required="required">
+										</div>
 									</div>
 								</div>
 								<div class="row">

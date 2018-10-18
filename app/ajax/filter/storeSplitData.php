@@ -13,53 +13,28 @@ if ($isNotExist) :
 	$inbox  	= $db->fetch_row('select * from inbox where ID = ?', $_POST['id']);
 	$member 	= $db->fetch_row('select * from member where nohp = ?', $inbox['SenderNumber']);
 
-	foreach ($results as $format => $result) :
-		list($theForm, $thePrice) = explode('@', $format);
-
-		if (array_key_exists('win', $result) || array_key_exists('lose', $result)) :
-			$expl 		= explode(';', $theForm);
-			$theCode	= $expl[0];
-			$theNumber 	= count($expl) > 1 ? $expl[1] : null;
-			$isWin 		= isset($result['win']);
-			$isLose		= isset($result['lose']);
-
-			$inData[] = [
-				'member_id' => $member['id'],
-				'inbox_id'  => $inbox['ID'],
-				'kode'		=> $theCode,
-				'nominal'	=> $thePrice,
-				'angka'		=> $theNumber,
-				'win'		=> $isWin ? count($result['win']) : 0,
-				'lose'		=> $isLose ? count($result['lose']) : 0,
-				'tanggal'	=> $dateTime
-			];
-		else :
-			// 2D, 3D, 4D
-			$number[$format] = [];
-
-			foreach ($result as $kode => $item) :
-				$isWin 	= isset($item['win']);
-				$isLose	= isset($item['lose']);
-
-				if ($isWin) :
-					$number[$format][$kode] = join($item['win'], '.');
-				endif;
-
-				if ($isLose) :
-					$number[$format][$kode] = join($item['lose'], '.');
-				endif;
-
+	foreach ($results as $kode => $value) :
+		if (is_array($value)) :
+			foreach ($value as $angka => $nominal) :
 				$inData[] = [
 					'member_id' => $member['id'],
-	                'inbox_id'  => $inbox['ID'],
+					'inbox_id'  => $inbox['ID'],
 					'kode'		=> $kode,
-					'nominal'	=> $thePrice,
-					'angka'		=> $number[$format][$kode],
-					'win'		=> $isWin ? count($item['win']) : 0,
-					'lose'		=> $isLose ? count($item['lose']) : 0,
+					'kode'		=> explode('.', $kode)[0],
+					'nominal'	=> $nominal,
+					'angka'		=> $angka,
 					'tanggal'	=> $dateTime
 				];
 			endforeach;
+		else :
+			$inData[] = [
+				'member_id' => $member['id'],
+				'inbox_id'  => $inbox['ID'],
+				'kode'		=> $kode,
+				'nominal'	=> $value,
+				'angka'		=> null,
+				'tanggal'	=> $dateTime
+			];
 		endif;
 	endforeach;
 

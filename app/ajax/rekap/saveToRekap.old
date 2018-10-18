@@ -1,0 +1,78 @@
+<?php
+
+require_once '../../db.php';
+
+if (isset($_POST['save'])) :
+	$data 	= $_POST['save'];
+	$ids 	= $_POST['ids'];
+	$insert = [];
+	$toCalc = ['J', 'P', 'T', 'S', 'PING', 'TENG', 'TS', 'TT', 'JP', 'JJ'];
+	$isNext = [];
+	$lawan 	= [
+		'J' 	=> 'P',
+		'P'		=> 'J',
+		'T'		=> 'S',
+		'S'		=> 'T',
+		'PING'	=> 'TENG',
+		'TENG'	=> 'PING',
+		'TS'	=> 'TT',
+		'TT'	=> 'TS',
+		'JP'	=> 'JJ',
+		'JJ'	=> 'JP'
+	];
+
+	foreach ($data as $item) :
+		if (in_array($item['kode'], $isNext)) continue;
+
+		$kode = explode('.', $item['kode']);
+
+		// jika termasuk 50:50
+		if (in_array($kode[0], $toCalc)) :
+			$withHead		= count($kode) > 1 ? true : false;
+			$iCurrent		= $withHead ? implode('.', $kode) : $kode[0];
+			$iLawan 		= $withHead ? str_replace($kode[0], $lawan[$kode[0]], implode('.', $kode)) : $lawan[$kode[0]];
+			$iLawanFound	= array_search($iLawan, array_column($data, 'kode'));
+
+			// jika ada lawannya
+			if ($iLawanFound) :
+				// perhitungan yg terbesar diambil
+				if ($item['nominal'] >= $data[$iLawanFound]['nominal']) :
+					$uKode 		= $item['kode'];
+					$uNominal	= $item['nominal'] - $data[$iLawanFound]['nominal'];
+					$uAngka		= null;
+				else :
+					$uKode 		= $data[$iLawanFound]['kode'];
+					$uNominal	= $data[$iLawanFound]['nominal'] - $item['nominal'];
+					$uAngka		= null;
+				endif;
+
+				$isNext[] = $iCurrent;
+				$isNext[] = $iLawan;
+			else :
+				$uKode		= $item['kode'];
+				$uNominal	= $item['nominal'];
+				$uAngka		= null;
+
+				$isNext[] = $iCurrent;
+			endif;
+		else :
+			$uKode		= $item['kode'];
+			$uNominal	= $item['nominal'];
+			$uAngka		= $item['angka'] == '-' ? null : $item['angka'];
+		endif;
+
+		$insert[] = [
+			'kode'		=> $uKode,
+			'angka'		=> $uAngka,
+			'nominal'	=> $uNominal,
+			'tanggal'	=> date('Y-m-d')
+		];
+	endforeach;
+
+	$db->insert('rekap', $insert);
+	$db->query("update split set inRekap = 1 where id in (". implode($ids, ',') .")");
+
+	echo json_encode(['status' => 'success']);
+else :
+	echo json_encode(['status' => 'error', 'error' => 'Tidak ada data!']);
+endif;

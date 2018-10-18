@@ -133,6 +133,7 @@ let SMS = {
     specialNumber: 0,
     matchResult: {},
     groups: {},
+    clusters: {},
     setData(message) {
         this.restart();
 
@@ -582,6 +583,57 @@ let SMS = {
             this.groups[theCode] = 1;
         }
     },
+    inCluster() {
+        let data    = this.messages.correct;
+        let inData  = {};
+
+        for (let format in data) {
+            let pecah   = format.split('@');
+            let pCode   = pecah[0].split(';');
+            let theCode = Number.isInteger(parseInt(pCode[0])) ? 'isDigits' : pCode[0];
+
+            if (theCode == 'isDigits') {
+                data[format].forEach(item => {
+                    let angka, nominal;
+                    [angka, nominal] = item.split(' ');
+
+                    let iCode = angka.length + 'D';
+
+                    if (!(iCode in inData)) inData[iCode] = {};
+
+                    if (!(angka in inData[iCode])) {
+                        inData[iCode][angka] = parseInt(pecah[1]);
+                    } else {
+                        inData[iCode][angka] += parseInt(pecah[1]);
+                    }
+                });
+            } else {
+                if (pCode.length > 1) {
+                    if (!(theCode in inData)) inData[theCode] = {};
+
+                    let angka = pCode[1].split('.');
+
+                    angka.forEach(item => {
+                        if (!(item in inData[theCode])) {
+                            inData[theCode][item] = parseInt(pecah[1]);
+                        } else {
+                            inData[theCode][item] += parseInt(pecah[1]);
+                        }
+                    });
+                } else {
+                    if (!(theCode in inData)) {
+                        inData[theCode] = parseInt(pecah[1]);
+                    } else {
+                        inData[theCode] += parseInt(pecah[1]);
+                    }
+                }
+            }
+        }
+
+        this.clusters = inData;
+
+        return this;
+    },
     match() {
         let app = this;
 
@@ -808,6 +860,7 @@ let SMS = {
         this.objects                = [];
         this.replaced               = [];
         this.groups                 = {};
+        this.clusters               = {};
         this.messages.correct       = {};
         this.messages.inCorrect     = [];
         this.isFilter               = false;

@@ -10,7 +10,7 @@ $db = new dbhelper();
 
 $dbhost = 'localhost';
 $dbuser = 'root';
-$dbpass = '';
+$dbpass = 'toor';
 $dbname = 'io_ste';
 
 $db->connect('pdo', 'mysql', $dbhost, $dbuser, $dbpass, $dbname, 3306);

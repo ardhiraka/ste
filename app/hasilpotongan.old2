@@ -1,0 +1,153 @@
+<?php
+
+if (!$_POST || empty($_POST['ids'])) header('location:laporan.php');
+
+include('header.php');
+
+$tipe 	= $_POST['tipe'];
+$ids  	= $_POST['ids'];
+$jumlah = $_POST['jumlah'];
+$list 	= $db->fetch_all("SELECT * FROM rekap WHERE id IN ({$ids})");
+
+foreach ($list as $item) :
+	$nominal 	= $item['nominal'];
+	$nom_makan 	= 0;
+	$nom_dealer	= 0;
+
+	if ($tipe == 'nominal') :
+		$nom_makan 	= ($jumlah >= $nominal) ? $nominal : $jumlah;
+		$sisa 		= $nominal - $jumlah;
+		$nom_dealer = $sisa <= 0 ? 0 : $sisa;
+	elseif ($tipe == 'persen') :
+		$jumlah 	= ($jumlah >= 100) ? 100 : $jumlah;
+		$nom_makan 	= ceil($nominal * ($jumlah / 100));
+		$sisa 		= $nominal - $nom_makan;
+		$nom_dealer = $sisa <= 0 ? 0 : $sisa;
+	endif;
+
+	$db->update('rekap', ['nom_makan' => $nom_makan, 'nom_dealer' => $nom_dealer], ['id' => $item['id']]);
+endforeach;
+
+$result	= $db->fetch_all("SELECT * FROM rekap WHERE id IN ({$ids}) order by cast(nom_dealer as SIGNED) desc");
+
+$outBox = $db->fetch_all("SELECT kode, group_concat(angka SEPARATOR '.') as angka, nom_dealer FROM rekap WHERE id IN ({$ids}) GROUP BY nom_dealer,kode ORDER BY cast(nom_dealer as SIGNED) DESC");
+
+$sms = "";
+foreach ($outBox as $ob) :
+	if (in_array($ob['kode'], ['2D', '3D', '4D'])) :
+		$sms .= "{$ob['angka']}@{$ob['nom_dealer']} ";
+	else :
+		if (is_null($ob['angka'])) :
+			$sms .= "{$ob['kode']}@{$ob['nom_dealer']} ";
+		else :
+			$sms .= "{$ob['kode']};{$ob['angka']}@{$ob['nom_dealer']} ";
+		endif;
+	endif;
+endforeach;
+$sms = rtrim($sms, ' ');
+
+?>
+
+	<div class="container">
+		<br />
+		<br />
+		<br />
+
+		<div align="center">
+			<h3>
+				Hasil Rekap
+			</h3>
+		</div>
+		<br />
+
+		<div id="submitSmsOutbox" class="row">
+			<div class="col-md-6">
+				<button class="btn btn-warning btn-block my-4" type="button" onclick="window.location = 'laporan.php'">Cancel SMS</button>
+			</div>
+			<div class="col-md-6">
+				<form id="sendToNumber">
+					<input type="hidden" name="sms" value="<?= $sms ?>">
+					<button type="submit" id="submitSms" class="btn btn-default btn-block my-4">Send to Dealer</button>
+				</form>
+			</div>
+		</div>
+
+		<div class="row mb-5">
+			<div class="col-sm-6">
+				<h4>
+					Angka Makan
+				</h4>
+				<table class="table table-bordered">
+					<thead>
+						<tr>
+							<th>Kode</th>
+							<th>Angka</th>
+							<th>Nominal</th>
+						</tr>
+					</thead>
+					<tbody>
+						<?php foreach($result as $data) : ?>
+						<tr>
+							<td>
+								<?= $data['kode'] ?>
+							</td>
+							<td align="center">
+								<?= $data['angka'] ?? '-' ?>
+							</td>
+							<td>
+								<?= $data['nom_makan'] ?>
+							</td>
+						</tr>
+						<?php endforeach; ?>
+					</tbody>
+				</table>
+			</div>
+
+			<div class="col-sm-6">
+				<h4>
+					Angka Dealer
+				</h4>
+				<table class="table table-bordered">
+					<thead>
+						<tr>
+							<th>Kode</th>
+							<th>Angka</th>
+							<th>Nominal</th>
+						</tr>
+					</thead>
+					<tbody>
+						<?php foreach($result as $data) : ?>
+						<tr>
+							<td>
+								<?= $data['kode'] ?>
+							</td>
+							<td align="center">
+								<?= $data['angka'] ?? '-' ?>
+							</td>
+							<td>
+								<?= $data['nom_dealer'] ?>
+							</td>
+						</tr>
+						<?php endforeach; ?>
+					</tbody>
+				</table>
+			</div>
+		</div>
+
+	</div>
+
+	<script>
+		jQuery(function($) {
+			$('#sendToNumber').on('submit', function(event) {
+				event.preventDefault();
+				$.post('ajax/rekap/sendToDealer.php', $(this).serialize(), response => {
+					$('#submitSmsOutbox').remove();
+					alert(response.message);
+				}, 'json');
+			});
+		});
+	</script>
+
+	<?php
+include('footer.php');
+?>
