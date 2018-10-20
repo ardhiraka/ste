@@ -4,7 +4,7 @@ include('header.php');
 
 $field_tsjp 	= ['TS', 'TS.A.KP', 'TS.A.K', 'TS.A.E', 'TS.KP.K', 'TS.KP.E', 'JP', 'JP.A.KP', 'JP.A.K', 'JP.A.E', 'JP.KP.K', 'JP.KP.E'];
 $field_ttjj 	= ['TT', 'TT.A.KP', 'TT.A.K', 'TT.A.E', 'TT.KP.K', 'TT.KP.E', 'JJ', 'JJ.A.KP', 'JJ.A.K', 'JJ.A.E', 'JJ.KP.K', 'JJ.KP.E'];
-$field_partai 	= ['C', 'C.A', 'C.KP', 'C.K', 'C.E', 'CM', 'CN', 'M'];
+$field_partai 	= ['C', 'C.A', 'C.KP', 'C.K', 'C.E', 'CM', 'CN', 'M', 'H'];
 
 $info = false;
 

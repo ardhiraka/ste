@@ -117,7 +117,7 @@ $getIDs = [
 						<td><?= $item['nominal'] ?></td>
 						<td><?= $item['nom_makan'] ?></td>
 						<td><?= $item['nom_dealer'] ?></td>
-						<td align="center" class="text-white <?= $item['isProcessed'] ? 'bg-success' : 'bg-danger' ?>"><?= $item['isProcessed'] ? '✔' : '❌' ?></td>
+						<td align="center" class="text-white <?= $item['sendToDealer'] ? 'bg-success' : 'bg-danger' ?>"><?= $item['sendToDealer'] ? '✔' : '❌' ?></td>
 					</tr>
 				<?php endforeach; else : ?>
 					<tr>
@@ -165,7 +165,7 @@ $getIDs = [
 						<td><?= $item['nominal'] ?></td>
 						<td><?= $item['nom_makan'] ?></td>
 						<td><?= $item['nom_dealer'] ?></td>
-						<td align="center" class="text-white <?= $item['isProcessed'] ? 'bg-success' : 'bg-danger' ?>"><?= $item['isProcessed'] ? '✔' : '❌' ?></td>
+						<td align="center" class="text-white <?= $item['sendToDealer'] ? 'bg-success' : 'bg-danger' ?>"><?= $item['sendToDealer'] ? '✔' : '❌' ?></td>
 					</tr>
 				<?php endforeach; else : ?>
 					<tr>
@@ -213,7 +213,7 @@ $getIDs = [
 						<td><?= $item['nominal'] ?></td>
 						<td><?= $item['nom_makan'] ?></td>
 						<td><?= $item['nom_dealer'] ?></td>
-						<td align="center" class="text-white <?= $item['isProcessed'] ? 'bg-success' : 'bg-danger' ?>"><?= $item['isProcessed'] ? '✔' : '❌' ?></td>
+						<td align="center" class="text-white <?= $item['sendToDealer'] ? 'bg-success' : 'bg-danger' ?>"><?= $item['sendToDealer'] ? '✔' : '❌' ?></td>
 					</tr>
 				<?php endforeach; else : ?>
 					<tr>
@@ -261,7 +261,7 @@ $getIDs = [
 						<td><?= $item['nominal'] ?></td>
 						<td><?= $item['nom_makan'] ?></td>
 						<td><?= $item['nom_dealer'] ?></td>
-						<td align="center" class="text-white <?= $item['isProcessed'] ? 'bg-success' : 'bg-danger' ?>"><?= $item['isProcessed'] ? '✔' : '❌' ?></td>
+						<td align="center" class="text-white <?= $item['sendToDealer'] ? 'bg-success' : 'bg-danger' ?>"><?= $item['sendToDealer'] ? '✔' : '❌' ?></td>
 					</tr>
 				<?php endforeach; else : ?>
 					<tr>
@@ -291,7 +291,7 @@ $getIDs = [
 				<h5 class="modal-title" id="ModalNominal">Masukan Nominal Potongan</h5>
 				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
 			</div>
-			<form action="hasilpotongan.php" method="post">
+			<form action="pemotongan.php" method="post">
 				<div class="modal-body">
 					<input type="hidden" name="tipe" value="nominal">
 					<input type="hidden" name="ids">
@@ -319,7 +319,7 @@ $getIDs = [
 				<h5 class="modal-title" id="exampleModalLabel">Masukan Persentase Potongan</h5>
 				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
 			</div>
-			<form action="hasilpotongan.php" method="post">
+			<form action="pemotongan.php" method="post">
 				<div class="modal-body">
 					<input type="hidden" name="tipe" value="persen">
 					<input type="hidden" name="ids">

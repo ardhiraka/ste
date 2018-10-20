@@ -34,24 +34,6 @@ $members = $db->fetch_all("SELECT * FROM member WHERE downline != ?", 0);
 			endif;
 		?>
 
-		<div class="win_number mb-4">
-			<form action="setWinNumber.php" method="post">
-				<div class="row">
-					<div class="col">
-						<div class="input-group">
-							<div class="input-group-prepend">
-								<div class="input-group-text">Winning Number</div>
-							</div>
-							<input name="win_number" value="<?= $admin['win_number'] ?>" type="number" class="form-control" placeholder="Winning Number" required="required">
-						</div>
-					</div>
-					<div class="col-2 input-group-append">
-						<button class="btn btn-info btn-sm waves-effect m-0" type="submit">Simpan</button>
-					</div>
-				</div>
-			</form>
-		</div>
-
 		<div class="row">
 			<div class="col-sm-12">
 				<a href="new_member.php" class="btn btn-primary mb-3">Tambah Member</a><br />
