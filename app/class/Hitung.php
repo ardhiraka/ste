@@ -34,11 +34,7 @@ class Hitung
 	{
 		$this->getData();
 
-		if ($this->data) :
-			$this->calcData();
-		endif;
-
-		$this->dd($this);
+		if ($this->data) $this->calcData();
 	}
 
 	private function getData()
@@ -55,7 +51,17 @@ class Hitung
 
 			$this->config = $maping;
 		elseif ($this->for == 'member') :
-			$this->data = 'member';
+			$this->data = $this->db->fetch_all("SELECT * FROM `split` WHERE isCalc = 0 AND tanggal = ?", date('Y-m-d'));
+			
+			$ids 		= array_values(array_unique(array_column($this->data, 'member_id')));
+			$config 	= $this->db->fetch_all("SELECT * FROM `member_config` WHERE member_id IN (" . implode(',', $ids) . ")");
+			$maping 	= [];
+
+			foreach ($config as $item) :
+				$maping[$item['member_id']] = (array) json_decode($item['config']);
+			endforeach;
+
+			$this->config = $maping;
 		else :
 			$this->data = false;
 		endif;
@@ -63,73 +69,64 @@ class Hitung
 
 	private function calcData()
 	{
-		switch ($this->for) :
-			case 'dealer':
-				$this->calcDataDealer();
-				break;
-			case 'member':
-				# code...
-				break;
-		endswitch;
-	}
-
-	private function calcDataDealer()
-	{
 		foreach ($this->data as $index => $item) :
-			$this->data[$index] = $this->calcDataCore($item, 1);
+			$member = ($this->for == 'dealer') ? 1 : $item['member_id'];
+
+			$this->data[$index] = $this->calcDataCore($item, $member, $this->for);
 		endforeach;
-
-		$this->dd($this->data);
 	}
 
-	private function calcDataMember()
-	{
-		# code...
-	}
-
-	private function calcDataCore(array $data, int $id) : array
+	private function calcDataCore(array $data, int $id, string $type) : array
 	{
 		$exp 	= explode('.', $data['kode']);
 		$fCode 	= $exp[0];
 		$config = $this->config[$id];
+		$indexByHead 	= ['A' => 0, 'KP' => 1, 'K' => 2, 'E' => 3];
+		$indexDefault	= ['J' => 3, 'P' => 3, 'T' => 2, 'S' => 2];
+		$codeNumber 	= [
+			'J'		=> [1, 3, 5, 7, 9],
+			'P'		=> [0, 2, 4, 6, 8],
+			'T'		=> [5, 6, 7, 8, 9],
+			'S'		=> [0, 1, 2, 3, 4],
+			'PING'	=> array_merge(range(0, 24), range(75, 99)),
+			'TENG'	=> range(25, 74)
+		];
+		$codeString		= [
+			'TS'	=> [['besar', 'kecil'], ['kecil', 'besar']],
+			'TT'	=> [['besar', 'besar'], ['kecil', 'kecil']],
+			'JP'	=> [['ganjil', 'genap'], ['genap', 'ganjil']],
+			'JJ'	=> [['ganjil', 'ganjil'], ['genap', 'genap']],
+		];
+		$codeStringIdv 	= ['J' => ['ganjil'], 'P' => ['genap'], 'T' => ['besar'], 'S' => ['kecil']];
 
 		if (in_array($fCode, ['2D', '3D', '4D'])) :
 			$correctNumber 	= $this->getCorrectNumber($fCode);
 			$isCorrect 		= $correctNumber == $data['angka'];
 			$iWin 	= $isCorrect ? 1 : 0;
 			$iLose	= $isCorrect ? 0 : 1;
-			$rWinMakan	= $this->getNomWin($iWin, $data['nom_makan'], $config["WIN_{$fCode}"]);
-			$rLoseMakan	= $this->getNomLose($iLose, $data['nom_makan'], $config["DISC_{$fCode}"]);
-			$rWinDealer		= $this->getNomWin($iWin, $data['nom_dealer'], $config["WIN_{$fCode}"]);
-			$rLoseDealer	= $this->getNomLose($iLose, $data['nom_dealer'], $config["DISC_{$fCode}"]);
-			$hasilMakan 	= $rWinMakan - $rLoseMakan;
-			$hasilDealer 	= $rWinDealer - $rLoseDealer;
 
-			$data['win']	= $iWin;
-			$data['lose']	= $iLose;
-			$data['hasil_makan'] 	= $hasilMakan;
-			$data['hasil_dealer'] 	= $hasilDealer;
+			if ($type == 'dealer') :
+				$rWinMakan	= $this->getNomWin($iWin, $data['nom_makan'], $config["WIN_{$fCode}"]);
+				$rLoseMakan	= $this->getNomLose($iLose, $data['nom_makan'], $config["DISC_{$fCode}"]);
+				$rWinDealer		= $this->getNomWin($iWin, $data['nom_dealer'], $config["WIN_{$fCode}"]);
+				$rLoseDealer	= $this->getNomLose($iLose, $data['nom_dealer'], $config["DISC_{$fCode}"]);
+				$hasilMakan 	= $rWinMakan - $rLoseMakan;
+				$hasilDealer 	= $rWinDealer - $rLoseDealer;
+			else :
+				$rWin 	= $this->getNomWin($iWin, $data['nominal'], $config["WIN_{$fCode}"]);
+				$rLose	= $this->getNomLose($iLose, $data['nominal'], $config["DISC_{$fCode}"]);
+				$hasil 	= $rWin - $rLose;
+			endif;
+
+			// $data['win']	= $iWin;
+			// $data['lose']	= $iLose;
+			// $data['hasil_makan'] 	= $hasilMakan;
+			// $data['hasil_dealer'] 	= $hasilDealer;
 
 		elseif (in_array($fCode, ['J', 'P', 'T', 'S', 'PING', 'TENG', 'TS', 'TT', 'JP', 'JJ'])) :
-			$iConfig		= str_replace('.', '_', $data['kode']);
-			$indexByHead 	= ['A' => 0, 'KP' => 1, 'K' => 2, 'E' => 3];
-			$indexDefault	= ['J' => 3, 'P' => 3, 'T' => 2, 'S' => 2];
-			$codeNumber 	= [
-				'J'		=> [1, 3, 5, 7, 9],
-				'P'		=> [0, 2, 4, 6, 8],
-				'T'		=> [5, 6, 7, 8, 9],
-				'S'		=> [0, 1, 2, 3, 4],
-				'PING'	=> array_merge(range(0, 24), range(75, 99)),
-				'TENG'	=> range(25, 74)
-			];
-			$codeString		= [
-				'TS'	=> [['besar', 'kecil'], ['kecil', 'besar']],
-				'TT'	=> [['besar', 'besar'], ['kecil', 'kecil']],
-				'JP'	=> [['ganjil', 'genap'], ['genap', 'ganjil']],
-				'JJ'	=> [['ganjil', 'ganjil'], ['genap', 'genap']],
-			];
-			$iWin	= 0;
-			$iLose	= 0;
+			$iConfig	= str_replace('.', '_', $data['kode']);
+			// $iWin	= 0;
+			// $iLose	= 0;
 
 			if (in_array($fCode, ['J', 'P', 'T', 'S'])) :
 				$index 		= count($exp) > 1 ? $indexByHead[$exp[1]] : $indexDefault[$fCode];
@@ -181,23 +178,137 @@ class Hitung
 				endif;
 			endif;
 
-			$rWinMakan	= $this->getTaxWin($iWin, $data['nom_makan']);
-			$rLoseMakan	= $this->getTaxLose($iWin, $iLose, $data['nom_makan'], $config["DISC_{$iConfig}"]);
-			$rWinDealer		= $this->getTaxWin($iWin, $data['nom_dealer']);
-			$rLoseDealer	= $this->getTaxLose($iWin, $iLose, $data['nom_dealer'], $config["DISC_{$iConfig}"]);
-			$hasilMakan 	= $rWinMakan - $rLoseMakan;
-			$hasilDealer 	= $rWinDealer - $rLoseDealer;
+			if ($type == 'dealer') :
+				$rWinMakan	= $this->getTaxWin($iWin, $data['nom_makan']);
+				$rLoseMakan	= $this->getTaxLose($iWin, $iLose, $data['nom_makan'], $config["DISC_{$iConfig}"]);
+				$rWinDealer		= $this->getTaxWin($iWin, $data['nom_dealer']);
+				$rLoseDealer	= $this->getTaxLose($iWin, $iLose, $data['nom_dealer'], $config["DISC_{$iConfig}"]);
+				$hasilMakan 	= $rWinMakan - $rLoseMakan;
+				$hasilDealer 	= $rWinDealer - $rLoseDealer;
+			else :
+				$rWin	= $this->getTaxWin($iWin, $data['nominal']);
+				$rLose	= $this->getTaxLose($iWin, $iLose, $data['nominal'], $config["DISC_{$iConfig}"]);
+				$hasil 	= $rWin - $rLose;
+			endif;
 
-			$data['win']	= $iWin;
-			$data['lose']	= $iLose;
-			$data['hasil_makan'] 	= $hasilMakan;
-			$data['hasil_dealer'] 	= $hasilDealer;
+			// $data['win']	= $iWin;
+			// $data['lose']	= $iLose;
+			// $data['hasil_makan'] 	= $hasilMakan;
+			// $data['hasil_dealer'] 	= $hasilDealer;
 
 		elseif (in_array($fCode, ['C', 'CM', 'CN', 'M', 'H'])) :
-			
+			if ($fCode == 'C') :
+				$numbers = count($exp) > 1 ? substr($this->winNumber, $indexByHead[$fCode], 1) : str_split($this->winNumber);
+
+				if (in_array($data['angka'], $numbers)) :
+					$iWin	= 1;
+					$iLose	= 0;
+				else :
+					$iWin	= 0;
+					$iLose	= 1;
+				endif;
+
+			elseif (in_array($fCode, ['CM', 'CN'])) :
+				$correctLength 	= ($fCode == 'CM') ? 2 : 3;
+				$numbers 		= str_split($this->winNumber);
+				$uNumbers		= str_split($data['angka']);
+				$correctNumber 	= array_intersect($numbers, $uNumbers);
+
+				if (count($correctNumber) == $correctLength) :
+					$iWin	= 1;
+					$iLose	= 0;
+				else :
+					$iWin	= 0;
+					$iLose	= 1;
+				endif;
+
+			elseif ($fCode == 'M') :
+				$index = [$indexByHead[$exp[1]], $indexByHead[$exp[3]]];
+				$correctString = $this->getCorrectString($index);
+				$theFirst 	= array_intersect($codeStringIdv[$exp[2]], $correctString[0]);
+				$theSecond 	= array_intersect($codeStringIdv[$exp[4]], $correctString[1]);
+
+				if ($theFirst && $theSecond) :
+					$iWin 	= 1;
+					$iLose 	= 0;
+				else :
+					$iWin 	= 0;
+					$iLose 	= 1;
+				endif;
+
+			elseif ($fCode == 'H') :
+				$number = array_sum([substr($this->winNumber, 2, 1), substr($this->winNumber, 3, 1)]);
+				$number = (strlen($number) > 1) ? array_sum(str_split($number)) : $number;
+				$correctString = [
+					($number % 2) ? 'ganjil' : 'genap',
+					($number < 5) ? 'kecil' : 'besar'
+				];
+				$uString 	= $codeStringIdv[$exp[1]];
+				$isCorrect 	= array_intersect($correctString, $uString);
+
+				if ($isCorrect) :
+					$iWin 	= 1;
+					$iLose 	= 0;
+				else :
+					$iWin 	= 0;
+					$iLose 	= 1;
+				endif;
+			endif;
+
+			if ($type == 'dealer') :
+				$rWinMakan	= $this->getNomWin($iWin, $data['nom_makan'], $config["WIN_{$fCode}"]);
+				$rLoseMakan	= $this->getNomLose($iLose, $data['nom_makan'], $config["DISC_{$fCode}"]);
+				$rWinDealer		= $this->getNomWin($iWin, $data['nom_dealer'], $config["WIN_{$fCode}"]);
+				$rLoseDealer	= $this->getNomLose($iLose, $data['nom_dealer'], $config["DISC_{$fCode}"]);
+				$hasilMakan 	= $rWinMakan - $rLoseMakan;
+				$hasilDealer 	= $rWinDealer - $rLoseDealer;
+			else :
+				$rWin	= $this->getNomWin($iWin, $data['nominal'], $config["WIN_{$fCode}"]);
+				$rLose	= $this->getNomLose($iLose, $data['nominal'], $config["DISC_{$fCode}"]);
+				$hasil 	= $rWin - $rLose;
+			endif;
+
+			// $data['win']	= $iWin;
+			// $data['lose']	= $iLose;
+			// $data['hasil_makan'] 	= $hasilMakan;
+			// $data['hasil_dealer'] 	= $hasilDealer;
 		endif;
 
+		$data['win']	= $iWin;
+		$data['lose']	= $iLose;
+
+		if ($type == 'dealer') :
+			$data['hasil_makan'] 	= $hasilMakan;
+			$data['hasil_dealer'] 	= $hasilDealer;
+		else :
+			$data['hasil']	= $hasil;
+		endif;
+
+		$this->updateDB($data);
+
 		return $data;
+	}
+
+	private function updateDB(array $data) : void
+	{
+		$tableName = ($this->for == 'dealer') ? 'rekap' : 'split';
+
+		if ($this->for == 'dealer') :
+			$update = [
+				'hasil_makan'	=> $data['hasil_makan'],
+				'hasil_dealer'	=> $data['hasil_dealer'],
+			];
+		else :
+			$update = [
+				'hasil'		=> $data['hasil'],
+			];
+		endif;
+
+		$update['win']		= $data['win'];
+		$update['lose']		= $data['lose'];
+		$update['isCalc']	= 0;
+
+		$this->db->update($tableName, $update, ['id' => $data['id']]);
 	}
 
 	private function getCorrectNumber($kode) : int
@@ -229,7 +340,7 @@ class Hitung
 			$result[$index][] = $tsStr;
 		endforeach;
 
-		return $result;
+		return array_values($result);
 	}
 
 	private function getNomWin(int $jumlah, int $nominal, int $config)

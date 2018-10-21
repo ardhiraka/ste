@@ -2,6 +2,8 @@
 
 include('header.php');
 
+$member = $this->db->fetch_all("SELECT m.nama, SUM(win) AS win, SUM(lose) AS lose, SUM(hasil) as hasil FROM split AS s LEFT JOIN member AS m ON m.id = s.member_id GROUP BY s.member_id");
+
 ?>
 
 <div class="container">
