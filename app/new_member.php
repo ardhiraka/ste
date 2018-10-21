@@ -6,14 +6,6 @@ $field_tsjp 	= ['TS', 'TS.A.KP', 'TS.A.K', 'TS.A.E', 'TS.KP.K', 'TS.KP.E', 'JP',
 $field_ttjj 	= ['TT', 'TT.A.KP', 'TT.A.K', 'TT.A.E', 'TT.KP.K', 'TT.KP.E', 'JJ', 'JJ.A.KP', 'JJ.A.K', 'JJ.A.E', 'JJ.KP.K', 'JJ.KP.E'];
 $field_partai 	= ['C', 'C.A', 'C.KP', 'C.K', 'C.E', 'CM', 'CN', 'M', 'H'];
 
-$info = false;
-
-if ($_POST) :
-	// $db->insert('member', $_POST);
-
-	$info = "Data berhasil disimpan!";
-endif;
-
 ?>
 	<style scoped>
 		.tab-content {
@@ -34,12 +26,6 @@ endif;
 				Tambah Member
 			</h3>
 		</div>
-	
-		<?php if ($info) : ?>
-		<div align="center">
-			<h5><?= $info ?></h5>
-		</div>
-		<?php endif; ?>
 
 		<style scoped>
 			.input-group-text {
@@ -312,17 +298,6 @@ endif;
 								</div>
 							<?php endforeach; ?>
 						</div>
-					</div>
-					<div class="row">
-						<div class="col">
-							<div class="input-group mb-3">
-								<div class="input-group-prepend">
-									<div class="input-group-text label-55-lg">Disc H</div>
-								</div>
-								<input name="DISC_H" type="text" class="form-control" placeholder="Disc H" required="required">
-							</div>
-						</div>
-						<div class="col"></div>
 					</div>
 				</div>
 

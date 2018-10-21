@@ -19,7 +19,7 @@ if ($_POST) :
     if (!$db_error) :
         // Start - Import
         $query  = '';
-        $lines  = file('../db/installer.sql');
+        $lines  = file('installer.sql');
 
         foreach ($lines as $line) :
             if (substr($line, 0, 2) == '--' || $line == '' || substr($line, 0, 2) == '/*' )
@@ -39,7 +39,12 @@ if ($_POST) :
 
         $db->connect('pdo', 'mysql', $_POST['db_host'], $_POST['db_user'], $_POST['db_pass'], $_POST['db_base'], 3306);
 
-        // Start - Insert Dealer & User
+        // Start - Insert Dealer & Admin
+        $db->insert('admin', [
+            'username'  => $_POST['admin_username'],
+            'password'  => password_hash($_POST['admin_password'], PASSWORD_BCRYPT, ['cost' => 11]),
+        ]);
+
         $db->insert('member', [
             'nama'      => $_POST['dlr_nama'],
             'kodeid'    => $_POST['dlr_kode'],
@@ -47,11 +52,15 @@ if ($_POST) :
             'downline'  => '0'
         ]);
 
-        $db->insert('admin', [
-            'username'  => $_POST['admin_username'],
-            'password'  => password_hash($_POST['admin_password'], PASSWORD_BCRYPT, ['cost' => 11]),
+        $id_dealer      = $db->last_insert_id();
+        $dealer_config  = file_get_contents('config_dealer.json');
+
+        $db->insert('member_config', [
+            'member_id' => $id_dealer,
+            'config'    => $dealer_config,
         ]);
-        // End - Insert Dealer & User
+
+        // End - Insert Dealer & Admin
 
         // Start - Create DB Configuration
         $fileConfig = 'db.example';

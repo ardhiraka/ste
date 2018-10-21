@@ -6,11 +6,11 @@ $field_tsjp 	= ['TS', 'TS.A.KP', 'TS.A.K', 'TS.A.E', 'TS.KP.K', 'TS.KP.E', 'JP',
 $field_ttjj 	= ['TT', 'TT.A.KP', 'TT.A.K', 'TT.A.E', 'TT.KP.K', 'TT.KP.E', 'JJ', 'JJ.A.KP', 'JJ.A.K', 'JJ.A.E', 'JJ.KP.K', 'JJ.KP.E'];
 $field_partai 	= ['C', 'C.A', 'C.KP', 'C.K', 'C.E', 'CM', 'CN', 'M', 'H'];
 
-$dealer = $db->fetch_row("SELECT * FROM `member` WHERE id = ?", 1);
-$config = $db->fetch_row("SELECT * FROM `member_config` WHERE member_id = ?", 1);
+$member = $db->fetch_row("SELECT * FROM `member` WHERE id = ?", $_GET['id']);
+$config = $db->fetch_row("SELECT * FROM `member_config` WHERE member_id = ?", $_GET['id']);
 $config = (array) json_decode($config['config']);
+
 ?>
-	
 	<style scoped>
 		.tab-content {
 			margin-bottom: 1rem;
@@ -19,6 +19,7 @@ $config = (array) json_decode($config['config']);
 			color: inherit;
 		}
 	</style>
+
 	<div class="container">
 		<br />
 		<br />
@@ -26,10 +27,10 @@ $config = (array) json_decode($config['config']);
 
 		<div align="center">
 			<h3>
-				Configuration (Dealer)
+				Tambah Member
 			</h3>
 		</div>
-		
+
 		<style scoped>
 			.input-group-text {
 				min-width: 80px;
@@ -50,14 +51,14 @@ $config = (array) json_decode($config['config']);
 			}
 		</style>
 
-		<form action="edit_dealer_proses.php" method="post" class="text-center"><br />
+		<form action="edit_member_proses.php?id=<?= $_GET['id'] ?>" method="post" class="text-center"><br />
 			<div class="form-row mb-4">
 				<div class="col">
 					<div class="input-group">
 						<div class="input-group-prepend">
 							<div class="input-group-text">Nama</div>
 						</div>
-						<input name="nama" value="<?= $dealer['nama'] ?>" userdata type="text" class="form-control" placeholder="Nama" required="required">
+						<input name="nama" value="<?= $member['nama'] ?>" userdata type="text" class="form-control" placeholder="Nama" required="required">
 					</div>
 				</div>
 				<div class="col">
@@ -65,7 +66,7 @@ $config = (array) json_decode($config['config']);
 						<div class="input-group-prepend">
 							<div class="input-group-text">Kode</div>
 						</div>
-						<input name="kodeid" value="<?= $dealer['kodeid'] ?>" userdata type="text" class="form-control" placeholder="Kode" required="required">
+						<input name="kodeid" value="<?= $member['kodeid'] ?>" userdata type="text" class="form-control" placeholder="Kode" required="required">
 					</div>
 				</div>
 				<div class="col">
@@ -73,7 +74,7 @@ $config = (array) json_decode($config['config']);
 						<div class="input-group-prepend">
 							<div class="input-group-text">No. HP</div>
 						</div>
-						<input name="nohp" value="<?= $dealer['nohp'] ?>" userdata type="text" class="form-control" placeholder="No. HP" required="required">
+						<input name="nohp" value="<?= $member['nohp'] ?>" userdata type="text" class="form-control" placeholder="No. HP" required="required">
 					</div>
 				</div>
 				<div class="col">
@@ -81,7 +82,7 @@ $config = (array) json_decode($config['config']);
 						<div class="input-group-prepend">
 							<div class="input-group-text">Deposit</div>
 						</div>
-						<input name="deposit" value="<?= $dealer['deposit'] ?>" userdata type="text" class="form-control" placeholder="Deposit" required="required">
+						<input name="deposit" value="<?= $member['deposit'] ?>" userdata type="text" class="form-control" placeholder="Deposit" required="required">
 					</div>
 				</div>
 			</div>
@@ -329,12 +330,14 @@ $config = (array) json_decode($config['config']);
 				</div>
 			</div>
 			
-			<button class="btn btn-info my-4 btn-block" type="submit">Simpan Data Dealer</button>
+			<button class="btn btn-info my-4 btn-block" type="submit">Simpan Perubahan</button>
 
 		</form>
+		<!-- Default form register -->
+
 
 	</div>
 
-<?php
-include('footer.php');
-?>
+	<?php
+	include('footer.php');
+	?>

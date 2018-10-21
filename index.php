@@ -41,7 +41,7 @@ if (isset($_SESSION['isLoggedIn'])) header('location:app');
                 <!-- Password -->
                 <input name="password" type="password" id="defaultLoginFormPassword" class="form-control mb-4" placeholder="Password" required="required">
 
-                <div class="d-flex justify-content-around">
+                <div class="d-flex justify-content-around" style="display: none !important">
                     <div>
                         <!-- Remember me -->
                         <div class="custom-control custom-checkbox">

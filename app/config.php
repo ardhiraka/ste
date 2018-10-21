@@ -2,8 +2,6 @@
 
 include('header.php');
 
-$admin = $db->fetch_row("SELECT * FROM `admin` WHERE id = ?", $_SESSION['uid']);
-
 $members = $db->fetch_all("SELECT * FROM member WHERE downline != ?", 0);
 ?>
 
@@ -14,25 +12,9 @@ $members = $db->fetch_all("SELECT * FROM member WHERE downline != ?", 0);
 
 		<div align="center">
 			<h3>
-				Configuration
+				Configuration (Member)
 			</h3>
 		</div>
-
-		<?php
-			if (isset($_GET['error'])) :
-				if ($_GET['error'] == 'numeric') :
-					$message = "Winning Number harus angka!";
-				elseif ($_GET['error'] == 'length') :
-					$message = "Winning Number harus 4 huruf!";
-				elseif ($_GET['error'] == 'empty') :
-					$message = "Belum ada data!";
-				endif;
-
-				echo "<div class=\"alert\">{$message}</div>";
-			elseif (isset($_GET['success'])) :
-				echo "<div class=\"alert\">Data berhasil disimpan!</div>";
-			endif;
-		?>
 
 		<div class="row">
 			<div class="col-sm-12">
@@ -45,6 +27,7 @@ $members = $db->fetch_all("SELECT * FROM member WHERE downline != ?", 0);
 							<th>No HP</th>
 							<th>Kode</th>
 							<th>Deposit</th>
+							<th>Aksi</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -62,6 +45,10 @@ $members = $db->fetch_all("SELECT * FROM member WHERE downline != ?", 0);
 								<td>
 									<?= $member['deposit'] ;?>
 								</td>
+								<td>
+									<a href="edit_member.php?id=<?= $member['id'] ?>">Edit</a> |
+									<a hapus-member href="javascript:;" data-id="<?= $member['id'] ?>">Hapus</a>
+								</td>
 							</tr>
 						<?php endforeach; ?>
 					</tbody>
@@ -71,6 +58,20 @@ $members = $db->fetch_all("SELECT * FROM member WHERE downline != ?", 0);
 
 		</div>
 	</div>
+
+	<script type="text/javascript">
+		jQuery(function($) {
+			$('[hapus-member]').on('click', function() {
+				let id = $(this).data('id');
+				let hapus = confirm("Apa anda yakin ingin menghapus member tersebut?");
+
+				if (hapus) {
+					window.location = "hapus_member.php?id=" + id;
+				}
+			});
+		});
+	</script>
+
 	<?php
 	include('footer.php');
 	?>

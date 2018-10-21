@@ -14,3 +14,10 @@ $dbpass = 'toor';
 $dbname = 'io_ste';
 
 $db->connect('pdo', 'mysql', $dbhost, $dbuser, $dbpass, $dbname, 3306);
+
+function numToRupiah($number) {
+	$total 		= abs($number);
+	$isNegative = $number < 0;
+
+	return ($isNegative ? '- ' : '') . number_format(($total * 1000), 0, ',', '.');
+}
