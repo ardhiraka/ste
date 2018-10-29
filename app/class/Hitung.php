@@ -8,6 +8,11 @@ class Hitung
 	private $winNumber;
 	private $data;
 	private $config;
+	private $result;
+	private $memberTotal;
+	private $smsOut;
+	private $total;
+	public 	$log = false;
 
 	public function for(string $for) : self
 	{
@@ -30,11 +35,34 @@ class Hitung
 		return $this;
 	}
 
+	public function setTotalFromMember($total) : self
+	{
+		$this->memberTotal = $total;
+
+		return $this;
+	}
+
+	public function getTotal()
+	{
+		return $this->total;
+	}
+
 	public function exec()
 	{
 		$this->getData();
 
-		if ($this->data) $this->calcData();
+		if ($this->data) :
+			$this->calcData();
+			
+			$this->smsOutCalc();
+
+			$this->log = true;
+		endif;
+	}
+
+	public function saveLog()
+	{
+		$this->db->insert('log_hitung', ['tgl' => date('Y-m-d')]);
 	}
 
 	private function getData()
@@ -42,26 +70,30 @@ class Hitung
 		if ($this->for == 'dealer') :
 			$this->data = $this->db->fetch_all("SELECT * FROM `rekap` WHERE isCalc = 0 AND tanggal = ?", date('Y-m-d'));
 			
-			$config = $this->db->fetch_all("SELECT * FROM `member_config` WHERE member_id = ?", 1);
-			$maping = [];
+			if ($this->data) :
+				$config = $this->db->fetch_all("SELECT * FROM `member_config` WHERE member_id = ?", 1);
+				$maping = [];
 
-			foreach ($config as $item) :
-				$maping[$item['member_id']] = (array) json_decode($item['config']);
-			endforeach;
+				foreach ($config as $item) :
+					$maping[$item['member_id']] = (array) json_decode($item['config']);
+				endforeach;
 
-			$this->config = $maping;
+				$this->config = $maping;
+			endif;
 		elseif ($this->for == 'member') :
 			$this->data = $this->db->fetch_all("SELECT * FROM `split` WHERE isCalc = 0 AND tanggal = ?", date('Y-m-d'));
 			
-			$ids 		= array_values(array_unique(array_column($this->data, 'member_id')));
-			$config 	= $this->db->fetch_all("SELECT * FROM `member_config` WHERE member_id IN (" . implode(',', $ids) . ")");
-			$maping 	= [];
+			if ($this->data) :
+				$ids 		= array_values(array_unique(array_column($this->data, 'member_id')));
+				$config 	= $this->db->fetch_all("SELECT * FROM `member_config` WHERE member_id IN (" . implode(',', $ids) . ")");
+				$maping 	= [];
 
-			foreach ($config as $item) :
-				$maping[$item['member_id']] = (array) json_decode($item['config']);
-			endforeach;
+				foreach ($config as $item) :
+					$maping[$item['member_id']] = (array) json_decode($item['config']);
+				endforeach;
 
-			$this->config = $maping;
+				$this->config = $maping;
+			endif;
 		else :
 			$this->data = false;
 		endif;
@@ -118,15 +150,8 @@ class Hitung
 				$hasil 	= $rWin - $rLose;
 			endif;
 
-			// $data['win']	= $iWin;
-			// $data['lose']	= $iLose;
-			// $data['hasil_makan'] 	= $hasilMakan;
-			// $data['hasil_dealer'] 	= $hasilDealer;
-
-		elseif (in_array($fCode, ['J', 'P', 'T', 'S', 'PING', 'TENG', 'TS', 'TT', 'JP', 'JJ'])) :
+		elseif (in_array($fCode, ['J', 'P', 'T', 'S', 'PING', 'TENG', 'TS', 'TT', 'JP', 'JJ', 'H'])) :
 			$iConfig	= str_replace('.', '_', $data['kode']);
-			// $iWin	= 0;
-			// $iLose	= 0;
 
 			if (in_array($fCode, ['J', 'P', 'T', 'S'])) :
 				$index 		= count($exp) > 1 ? $indexByHead[$exp[1]] : $indexDefault[$fCode];
@@ -176,6 +201,23 @@ class Hitung
 					$iWin 	= 0;
 					$iLose 	= 1;
 				endif;
+			elseif ($fCode == 'H') :
+				$number = array_sum([substr($this->winNumber, 2, 1), substr($this->winNumber, 3, 1)]);
+				$number = (strlen($number) > 1) ? array_sum(str_split($number)) : $number;
+				$correctString = [
+					($number % 2) ? 'ganjil' : 'genap',
+					($number < 5) ? 'kecil' : 'besar'
+				];
+				$uString 	= $codeStringIdv[$exp[1]];
+				$isCorrect 	= array_intersect($correctString, $uString);
+
+				if ($isCorrect) :
+					$iWin 	= 1;
+					$iLose 	= 0;
+				else :
+					$iWin 	= 0;
+					$iLose 	= 1;
+				endif;
 			endif;
 
 			if ($type == 'dealer') :
@@ -191,12 +233,7 @@ class Hitung
 				$hasil 	= $rWin - $rLose;
 			endif;
 
-			// $data['win']	= $iWin;
-			// $data['lose']	= $iLose;
-			// $data['hasil_makan'] 	= $hasilMakan;
-			// $data['hasil_dealer'] 	= $hasilDealer;
-
-		elseif (in_array($fCode, ['C', 'CM', 'CN', 'M', 'H'])) :
+		elseif (in_array($fCode, ['C', 'CM', 'CN', 'M'])) :
 			if ($fCode == 'C') :
 				$numbers = count($exp) > 1 ? substr($this->winNumber, $indexByHead[$fCode], 1) : str_split($this->winNumber);
 
@@ -235,24 +272,6 @@ class Hitung
 					$iWin 	= 0;
 					$iLose 	= 1;
 				endif;
-
-			elseif ($fCode == 'H') :
-				$number = array_sum([substr($this->winNumber, 2, 1), substr($this->winNumber, 3, 1)]);
-				$number = (strlen($number) > 1) ? array_sum(str_split($number)) : $number;
-				$correctString = [
-					($number % 2) ? 'ganjil' : 'genap',
-					($number < 5) ? 'kecil' : 'besar'
-				];
-				$uString 	= $codeStringIdv[$exp[1]];
-				$isCorrect 	= array_intersect($correctString, $uString);
-
-				if ($isCorrect) :
-					$iWin 	= 1;
-					$iLose 	= 0;
-				else :
-					$iWin 	= 0;
-					$iLose 	= 1;
-				endif;
 			endif;
 
 			if ($type == 'dealer') :
@@ -267,11 +286,6 @@ class Hitung
 				$rLose	= $this->getNomLose($iLose, $data['nominal'], $config["DISC_{$fCode}"]);
 				$hasil 	= $rWin - $rLose;
 			endif;
-
-			// $data['win']	= $iWin;
-			// $data['lose']	= $iLose;
-			// $data['hasil_makan'] 	= $hasilMakan;
-			// $data['hasil_dealer'] 	= $hasilDealer;
 		endif;
 
 		$data['win']	= $iWin;
@@ -300,15 +314,72 @@ class Hitung
 			];
 		else :
 			$update = [
+				'member_id'	=> $data['member_id'],
 				'hasil'		=> $data['hasil'],
 			];
 		endif;
 
 		$update['win']		= $data['win'];
 		$update['lose']		= $data['lose'];
-		$update['isCalc']	= 0;
 
-		$this->db->update($tableName, $update, ['id' => $data['id']]);
+		$this->result[$this->for][] = $update;
+
+		$this->db->update($tableName, ['win' => $data['win'], 'lose' => $data['lose'], 'isCalc' => 1], ['id' => $data['id']]);
+	}
+
+	public function smsOutCalc()
+	{
+		$data 	= $this->result[$this->for];
+		$result	= [];
+		$total 	= 0;
+
+		if ($this->for == 'member') :
+			$perMember = [];
+
+			foreach ($data as $item) :
+				$perMember[$item['member_id']][] = $item;
+			endforeach;
+
+			foreach ($perMember as $id => $item) :
+				$result[$id]['member_id'] 	= $id;
+				$result[$id]['win'] 		= array_sum(array_column($item, 'win'));
+				$result[$id]['lose'] 		= array_sum(array_column($item, 'lose'));
+				$result[$id]['hasil'] 		= array_sum(array_column($item, 'hasil'));
+				$result[$id]['tgl']			= date('Y-m-d');
+			endforeach;
+
+			$result = array_values($result);
+			$total 	= array_sum(array_column($result, 'hasil'));
+
+		else :
+			$_result['win']				= array_sum(array_column($data, 'win'));
+			$_result['lose'] 			= array_sum(array_column($data, 'lose'));
+			$_result['hasil_makan'] 	= array_sum(array_column($data, 'hasil_makan'));
+			$_result['hasil_dealer'] 	= array_sum(array_column($data, 'hasil_dealer'));
+			$_result['tgl'] 			= date('Y-m-d');
+
+			$_total = $_result['hasil_makan'] + $_result['hasil_dealer'];
+
+			if ($_total < $this->memberTotal) :
+				$makan = $this->memberTotal - $_result['hasil_dealer'];
+				$_result['hasil_makan'] = $makan;
+			endif;
+
+			$result[]	= $_result;
+			$total 		= $_result['hasil_makan'] + $_result['hasil_dealer'];
+		endif;
+
+		$this->total 	= $total;
+		$this->smsOut 	= $result;
+
+		$this->saveSmsOut();
+	}
+
+	private function saveSmsOut()
+	{
+		$tableName = ($this->for == 'dealer') ? 'smsout_dealer' : 'smsout_member';
+
+		$this->db->insert($tableName, $this->smsOut);
 	}
 
 	private function getCorrectNumber($kode) : int

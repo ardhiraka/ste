@@ -22,17 +22,27 @@ elseif (strlen($number) != 4) :
     return header('location: ' . $prev . "?error=length");
 endif;
 
-// Save new win number
-$db->update('admin', ['win_number' => $number], ['id' => $_SESSION['uid']]);
+$log = $db->fetch_all("SELECT * FROM `log_hitung` WHERE tgl = ?", date('Y-m-d'));
 
-// Data Rekap
-$hitungRekap = new Hitung;
-$hitungRekap->for('dealer')->setDBHelper($db)->setWinNumber($number)->exec();
-// Data Rekap
+if (count($log) <= 2) :
+	// Save new win number
+	$db->update('admin', ['win_number' => $number], ['id' => $_SESSION['uid']]);
 
-// Data Member
-$hitungMember = new Hitung;
-$hitungMember->for('member')->setDBHelper($db)->setWinNumber($number)->exec();
-// Data Member
+	// Data Member
+	$hitungMember = new Hitung;
+	$hitungMember->for('member')->setDBHelper($db)->setWinNumber($number)->exec();
+	// Data Member
+
+	// Data Rekap
+	$hitungRekap = new Hitung;
+	$hitungRekap->for('dealer')->setDBHelper($db)->setWinNumber($number)->setTotalFromMember($hitungMember->getTotal())->exec();
+	// Data Rekap
+
+	if ($hitungRekap->log) :
+		(new Hitung)->setDBHelper($db)->saveLog();
+	endif;
+else :
+	return header('location: ' . $prev . "?error=max");
+endif;
 
 return header('location: ' . $prev . "?success=true");

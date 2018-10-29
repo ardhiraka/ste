@@ -7,11 +7,7 @@ $field_ttjj 	= ['TT', 'TT.A.KP', 'TT.A.K', 'TT.A.E', 'TT.KP.K', 'TT.KP.E', 'JJ',
 $field_h 		= [['H.T', 'H.J'], ['H.S', 'H.P']];
 $field_partai 	= ['C', 'C.A', 'C.KP', 'C.K', 'C.E', 'CM', 'CN', 'M'];
 
-$dealer = $db->fetch_row("SELECT * FROM `member` WHERE id = ?", 1);
-$config = $db->fetch_row("SELECT * FROM `member_config` WHERE member_id = ?", 1);
-$config = (array) json_decode($config['config']);
 ?>
-	
 	<style scoped>
 		.tab-content {
 			margin-bottom: 1rem;
@@ -20,6 +16,7 @@ $config = (array) json_decode($config['config']);
 			color: inherit;
 		}
 	</style>
+
 	<div class="container">
 		<br />
 		<br />
@@ -27,10 +24,10 @@ $config = (array) json_decode($config['config']);
 
 		<div align="center">
 			<h3>
-				Configuration (Dealer)
+				Template Baru
 			</h3>
 		</div>
-		
+
 		<style scoped>
 			.input-group-text {
 				min-width: 80px;
@@ -51,38 +48,25 @@ $config = (array) json_decode($config['config']);
 			}
 		</style>
 
-		<form action="edit_dealer_proses.php" method="post" class="text-center"><br />
+		<form action="new_template_proses.php" method="post" class="text-center"><br />
 			<div class="form-row mb-4">
 				<div class="col">
 					<div class="input-group">
 						<div class="input-group-prepend">
-							<div class="input-group-text">Nama</div>
+							<div class="input-group-text">Nama Template</div>
 						</div>
-						<input name="nama" value="<?= $dealer['nama'] ?>" userdata type="text" class="form-control" placeholder="Nama" required="required">
+						<input name="nama" userdata type="text" class="form-control" placeholder="Nama Template" required="required">
 					</div>
 				</div>
 				<div class="col">
 					<div class="input-group">
 						<div class="input-group-prepend">
-							<div class="input-group-text">Kode</div>
+							<div class="input-group-text">Status</div>
 						</div>
-						<input name="kodeid" value="<?= $dealer['kodeid'] ?>" userdata type="text" class="form-control" placeholder="Kode" required="required">
-					</div>
-				</div>
-				<div class="col">
-					<div class="input-group">
-						<div class="input-group-prepend">
-							<div class="input-group-text">No. HP</div>
-						</div>
-						<input name="nohp" value="<?= $dealer['nohp'] ?>" userdata type="text" class="form-control" placeholder="No. HP" required="required">
-					</div>
-				</div>
-				<div class="col">
-					<div class="input-group">
-						<div class="input-group-prepend">
-							<div class="input-group-text">Deposit</div>
-						</div>
-						<input name="deposit" value="<?= $dealer['deposit'] ?>" userdata type="text" class="form-control" placeholder="Deposit" required="required">
+						<select name="tampil" class="form-control" required="required">
+							<option value="1" selected="selected">Tampilkan</option>
+							<option value="0">Sembunyikan</option>
+						</select>
 					</div>
 				</div>
 			</div>
@@ -113,7 +97,7 @@ $config = (array) json_decode($config['config']);
 								<div class="input-group-prepend">
 									<div class="input-group-text">Win 2D</div>
 								</div>
-								<input name="WIN_2D" value="<?= $config['WIN_2D'] ?>" type="text" class="form-control" placeholder="Win 2D" required="required">
+								<input name="WIN_2D" type="text" class="form-control" placeholder="Win 2D" required="required">
 							</div>
 						</div>
 						<div class="col">
@@ -121,7 +105,7 @@ $config = (array) json_decode($config['config']);
 								<div class="input-group-prepend">
 									<div class="input-group-text">Disc 2D</div>
 								</div>
-								<input name="DISC_2D" value="<?= $config['DISC_2D'] ?>" type="text" class="form-control" placeholder="Disc 2D" required="required">
+								<input name="DISC_2D" type="text" class="form-control" placeholder="Disc 2D" required="required">
 							</div>
 						</div>
 					</div>
@@ -131,7 +115,7 @@ $config = (array) json_decode($config['config']);
 								<div class="input-group-prepend">
 									<div class="input-group-text">Win 3D</div>
 								</div>
-								<input name="WIN_3D" value="<?= $config['WIN_3D'] ?>" type="text" class="form-control" placeholder="Win 3D" required="required">
+								<input name="WIN_3D" type="text" class="form-control" placeholder="Win 3D" required="required">
 							</div>
 						</div>
 						<div class="col">
@@ -139,7 +123,7 @@ $config = (array) json_decode($config['config']);
 								<div class="input-group-prepend">
 									<div class="input-group-text">Disc 3D</div>
 								</div>
-								<input name="DISC_3D" value="<?= $config['DISC_3D'] ?>" type="text" class="form-control" placeholder="Disc 3D" required="required">
+								<input name="DISC_3D" type="text" class="form-control" placeholder="Disc 3D" required="required">
 							</div>
 						</div>
 					</div>
@@ -149,7 +133,7 @@ $config = (array) json_decode($config['config']);
 								<div class="input-group-prepend">
 									<div class="input-group-text">Win 4D</div>
 								</div>
-								<input name="WIN_4D" value="<?= $config['WIN_4D'] ?>" type="text" class="form-control" placeholder="Win 4D" required="required">
+								<input name="WIN_4D" type="text" class="form-control" placeholder="Win 4D" required="required">
 							</div>
 						</div>
 						<div class="col">
@@ -157,7 +141,7 @@ $config = (array) json_decode($config['config']);
 								<div class="input-group-prepend">
 									<div class="input-group-text">Disc 4D</div>
 								</div>
-								<input name="DISC_4D" value="<?= $config['DISC_4D'] ?>" type="text" class="form-control" placeholder="Disc 4D" required="required">
+								<input name="DISC_4D" type="text" class="form-control" placeholder="Disc 4D" required="required">
 							</div>
 						</div>
 					</div>
@@ -173,7 +157,7 @@ $config = (array) json_decode($config['config']);
 										<div class="input-group-prepend">
 											<div class="input-group-text label-55">Disc J</div>
 										</div>
-										<input name="DISC_J" value="<?= $config['DISC_J'] ?>" type="text" class="form-control" placeholder="Disc J" required="required">
+										<input name="DISC_J" type="text" class="form-control" placeholder="Disc J" required="required">
 									</div>
 								</div>
 							</div>
@@ -184,7 +168,7 @@ $config = (array) json_decode($config['config']);
 											<div class="input-group-prepend">
 												<div class="input-group-text label-55"><?= "Disc J.{$head}" ?></div>
 											</div>
-											<input name='<?= "DISC_J_{$head}" ?>' value='<?= $config["DISC_J_{$head}"] ?>' type="text" class="form-control" placeholder='<?= "Disc J.{$head}" ?>' required="required">
+											<input name='<?= "DISC_J_{$head}" ?>' type="text" class="form-control" placeholder='<?= "Disc J.{$head}" ?>' required="required">
 										</div>
 									</div>
 								</div>
@@ -197,7 +181,7 @@ $config = (array) json_decode($config['config']);
 										<div class="input-group-prepend">
 											<div class="input-group-text label-55">Disc P</div>
 										</div>
-										<input name="DISC_P" value='<?= $config["DISC_P"] ?>' type="text" class="form-control" placeholder="Disc P" required="required">
+										<input name="DISC_P" type="text" class="form-control" placeholder="Disc P" required="required">
 									</div>
 								</div>
 							</div>
@@ -208,7 +192,7 @@ $config = (array) json_decode($config['config']);
 											<div class="input-group-prepend">
 												<div class="input-group-text label-55"><?= "Disc P.{$head}" ?></div>
 											</div>
-											<input name='<?= "DISC_P_{$head}" ?>' value='<?= $config["DISC_P_{$head}"] ?>' type="text" class="form-control" placeholder='<?= "Disc P.{$head}" ?>' required="required">
+											<input name='<?= "DISC_P_{$head}" ?>' type="text" class="form-control" placeholder='<?= "Disc P.{$head}" ?>' required="required">
 										</div>
 									</div>
 								</div>
@@ -221,7 +205,7 @@ $config = (array) json_decode($config['config']);
 										<div class="input-group-prepend">
 											<div class="input-group-text label-55">Disc T</div>
 										</div>
-										<input name="DISC_T" value='<?= $config["DISC_T"] ?>' type="text" class="form-control" placeholder="Disc T" required="required">
+										<input name="DISC_T" type="text" class="form-control" placeholder="Disc T" required="required">
 									</div>
 								</div>
 							</div>
@@ -232,7 +216,7 @@ $config = (array) json_decode($config['config']);
 											<div class="input-group-prepend">
 												<div class="input-group-text label-55"><?= "Disc T.{$head}" ?></div>
 											</div>
-											<input name='<?= "DISC_T_{$head}" ?>' value='<?= $config["DISC_T_{$head}"] ?>' type="text" class="form-control" placeholder='<?= "Disc T.{$head}" ?>' required="required">
+											<input name='<?= "DISC_T_{$head}" ?>' type="text" class="form-control" placeholder='<?= "Disc T.{$head}" ?>' required="required">
 										</div>
 									</div>
 								</div>
@@ -245,7 +229,7 @@ $config = (array) json_decode($config['config']);
 										<div class="input-group-prepend">
 											<div class="input-group-text label-55">Disc S</div>
 										</div>
-										<input name="DISC_S" value='<?= $config["DISC_S"] ?>' type="text" class="form-control" placeholder="Disc S" required="required">
+										<input name="DISC_S" type="text" class="form-control" placeholder="Disc S" required="required">
 									</div>
 								</div>
 							</div>
@@ -256,7 +240,7 @@ $config = (array) json_decode($config['config']);
 											<div class="input-group-prepend">
 												<div class="input-group-text label-55"><?= "Disc S.{$head}" ?></div>
 											</div>
-											<input name='<?= "DISC_S_{$head}" ?>' value='<?= $config["DISC_S_{$head}"] ?>' type="text" class="form-control" placeholder='<?= "Disc S.{$head}" ?>' required="required">
+											<input name='<?= "DISC_S_{$head}" ?>' type="text" class="form-control" placeholder='<?= "Disc S.{$head}" ?>' required="required">
 										</div>
 									</div>
 								</div>
@@ -269,7 +253,7 @@ $config = (array) json_decode($config['config']);
 								<div class="input-group-prepend">
 									<div class="input-group-text label-55-lg">Disc PING</div>
 								</div>
-								<input name="DISC_PING" value='<?= $config["DISC_PING"] ?>' type="text" class="form-control" placeholder="Disc PING" required="required">
+								<input name="DISC_PING" type="text" class="form-control" placeholder="Disc PING" required="required">
 							</div>
 						</div>
 						<div class="col">
@@ -277,7 +261,7 @@ $config = (array) json_decode($config['config']);
 								<div class="input-group-prepend">
 									<div class="input-group-text label-55-lg">Disc TENG</div>
 								</div>
-								<input name="DISC_TENG" value='<?= $config["DISC_TENG"] ?>' type="text" class="form-control" placeholder="Disc TENG" required="required">
+								<input name="DISC_TENG" type="text" class="form-control" placeholder="Disc TENG" required="required">
 							</div>
 						</div>
 					</div>
@@ -288,7 +272,7 @@ $config = (array) json_decode($config['config']);
 									<div class="input-group-prepend">
 										<div class="input-group-text label-55-lg"><?= "Disc {$item}" ?></div>
 									</div>
-									<input name='<?= "DISC_" . str_replace('.', '_', $item) ?>' value='<?= $config["DISC_" . str_replace('.', '_', $item)] ?>' type="text" class="form-control" placeholder='<?= "Disc {$item}" ?>' required="required">
+									<input name='<?= "DISC_" . str_replace('.', '_', $item) ?>' type="text" class="form-control" placeholder='<?= "Disc {$item}" ?>' required="required">
 								</div>
 							<?php endforeach; ?>
 						</div>
@@ -298,7 +282,7 @@ $config = (array) json_decode($config['config']);
 									<div class="input-group-prepend">
 										<div class="input-group-text label-55-lg"><?= "Disc {$item}" ?></div>
 									</div>
-									<input name='<?= "DISC_" . str_replace('.', '_', $item) ?>' value='<?= $config["DISC_" . str_replace('.', '_', $item)] ?>' type="text" class="form-control" placeholder='<?= "Disc {$item}" ?>' required="required">
+									<input name='<?= "DISC_" . str_replace('.', '_', $item) ?>' type="text" class="form-control" placeholder='<?= "Disc {$item}" ?>' required="required">
 								</div>
 							<?php endforeach; ?>
 						</div>
@@ -310,7 +294,7 @@ $config = (array) json_decode($config['config']);
 									<div class="input-group-prepend">
 										<div class="input-group-text label-55-lg"><?= "Disc {$item}" ?></div>
 									</div>
-									<input name='<?= "DISC_" . str_replace('.', '_', $item) ?>' value='<?= $config["DISC_" . str_replace('.', '_', $item)] ?>' type="text" class="form-control" placeholder='<?= "Disc {$item}" ?>' required="required">
+									<input name='<?= "DISC_" . str_replace('.', '_', $item) ?>' type="text" class="form-control" placeholder='<?= "Disc {$item}" ?>' required="required">
 								</div>
 							<?php endforeach; ?>
 						</div>
@@ -320,7 +304,7 @@ $config = (array) json_decode($config['config']);
 									<div class="input-group-prepend">
 										<div class="input-group-text label-55-lg"><?= "Disc {$item}" ?></div>
 									</div>
-									<input name='<?= "DISC_" . str_replace('.', '_', $item) ?>' value='<?= $config["DISC_" . str_replace('.', '_', $item)] ?>' type="text" class="form-control" placeholder='<?= "Disc {$item}" ?>' required="required">
+									<input name='<?= "DISC_" . str_replace('.', '_', $item) ?>' type="text" class="form-control" placeholder='<?= "Disc {$item}" ?>' required="required">
 								</div>
 							<?php endforeach; ?>
 						</div>
@@ -336,7 +320,7 @@ $config = (array) json_decode($config['config']);
 									<div class="input-group-prepend">
 										<div class="input-group-text label-partai"><?= "Win {$item}" ?></div>
 									</div>
-									<input name='<?= "WIN_" . str_replace('.', '_', $item) ?>' value='<?= $config["WIN_" . str_replace('.', '_', $item)] ?>' type="text" class="form-control" placeholder='<?= "Win {$item}" ?>' required="required">
+									<input name='<?= "WIN_" . str_replace('.', '_', $item) ?>' type="text" class="form-control" placeholder='<?= "Win {$item}" ?>' required="required">
 								</div>
 							</div>
 							<div class="col">
@@ -344,7 +328,7 @@ $config = (array) json_decode($config['config']);
 									<div class="input-group-prepend">
 										<div class="input-group-text label-partai"><?= "Disc {$item}" ?></div>
 									</div>
-									<input name='<?= "DISC_" . str_replace('.', '_', $item) ?>' value='<?= $config["DISC_" . str_replace('.', '_', $item)] ?>' type="text" class="form-control" placeholder='<?= "Disc {$item}" ?>' required="required">
+									<input name='<?= "DISC_" . str_replace('.', '_', $item) ?>' type="text" class="form-control" placeholder='<?= "Disc {$item}" ?>' required="required">
 								</div>
 							</div>
 						</div>
@@ -352,12 +336,17 @@ $config = (array) json_decode($config['config']);
 				</div>
 			</div>
 			
-			<button class="btn btn-info my-4 btn-block" type="submit">Simpan Data Dealer</button>
+			<button class="btn btn-info my-4 btn-block" type="submit">Tambah Template</button>
 
 		</form>
+		<!-- Default form register -->
+
 
 	</div>
 
-<?php
-include('footer.php');
-?>
+	<!-- faker -->
+	<script>$('input:not([userdata])').val(5)</script>
+
+	<?php
+	include('footer.php');
+	?>

@@ -539,18 +539,19 @@ let SMS = {
             this[property].inCorrect.push(theItem);
         }
     },
-    inGroup() {
+    inGroup(number, callback) {
         let app = this;
 
         for (let format in app.messages.correct) {
             app.messages.correct[format].forEach(item => {
                 let split   = item.split(' ');
+                let nominal = split.slice(-1);
                 let theCode = Number.isInteger(parseInt(split[0])) ? 'isDigits' : split[0].split('.');
 
                 if (theCode == 'isDigits') {
                     let newCode = split[0].length + 'D';
                     
-                    app.incGroups(newCode);
+                    app.incGroups(newCode, nominal);
                 } else if (Array.isArray(theCode)) {
                     let iCode   = theCode[0];
                     let newCode = iCode;
@@ -565,23 +566,53 @@ let SMS = {
                         if (item.split(' ').length > 3) {
                             newCode = item.split(' ').slice(0, 2).join('.');
                         }
-                    }  else if (iCode == 'M') {
+                    }  else if (['M', 'H'].includes(iCode)) {
                         newCode = item.split(' ').slice(0, -1).join('.');
                     }
 
-                    app.incGroups(newCode);
+                    app.incGroups(newCode, nominal);
                 }
             });
         }
 
+        app.hitungTotalNominalUSer(number, callback);
+
         return app;
     },
-    incGroups(theCode) {
+    incGroups(theCode, nominal) {
         if (this.groups.hasOwnProperty(theCode)) {
-            this.groups[theCode] += 1;
+            this.groups[theCode]['jumlah']  += 1;
+            this.groups[theCode]['nominal'] += parseInt(nominal);
         } else {
-            this.groups[theCode] = 1;
+            this.groups[theCode] = {
+                jumlah: 1,
+                nominal: parseInt(nominal),
+                hasil: 0
+            }
         }
+    },
+    hitungTotalNominalUSer: async function(number, callback) {
+        let app     = this;
+        let params  = ['number', number.replace('+', '_')];
+
+        await fetch('ajax/filter/getDataByNumber.php', {
+            method: 'POST',
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded"
+            },
+            body: params.join('=')
+        }).then(resp => resp.json())
+        .then(data => {
+            for (let code in app.groups) {
+                let key     = 'DISC_' + code.split('.').join('_');
+                let disc    = data.config[key];
+                let nominal = app.groups[code].nominal;
+                let diskon  = nominal * (disc / 100);
+                
+                app.groups[code].hasil = nominal - diskon;
+            }
+            callback();
+        }).catch(err => console.log(err));
     },
     inCluster() {
         let data    = this.messages.correct;
@@ -854,6 +885,9 @@ let SMS = {
         }
 
         return thePrice;
+    },
+    formatNumber(number) {
+        return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(number * 1000);
     },
     restart() {
         this.data                   = '';

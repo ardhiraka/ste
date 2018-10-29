@@ -38,12 +38,20 @@ if ($isNotExist) :
 		endif;
 	endforeach;
 
-	$store = $db->insert('split', $inData);
+	$deposit 	= $member['deposit'];
+	$sisa 		= $deposit - $_POST['total'];
 
-	if ($store) :
-		$db->update('inbox', ['isFiltered' => 1], ['ID' => $_POST['id']]);
+	if ($sisa < 0) :
+		$response = ['status' => 'error', 'error' => 'Deposit tidak cukup!'];
 	else :
-		$response = ['status' => 'error', 'error' => 'Gagal menyimpan!'];
+		$store = $db->insert('split', $inData);
+
+		if ($store) :
+			$db->update('inbox', ['isFiltered' => 1], ['ID' => $_POST['id']]);
+			$db->update('member', ['deposit' => $sisa], ['id' => $member['id']]);
+		else :
+			$response = ['status' => 'error', 'error' => 'Gagal menyimpan!'];
+		endif;
 	endif;
 else :
 	$response = ['status' => 'error', 'error' => 'Pesan sudah disumbit!'];

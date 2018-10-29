@@ -365,6 +365,36 @@ endforeach;
 										</div>
 									</div>
 								</div>
+								<div class="row">
+									<div class="col">
+										<div class="input-group mb-3">
+										    <div class="input-group-prepend">
+										      	<div class="input-group-text big-label">H.J (Jumlah)</div>
+										    </div>
+										    <input value="<?= $custom['H.J'] ?>" name="H" type="text" class="form-control" placeholder="Custom H.J" required="required">
+										</div>
+										<div class="input-group mb-3">
+										    <div class="input-group-prepend">
+										      	<div class="input-group-text big-label">H.T (Jumlah)</div>
+										    </div>
+										    <input value="<?= $custom['H.T'] ?>" name="H" type="text" class="form-control" placeholder="Custom H.T" required="required">
+										</div>
+									</div>
+									<div class="col">
+										<div class="input-group mb-3">
+										    <div class="input-group-prepend">
+										      	<div class="input-group-text big-label">H.P (Jumlah)</div>
+										    </div>
+										    <input value="<?= $custom['H.P'] ?>" name="H" type="text" class="form-control" placeholder="Custom H.P" required="required">
+										</div>
+										<div class="input-group mb-3">
+										    <div class="input-group-prepend">
+										      	<div class="input-group-text big-label">H.S (Jumlah)</div>
+										    </div>
+										    <input value="<?= $custom['H.S'] ?>" name="H" type="text" class="form-control" placeholder="Custom H.S" required="required">
+										</div>
+									</div>
+								</div>
 							</div>
 							<div class="tab-pane fade" id="i-tab-partai" role="tabpanel" aria-labelledby="profile-tab">
 								<div class="row">
@@ -412,12 +442,6 @@ endforeach;
 										      	<div class="input-group-text big-label-2X">CN (Colok Naga)</div>
 										    </div>
 										    <input value="<?= $custom['CN'] ?>" name="CN" type="text" class="form-control" placeholder="Custom CN" required="required">
-										</div>
-										<div class="input-group mb-3">
-										    <div class="input-group-prepend">
-										      	<div class="input-group-text big-label-2X">H (Penjumlahan)</div>
-										    </div>
-										    <input value="<?= $custom['H'] ?>" name="H" type="text" class="form-control" placeholder="Custom H" required="required">
 										</div>
 									</div>
 								</div>

@@ -7,11 +7,11 @@ $field_ttjj 	= ['TT', 'TT.A.KP', 'TT.A.K', 'TT.A.E', 'TT.KP.K', 'TT.KP.E', 'JJ',
 $field_h 		= [['H.T', 'H.J'], ['H.S', 'H.P']];
 $field_partai 	= ['C', 'C.A', 'C.KP', 'C.K', 'C.E', 'CM', 'CN', 'M'];
 
-$dealer = $db->fetch_row("SELECT * FROM `member` WHERE id = ?", 1);
-$config = $db->fetch_row("SELECT * FROM `member_config` WHERE member_id = ?", 1);
-$config = (array) json_decode($config['config']);
+$data  	= $db->fetch_row("SELECT * FROM `template` WHERE id = ?", $_GET['id']);
+$config = (array) json_decode($data['config']);
+$tampil = ['Sembunyikan', 'Tampilkan'];
+
 ?>
-	
 	<style scoped>
 		.tab-content {
 			margin-bottom: 1rem;
@@ -20,6 +20,7 @@ $config = (array) json_decode($config['config']);
 			color: inherit;
 		}
 	</style>
+
 	<div class="container">
 		<br />
 		<br />
@@ -27,10 +28,10 @@ $config = (array) json_decode($config['config']);
 
 		<div align="center">
 			<h3>
-				Configuration (Dealer)
+				Edit Template
 			</h3>
 		</div>
-		
+
 		<style scoped>
 			.input-group-text {
 				min-width: 80px;
@@ -51,38 +52,26 @@ $config = (array) json_decode($config['config']);
 			}
 		</style>
 
-		<form action="edit_dealer_proses.php" method="post" class="text-center"><br />
+		<form action="edit_template_proses.php?id=<?= $_GET['id'] ?>" method="post" class="text-center"><br />
 			<div class="form-row mb-4">
 				<div class="col">
 					<div class="input-group">
 						<div class="input-group-prepend">
-							<div class="input-group-text">Nama</div>
+							<div class="input-group-text">Nama Template</div>
 						</div>
-						<input name="nama" value="<?= $dealer['nama'] ?>" userdata type="text" class="form-control" placeholder="Nama" required="required">
+						<input name="nama" value="<?= $data['nama'] ?>" userdata type="text" class="form-control" placeholder="Nama Template" required="required">
 					</div>
 				</div>
 				<div class="col">
 					<div class="input-group">
 						<div class="input-group-prepend">
-							<div class="input-group-text">Kode</div>
+							<div class="input-group-text">Status</div>
 						</div>
-						<input name="kodeid" value="<?= $dealer['kodeid'] ?>" userdata type="text" class="form-control" placeholder="Kode" required="required">
-					</div>
-				</div>
-				<div class="col">
-					<div class="input-group">
-						<div class="input-group-prepend">
-							<div class="input-group-text">No. HP</div>
-						</div>
-						<input name="nohp" value="<?= $dealer['nohp'] ?>" userdata type="text" class="form-control" placeholder="No. HP" required="required">
-					</div>
-				</div>
-				<div class="col">
-					<div class="input-group">
-						<div class="input-group-prepend">
-							<div class="input-group-text">Deposit</div>
-						</div>
-						<input name="deposit" value="<?= $dealer['deposit'] ?>" userdata type="text" class="form-control" placeholder="Deposit" required="required">
+						<select name="tampil" class="form-control" required="required">
+							<?php foreach ($tampil as $value => $name) : ?>
+								<option value="<?= $value ?>" <?= $value == $data['tampil'] ? 'selected="selected"' : null ?>><?= $name ?></option>
+							<?php endforeach; ?>
+						</select>
 					</div>
 				</div>
 			</div>
@@ -352,12 +341,14 @@ $config = (array) json_decode($config['config']);
 				</div>
 			</div>
 			
-			<button class="btn btn-info my-4 btn-block" type="submit">Simpan Data Dealer</button>
+			<button class="btn btn-info my-4 btn-block" type="submit">Simpan Perubahan</button>
 
 		</form>
+		<!-- Default form register -->
+
 
 	</div>
 
-<?php
-include('footer.php');
-?>
+	<?php
+	include('footer.php');
+	?>

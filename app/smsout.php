@@ -2,9 +2,9 @@
 
 include('header.php');
 
-$member 	= $db->fetch_all("SELECT m.nama, m.nohp, SUM(s.win) AS win, SUM(s.lose) AS lose, SUM(s.hasil) as hasil FROM split AS s LEFT JOIN member AS m ON m.id = s.member_id WHERE tanggal = ? GROUP BY s.member_id", date('Y-m-d'));
-$rekap 		= $db->fetch_all("SELECT SUM(win) AS win, SUM(lose) AS lose, SUM(hasil_dealer) as dealer, SUM(hasil_makan) AS makan FROM rekap WHERE tanggal = ?", date('Y-m-d'));
 $admin 		= $db->fetch_row("SELECT * FROM `admin` WHERE id = ?", $_SESSION['uid']);
+$member 	= $db->fetch_all("SELECT m.nama, m.nohp, sm.* FROM `smsout_member` AS sm LEFT JOIN `member` AS m ON m.id = sm.member_id WHERE tgl = ?", date('Y-m-d'));
+$rekap 		= $db->fetch_all("SELECT * FROM `smsout_dealer` WHERE tgl = ?", date('Y-m-d'));
 
 ?>
 
@@ -25,13 +25,11 @@ $admin 		= $db->fetch_row("SELECT * FROM `admin` WHERE id = ?", $_SESSION['uid']
 			$message = "Winning Number harus angka!";
 		elseif ($_GET['error'] == 'length') :
 			$message = "Winning Number harus 4 huruf!";
-		elseif ($_GET['error'] == 'empty') :
-			$message = "Belum ada data!";
+		elseif ($_GET['error'] == 'max') :
+			$message = "Maksimal 2 kali dalam sehari!";
 		endif;
 
 		echo "<div class=\"alert\" align=\"center\">{$message}</div>";
-	elseif (isset($_GET['success'])) :
-		echo "<div class=\"alert\" align=\"center\">Data berhasil dihitung!</div>";
 	endif;
 	?>
 
@@ -56,6 +54,7 @@ $admin 		= $db->fetch_row("SELECT * FROM `admin` WHERE id = ?", $_SESSION['uid']
 	<div class="row mt-5">
 		<div class="col" align="center">
 			<h4>Member</h4>
+			<a href="sendToMember.php" class="btn btn-success btn-sm">Kirim ke Member</a>
 			<table class="table table-bordered table-striped">
 				<thead>
 					<tr>
@@ -67,7 +66,7 @@ $admin 		= $db->fetch_row("SELECT * FROM `admin` WHERE id = ?", $_SESSION['uid']
 					</tr>
 				</thead>
 				<tbody>
-					<?php foreach ($member as $item) : ?>
+					<?php $total = 0; foreach ($member as $item) : ?>
 						<tr>
 							<td><?= $item['nama'] ?></td>
 							<td><?= $item['nohp'] ?></td>
@@ -75,7 +74,13 @@ $admin 		= $db->fetch_row("SELECT * FROM `admin` WHERE id = ?", $_SESSION['uid']
 							<td><?= $item['lose'] ?></td>
 							<td><?= numToRupiah($item['hasil']) ?></td>
 						</tr>
-					<?php endforeach; ?>
+					<?php $total += $item['hasil']; endforeach; ?>
+					<?php if ($member) : ?>
+					<tr>
+						<td colspan="4" align="right">Total</td>
+						<td><?= numToRupiah($total) ?></td>
+					</tr>
+					<?php endif; ?>
 				</tbody>
 			</table>
 		</div>
@@ -96,9 +101,9 @@ $admin 		= $db->fetch_row("SELECT * FROM `admin` WHERE id = ?", $_SESSION['uid']
 						<tr>
 							<td><?= $item['win'] ?></td>
 							<td><?= $item['lose'] ?></td>
-							<td><?= numToRupiah($item['makan']) ?></td>
-							<td><?= numToRupiah($item['dealer']) ?></td>
-							<td><?= numToRupiah($item['makan'] + $item['dealer']) ?></td>
+							<td><?= numToRupiah($item['hasil_makan']) ?></td>
+							<td><?= numToRupiah($item['hasil_dealer']) ?></td>
+							<td><?= numToRupiah($item['hasil_makan'] + $item['hasil_dealer']) ?></td>
 						</tr>
 					<?php endforeach; ?>
 				</tbody>

@@ -4,7 +4,10 @@ include('header.php');
 
 $field_tsjp 	= ['TS', 'TS.A.KP', 'TS.A.K', 'TS.A.E', 'TS.KP.K', 'TS.KP.E', 'JP', 'JP.A.KP', 'JP.A.K', 'JP.A.E', 'JP.KP.K', 'JP.KP.E'];
 $field_ttjj 	= ['TT', 'TT.A.KP', 'TT.A.K', 'TT.A.E', 'TT.KP.K', 'TT.KP.E', 'JJ', 'JJ.A.KP', 'JJ.A.K', 'JJ.A.E', 'JJ.KP.K', 'JJ.KP.E'];
-$field_partai 	= ['C', 'C.A', 'C.KP', 'C.K', 'C.E', 'CM', 'CN', 'M', 'H'];
+$field_h 		= [['H.T', 'H.J'], ['H.S', 'H.P']];
+$field_partai 	= ['C', 'C.A', 'C.KP', 'C.K', 'C.E', 'CM', 'CN', 'M'];
+
+$template 	= $db->fetch_all('select * from template where tampil = ?', 1);
 
 ?>
 	<style scoped>
@@ -81,6 +84,12 @@ $field_partai 	= ['C', 'C.A', 'C.KP', 'C.K', 'C.E', 'CM', 'CN', 'M', 'H'];
 						<input name="deposit" userdata type="text" class="form-control" placeholder="Deposit" required="required">
 					</div>
 				</div>
+			</div>
+
+			<div class="template" align="left">
+				<?php foreach ($template as $item) : ?>
+					<a href="javascript:;" class="template-btn btn btn-primary btn-sm mb-3" data-config='<?= $item["config"] ?>'><?= $item['nama'] ?></a>
+				<?php endforeach; ?>
 			</div>
 
 			<ul class="nav nav-tabs" id="myTab" role="tablist">
@@ -299,6 +308,28 @@ $field_partai 	= ['C', 'C.A', 'C.KP', 'C.K', 'C.E', 'CM', 'CN', 'M', 'H'];
 							<?php endforeach; ?>
 						</div>
 					</div>
+					<div class="row">
+						<div class="col">
+							<?php foreach ($field_h[0] as $item) : ?>
+								<div class="input-group mb-3">
+									<div class="input-group-prepend">
+										<div class="input-group-text label-55-lg"><?= "Disc {$item}" ?></div>
+									</div>
+									<input name='<?= "DISC_" . str_replace('.', '_', $item) ?>' type="text" class="form-control" placeholder='<?= "Disc {$item}" ?>' required="required">
+								</div>
+							<?php endforeach; ?>
+						</div>
+						<div class="col">
+							<?php foreach ($field_h[1] as $item) : ?>
+								<div class="input-group mb-3">
+									<div class="input-group-prepend">
+										<div class="input-group-text label-55-lg"><?= "Disc {$item}" ?></div>
+									</div>
+									<input name='<?= "DISC_" . str_replace('.', '_', $item) ?>' type="text" class="form-control" placeholder='<?= "Disc {$item}" ?>' required="required">
+								</div>
+							<?php endforeach; ?>
+						</div>
+					</div>
 				</div>
 
 				<!-- tab partai -->
@@ -330,12 +361,19 @@ $field_partai 	= ['C', 'C.A', 'C.KP', 'C.K', 'C.E', 'CM', 'CN', 'M', 'H'];
 
 		</form>
 		<!-- Default form register -->
-
-
 	</div>
 
-	<!-- faker -->
-	<script>$('input:not([userdata])').val(5)</script>
+	<script>
+		jQuery(function($) {
+			$('.template-btn').on('click', function() {
+				let config = $(this).data('config');
+				
+				for (let kode in config) {
+					$('[name="' + kode + '"]').val(config[kode]);
+				}
+			});
+		});
+	</script>
 
 	<?php
 	include('footer.php');

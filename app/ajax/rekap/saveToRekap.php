@@ -17,7 +17,8 @@ if ($splits) :
 		'TS'	=> 'TT',
 		'TT'	=> 'TS',
 		'JP'	=> 'JJ',
-		'JJ'	=> 'JP'
+		'JJ'	=> 'JP',
+		'H'		=> 'H'
 	];
 	$crossed = [];
 
@@ -29,9 +30,15 @@ if ($splits) :
 		if (in_array($fCode, array_keys($crossover))) :
 			if (in_array($item['kode'], $crossed)) continue;
 
-			$withHead 	= count($exp) > 1 ? true : false;
-			$iCode		= $withHead ? $item['kode'] : $fCode;
-			$iLawan 	= $withHead ? str_replace($fCode, $crossover[$fCode], $item['kode']) : $crossover[$fCode];
+			if ($fCode == 'H') :
+				$iCode 		= $item['kode'];
+				$iLawan 	= str_replace($exp[1], $crossover[$exp[1]], $item['kode']);
+			else :
+				$withHead 	= count($exp) > 1 ? true : false;
+				$iCode		= $withHead ? $item['kode'] : $fCode;
+				$iLawan 	= $withHead ? str_replace($fCode, $crossover[$fCode], $item['kode']) : $crossover[$fCode];
+			endif;
+
 			$iLawanIn 	= array_search($iLawan, array_column($splits, 'kode'));
 			$iLawanDt 	= $iLawanIn ? $splits[$iLawanIn] : null;
 

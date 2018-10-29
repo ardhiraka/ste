@@ -5,7 +5,7 @@ $data 	= $db->fetch_all("SELECT * FROM `rekap` WHERE tanggal = ?", date('Y-m-d')
 $groups	= [];
 
 foreach ($data as $item) :
-	$g50 	= ['J', 'P', 'T', 'S', 'PING', 'TENG', 'TS', 'TT', 'JP', 'JJ'];
+	$g50 	= ['J', 'P', 'T', 'S', 'PING', 'TENG', 'TS', 'TT', 'JP', 'JJ', 'H'];
 	$fCode	= explode('.', $item['kode'])[0];
 
 	// jika termasuk angka
@@ -21,9 +21,9 @@ foreach ($data as $item) :
 endforeach;
 
 $getIDs = [
-	'angka' 	=> isset($groups['angka']) ? implode(',', array_column($groups['angka'], 'id')) : [],
-	'50_50' 	=> isset($groups['50_50']) ? implode(',', array_column($groups['50_50'], 'id')) : [],
-	'partai' 	=> isset($groups['partai']) ? implode(',', array_column($groups['partai'], 'id')) : [],
+	'angka' 	=> isset($groups['angka']) ? implode(',', array_column($groups['angka'], 'id')) : '',
+	'50_50' 	=> isset($groups['50_50']) ? implode(',', array_column($groups['50_50'], 'id')) : '',
+	'partai' 	=> isset($groups['partai']) ? implode(',', array_column($groups['partai'], 'id')) : '',
 	'semua'		=> implode(',', array_column($data, 'id'))
 ];
 
@@ -407,8 +407,13 @@ $getIDs = [
 			if (sendToDealer) {
 				let theIDs 	= $('.tab-pane.active').data('ids');
 				let tabName	= $('.tab-pane.active').attr('id');
+				let length 	= theIDs.toString().length;
 
-				submitForm('sendToDealer.php', {ids: theIDs, tab: tabName});
+				if (length > 0) {
+					submitForm('sendToDealer.php', {ids: theIDs, tab: tabName});
+				} else {
+					alert('Tidak ada data!');
+				}
 			}
 		});
 	});

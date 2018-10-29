@@ -18,7 +18,8 @@ $members = $db->fetch_all("SELECT * FROM member WHERE downline != ?", 0);
 
 		<div class="row">
 			<div class="col-sm-12">
-				<a href="new_member.php" class="btn btn-primary mb-3">Tambah Member</a><br />
+				<a href="new_member.php" class="btn btn-primary mb-3">Tambah Member</a>
+				<a href="template.php" class="btn btn-primary mb-3">Template Config</a>
 
 				<table class="table table-sm table-bordered table-hover">
 					<thead>
