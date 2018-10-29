@@ -11,6 +11,8 @@ $member = $db->fetch_row("SELECT * FROM `member` WHERE id = ?", $_GET['id']);
 $config = $db->fetch_row("SELECT * FROM `member_config` WHERE member_id = ?", $_GET['id']);
 $config = (array) json_decode($config['config']);
 
+$template 	= $db->fetch_all('select * from template where tampil = ?', 1);
+
 ?>
 	<style scoped>
 		.tab-content {
@@ -86,6 +88,12 @@ $config = (array) json_decode($config['config']);
 						<input name="deposit" value="<?= $member['deposit'] ?>" userdata type="text" class="form-control" placeholder="Deposit" required="required">
 					</div>
 				</div>
+			</div>
+
+			<div class="template" align="left">
+				<?php foreach ($template as $item) : ?>
+					<a href="javascript:;" class="template-btn btn btn-primary btn-sm mb-3" data-config='<?= $item["config"] ?>'><?= $item['nama'] ?></a>
+				<?php endforeach; ?>
 			</div>
 
 			<ul class="nav nav-tabs" id="myTab" role="tablist">
@@ -357,9 +365,19 @@ $config = (array) json_decode($config['config']);
 
 		</form>
 		<!-- Default form register -->
-
-
 	</div>
+
+	<script>
+		jQuery(function($) {
+			$('.template-btn').on('click', function() {
+				let config = $(this).data('config');
+				
+				for (let kode in config) {
+					$('[name="' + kode + '"]').val(config[kode]);
+				}
+			});
+		});
+	</script>
 
 	<?php
 	include('footer.php');
