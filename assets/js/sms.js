@@ -134,6 +134,7 @@ let SMS = {
     matchResult: {},
     groups: {},
     clusters: {},
+    deposit: 0,
     setData(message) {
         this.restart();
 
@@ -603,6 +604,8 @@ let SMS = {
             body: params.join('=')
         }).then(resp => resp.json())
         .then(data => {
+            app.deposit = parseInt(data.data.deposit);
+
             for (let code in app.groups) {
                 let key     = 'DISC_' + code.split('.').join('_');
                 let disc    = data.config[key];
@@ -886,8 +889,10 @@ let SMS = {
 
         return thePrice;
     },
-    formatNumber(number) {
-        return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(number * 1000);
+    formatNumber(number, times = true) {
+        let iNumber = times ? (number * 1000) : number;
+
+        return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(iNumber);
     },
     restart() {
         this.data                   = '';
