@@ -72,7 +72,7 @@ let SMS = {
         'UE8'	 : '08.18.28.38.48.58.68.78.88.98',
         'UE9'	 : '09.19.29.39.49.59.69.79.89.99'
     },
-    json: '/app/custom_json.php',
+    json: 'custom_json.php',
     customs: {},
     format: {
         full: new RegExp("^([a-zA-Z.]+);([0-9.]+)@([0-9]+)$"),

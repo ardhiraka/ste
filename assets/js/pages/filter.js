@@ -65,15 +65,15 @@ jQuery(function($) {
                 let data = groups[kode];
 
                 if (['2D', '3D', '4D'].includes(kode)) {
-                    hasilGroup.push(kode + ": " + data.jumlah + " = " + data.nominal + "/" + data.hasil);
+                    hasilGroup.push(kode + ": " + data.jumlah + " = " + SMS.formatNumber(data.nominal) + "/" + SMS.formatNumber(data.hasil));
                 } else {
-                    hasilGroup.push(kode + ": " + data.nominal + "/" + data.hasil);
+                    hasilGroup.push(kode + ": " + SMS.formatNumber(data.nominal) + "/" + SMS.formatNumber(data.hasil));
                 }
 
                 total += data.hasil;
             }
 
-            hasilGroup.push("Total: " + total + " (" + SMS.formatNumber(total) + ")");
+            hasilGroup.push("Total: " + SMS.formatNumber(total));
             hasilGroup.push("Credit: " + SMS.formatNumber(SMS.deposit, false));
             hasilGroup.push("Saldo: " + SMS.formatNumber((SMS.deposit - (total * 1000)), false));
 
@@ -125,15 +125,17 @@ jQuery(function($) {
                     let data = groups[kode];
 
                     if (['2D', '3D', '4D'].includes(kode)) {
-                        hasilGroup.push(kode + ": " + data.jumlah + " = " + data.nominal + "/" + data.hasil);
+                        hasilGroup.push(kode + ": " + data.jumlah + " = " + SMS.formatNumber(data.nominal) + "/" + SMS.formatNumber(data.hasil));
                     } else {
-                        hasilGroup.push(kode + ": " + data.nominal + "/" + data.hasil);
+                        hasilGroup.push(kode + ": " + data.nominal + "/" + SMS.formatNumber(data.hasil));
                     }
 
                     total += data.hasil;
                 }
 
-                hasilGroup.push("Total: " + total + " (" + SMS.formatNumber(total) + ")");
+                hasilGroup.push("Total: " + SMS.formatNumber(total));
+                hasilGroup.push("Credit: " + SMS.formatNumber(SMS.deposit, false));
+                hasilGroup.push("Saldo: " + SMS.formatNumber((SMS.deposit - (total * 1000)), false));
 
                 $('#submitSms').attr('data-message', message);
 
