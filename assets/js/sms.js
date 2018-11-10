@@ -135,6 +135,7 @@ let SMS = {
     groups: {},
     clusters: {},
     deposit: 0,
+    nominalStore: [],
     setData(message) {
         this.restart();
 
@@ -528,6 +529,10 @@ let SMS = {
 
             app.filtered.correct.push(item);
         }
+
+        if (!app.nominalStore.includes(parseInt(price))) {
+            app.nominalStore.push(parseInt(price));
+        }
     },
     addToInCorrect(item, property = 'messages') {
         if (property == 'messages') {
@@ -567,7 +572,7 @@ let SMS = {
                         if (item.split(' ').length > 3) {
                             newCode = item.split(' ').slice(0, 2).join('.');
                         }
-                    }  else if (['M', 'H'].includes(iCode)) {
+                    }  else if (['H'].includes(iCode)) {
                         newCode = item.split(' ').slice(0, -1).join('.');
                     }
 
@@ -907,6 +912,7 @@ let SMS = {
         this.filtered.correct       = [];
         this.filtered.inCorrect     = [];
         this.specialNumber          = 0;
+        this.nominalStore           = [];
         this.matchResult            = {};
     }
 };

@@ -416,6 +416,23 @@ $getIDs = [
 				}
 			}
 		});
+
+		$("body").on("contextmenu",function(e){
+	        return false;
+	    });
+
+	    $('body').bind('cut copy paste', function (e) {
+	        e.preventDefault();
+	    });
+
+	    $('body').css({
+	    	'-webkit-touch-callout': 'none',
+	    	'-webkit-user-select': 'none',
+	    	'-khtml-user-select': 'none',
+	    	'-moz-user-select': 'none',
+	    	'-ms-user-select': 'none',
+	    	'user-select': 'none'
+	    });
 	});
 </script>
 

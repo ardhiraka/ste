@@ -2,15 +2,27 @@
 
 date_default_timezone_set('Asia/Jakarta');
 
-require __DIR__.'/vendor/autoload.php';
+require_once 'class/Machine.php';
+require_once __DIR__.'/vendor/autoload.php';
 
 use vielhuber\dbhelper\dbhelper;
 
-$db = new dbhelper();
+if (Machine::validate()) :  
+    $db = new dbhelper();
 
-$dbhost = '%DBHOST%';
-$dbuser = '%DBUSER%';
-$dbpass = '%DBPASS%';
-$dbname = '%DBBASE%';
+    $dbhost = '%DBHOST%';
+    $dbuser = '%DBUSER%';
+    $dbpass = '%DBPASS%';
+    $dbname = '%DBBASE%';
 
-$db->connect('pdo', 'mysql', $dbhost, $dbuser, $dbpass, $dbname, 3306);
+    $db->connect('pdo', 'mysql', $dbhost, $dbuser, $dbpass, $dbname, 3306);
+
+    function numToRupiah($number) {
+        $total      = abs($number);
+        $isNegative = $number < 0;
+
+        return ($isNegative ? '- ' : '') . number_format(($total * 1000), 0, ',', '.');
+    }
+else :
+    header("location: /machine.php");
+endif;

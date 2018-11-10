@@ -20,4 +20,6 @@ $template['config'] = json_encode($config);
 // save
 $db->insert('template', $template);
 
+$logActivity->setLog("Add new template {$_POST['nama']}");
+
 return header('location: template.php');

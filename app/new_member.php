@@ -86,6 +86,20 @@ $template 	= $db->fetch_all('select * from template where tampil = ?', 1);
 				</div>
 			</div>
 
+			<div class="form-row mb-4">
+				<div class="col-md-3">
+					<div class="input-group">
+						<div class="input-group-prepend">
+							<div class="input-group-text">Auto Reply</div>
+						</div>
+						<select name="auto_reply" userdata class="form-control" required="required">
+							<option value="1" selected="selected">Auto</option>
+							<option value="0">Manual</option>
+						</select>
+					</div>
+				</div>
+			</div>
+
 			<div class="template" align="left">
 				<?php foreach ($template as $item) : ?>
 					<a href="javascript:;" class="template-btn btn btn-primary btn-sm mb-3" data-config='<?= $item["config"] ?>'><?= $item['nama'] ?></a>

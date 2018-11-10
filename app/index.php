@@ -35,10 +35,18 @@ $admin = $db->fetch_row("SELECT * FROM `admin` WHERE id = ?", $_SESSION['uid']);
 		</div>
 
 		<div class="row">
-			<div class="col-md-6">
-				<button class="btn btn-warning btn-block my-4" type="submit">Cancel SMS</button>
+			<div class="col-md-4" style="margin: auto">
+				<div class="input-group">
+					<div class="input-group-prepend">
+						<div class="input-group-text">Max. Nominal</div>
+					</div>
+					<input id="max_nominal" value="<?= $admin['max_nominal'] ?>" type="text" class="form-control" placeholder="Max. Nominal">
+				</div>
 			</div>
-			<div class="col-md-6">
+			<div class="col-md-4">
+				<button id="deleteSMS" class="btn btn-warning btn-block my-4" type="submit">Hapus SMS</button>
+			</div>
+			<div class="col-md-4">
 				<button id="submitSms" class="btn btn-default btn-block my-4">Submit SMS</button>
 			</div>
 		</div>

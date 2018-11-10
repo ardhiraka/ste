@@ -371,13 +371,13 @@ endforeach;
 										    <div class="input-group-prepend">
 										      	<div class="input-group-text big-label">H.J (Jumlah)</div>
 										    </div>
-										    <input value="<?= $custom['H.J'] ?>" name="H" type="text" class="form-control" placeholder="Custom H.J" required="required">
+										    <input value="<?= $custom['H.J'] ?>" name="H.J" type="text" class="form-control" placeholder="Custom H.J" required="required">
 										</div>
 										<div class="input-group mb-3">
 										    <div class="input-group-prepend">
 										      	<div class="input-group-text big-label">H.T (Jumlah)</div>
 										    </div>
-										    <input value="<?= $custom['H.T'] ?>" name="H" type="text" class="form-control" placeholder="Custom H.T" required="required">
+										    <input value="<?= $custom['H.T'] ?>" name="H.T" type="text" class="form-control" placeholder="Custom H.T" required="required">
 										</div>
 									</div>
 									<div class="col">
@@ -385,13 +385,13 @@ endforeach;
 										    <div class="input-group-prepend">
 										      	<div class="input-group-text big-label">H.P (Jumlah)</div>
 										    </div>
-										    <input value="<?= $custom['H.P'] ?>" name="H" type="text" class="form-control" placeholder="Custom H.P" required="required">
+										    <input value="<?= $custom['H.P'] ?>" name="H.P" type="text" class="form-control" placeholder="Custom H.P" required="required">
 										</div>
 										<div class="input-group mb-3">
 										    <div class="input-group-prepend">
 										      	<div class="input-group-text big-label">H.S (Jumlah)</div>
 										    </div>
-										    <input value="<?= $custom['H.S'] ?>" name="H" type="text" class="form-control" placeholder="Custom H.S" required="required">
+										    <input value="<?= $custom['H.S'] ?>" name="H.S" type="text" class="form-control" placeholder="Custom H.S" required="required">
 										</div>
 									</div>
 								</div>
@@ -447,25 +447,15 @@ endforeach;
 								</div>
 								<div class="row">
 									<div class="col-12">
-										<p class="font-weight-normal">Custom Kode untuk M</p>
+										<p class="font-weight-normal">
+											Custom Kode untuk M
+											<a href="javascript:;" class="add_item btn btn-default btn-sm">Tambah</a>
+										</p>
 										<hr>
 									</div>
 									<div class="col-8">
 										<div class="custom_m_list">
-											<?php if (empty($mCustom)) : ?>
-												<div class="custom_m_item mb-3">
-													<div class="input-group">
-													    <div class="input-group-prepend">
-													      	<input type="text" class="form-control in_m_asli" placeholder="Format Asli" required="required">
-													    </div>
-													    <input value="" name="" type="text" class="form-control in_m_custom" placeholder="Custom" required="required">
-													    <div class="input-group-append">
-													    	<button type="button" class="delete_item btn btn-danger btn-sm" style="margin: 0 .375rem;">Hapus</button>
-													    	<button type="button" class="add_item btn btn-default btn-sm" style="margin: 0 .375rem;">Tambah</button>
-													    </div>
-													</div>
-												</div>
-											<?php else : foreach ($mCustom as $asli => $custom) : ?>
+											<?php foreach ($mCustom as $asli => $custom) : ?>
 												<div class="custom_m_item mb-3">
 													<div class="input-group">
 													    <div class="input-group-prepend">
@@ -474,11 +464,10 @@ endforeach;
 													    <input value="<?= $custom ?>" name="<?= $asli ?>" type="text" class="form-control in_m_custom" placeholder="Custom <?= $asli ?>" required="required">
 													    <div class="input-group-append">
 													    	<button type="button" class="delete_item btn btn-danger btn-sm" style="margin: 0 .375rem;">Hapus</button>
-													    	<button type="button" class="add_item btn btn-default btn-sm" style="margin: 0 .375rem;">Tambah</button>
 													    </div>
 													</div>
 												</div>
-											<?php endforeach; endif; ?>
+											<?php endforeach; ?>
 										</div>
 									</div>
 									<div class="col-4"></div>
@@ -522,7 +511,7 @@ endforeach;
 							</div>
 						</div>
 					</div>
-					<button type="Submit" class="btn btn-primary mb-4">Submit</button>
+					<button type="submit" class="btn btn-primary mb-4">Submit</button>
 				</form>
 			</div>
 			<div id="forClone" style="display: none;">
@@ -534,7 +523,6 @@ endforeach;
 						<input value="" name="" type="text" class="form-control in_m_custom" placeholder="Custom" required="required">
 						<div class="input-group-append">
 							<button type="button" class="delete_item btn btn-danger btn-sm" style="margin: 0 .375rem;">Hapus</button>
-							<button type="button" class="add_item btn btn-default btn-sm" style="margin: 0 .375rem;">Tambah</button>
 						</div>
 					</div>
 				</div>

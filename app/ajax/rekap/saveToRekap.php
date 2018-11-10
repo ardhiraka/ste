@@ -78,6 +78,8 @@ if ($splits) :
 
 	$db->insert('rekap', $insert);
 	$db->query("UPDATE split SET inRekap = 1 WHERE inRekap = 0 AND tanggal = ?", date('Y-m-d'));
+
+	$logActivity->setLog("Check in data moved to recap");
 else :
 	$response = ['status' => 'error', 'error' => 'Tidak ada data!'];
 endif;

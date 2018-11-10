@@ -33,6 +33,8 @@ if ($readyToSend) :
 
 	if ($sendToDealer) :
 		$db->query("UPDATE rekap SET sendToDealer = 1 WHERE sendToDealer = 0 AND id IN ({$ids})");
+
+		$logActivity->setLog("Send message to dealer");
 	endif;
 endif;
 

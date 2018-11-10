@@ -41,6 +41,12 @@
 					<a class="nav-link" href="index.php">Dashboard <span class="sr-only">(current)</span></a>
 				</li>
 				<li class="nav-item">
+					<a class="nav-link" href="#">Manual</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" href="submitted.php">Data</a>
+				</li>
+				<li class="nav-item">
 					<a class="nav-link" href="config.php">Member Conf.</a>
 				</li>
 				<li class="nav-item">
@@ -57,6 +63,12 @@
 				</li>
 				<li class="nav-item">
 					<a class="nav-link" href="smsout.php">SMS Out</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" href="broadcast.php">Broadcast</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" href="logActivity.php">Log Activity</a>
 				</li>
 				<li class="nav-item">
 					<a class="nav-link" href="../logout.php">Keluar</a>

@@ -10,8 +10,7 @@ require_once 'db.php';
 $number = (string) $_POST['win_number'];
 
 if (isset($_SERVER['HTTP_REFERER'])) :
-    $url  = (object) parse_url($_SERVER['HTTP_REFERER']);
-    $prev = "{$url->scheme}://{$url->host}{$url->path}";
+    $prev = "smsout.php";
 else :
     $prev = 'index.php';
 endif;
@@ -41,6 +40,8 @@ if (count($log) <= 2) :
 	if ($hitungRekap->log) :
 		(new Hitung)->setDBHelper($db)->saveLog();
 	endif;
+
+    $logActivity->setLog("Calculation message with win number = {$number}");
 else :
 	return header('location: ' . $prev . "?error=max");
 endif;

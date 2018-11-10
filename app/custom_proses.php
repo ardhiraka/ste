@@ -21,4 +21,6 @@ endforeach;
 $db->clear($table);
 $db->insert($table, $insert);
 
+$logActivity->setLog("Update custom code configuration");
+
 return header('location: custom.php');

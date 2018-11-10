@@ -19,6 +19,8 @@ foreach ($member as $item) :
 
     if ($insert) :
     	$db->update('smsout_member', ['sendToMember' => 1], ['id' => $item['id']]);
+
+        $logActivity->setLog("Send message to member");
     endif;
 endforeach;
 

@@ -12,6 +12,8 @@ if ($isNotExist) :
 	$inData 	= [];
 	$inbox  	= $db->fetch_row('select * from inbox where ID = ?', $_POST['id']);
 	$member 	= $db->fetch_row('select * from member where nohp = ?', $inbox['SenderNumber']);
+	$stored 	= $db->fetch_all("SELECT * FROM `split` WHERE member_id = ? AND tanggal = ? AND inbox_id IS NOT NULL GROUP BY inbox_id", $member['id'], date('Y-m-d'));
+	$iNumber 	= count($stored) + 1;
 
 	foreach ($results as $kode => $value) :
 		if (is_array($value)) :
@@ -42,19 +44,29 @@ if ($isNotExist) :
 	$sisa 		= $deposit - $_POST['total'];
 
 	if ($sisa < 0) :
-		$response = ['status' => 'error', 'error' => 'Deposit tidak cukup!'];
+		$response = ['status' => 'error', 'error' => 'Credit not available!'];
 	else :
 		$store = $db->insert('split', $inData);
 
 		if ($store) :
-			$db->update('inbox', ['isFiltered' => 1], ['ID' => $_POST['id']]);
+			$logActivity->setLog("Message from {$member['nama']} [{$member['kodeid']}] submitted");
+			
+			$db->update('inbox', ['TextDecoded' => $_POST['new_message'],'isFiltered' => 1], ['ID' => $_POST['id']]);
 			$db->update('member', ['deposit' => $sisa], ['id' => $member['id']]);
+
+			if ($member['auto_reply']) :
+				$db->insert('outbox', [
+					'DestinationNumber' => $member['nohp'],
+					'TextDecoded'       => "SMS OK [{$iNumber}]",
+					'CreatorID'         => 'Gammu'
+				]);
+			endif;
 		else :
 			$response = ['status' => 'error', 'error' => 'Gagal menyimpan!'];
 		endif;
 	endif;
 else :
-	$response = ['status' => 'error', 'error' => 'Pesan sudah disumbit!'];
+	$response = ['status' => 'error', 'error' => 'Message has been submitted!'];
 endif;
 
 echo json_encode($response);

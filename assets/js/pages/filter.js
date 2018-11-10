@@ -47,7 +47,6 @@ jQuery(function($) {
 
     let filterSms = function() {
         let container   = $('#tablesms').find('tbody tr').first();
-        let finalNum    = $('#angkaout').val();
         let message     = {
             id: container.data('id'),
             data: container.data('message'),
@@ -110,7 +109,6 @@ jQuery(function($) {
     let wait = null;
     $('#smsedit').keyup(function() {
         let message     = $(this).val().split("\n").join('..');
-        let finalNum    = $('#angkaout').val();
         let number      = $(this).data('number');
         let total       = 0;
 
@@ -144,19 +142,58 @@ jQuery(function($) {
         }, 500);
     });
 
+    let maxWait = null;
+    $(document).on('keyup', 'input#max_nominal', function() {
+        let max_nominal = $(this).val();
+
+        if (maxWait != null) clearTimeout(maxWait);
+
+        maxWait = setTimeout(function() {
+            $.post(ajaxTo('setMaxNominal'), {max: max_nominal}, response => {
+                // do something
+            }, 'json');
+        }, 500);
+    });
+
     $(document).on('click', '#submitSms', function() {
-        let data        = this.dataset;
-        let finalNum    = $('#angkaout').val();
+        let data    = this.dataset;
+        let max     = parseInt($('input#max_nominal').val());
         
         SMS.setData(data.message).filter().parse().inCluster();
 
-        $.post(ajaxTo('storeSplitData'), {id: data.id, total: data.total, result: SMS.clusters}, response => {
-            if (response.status == 'success') {
-                alert("Data berhasil disimpan!");
-                window.location.reload();
-            } else {
-                alert(response.error);
-            }
-        }, 'json');
+        let dataMax = Math.max.apply(null, SMS.nominalStore);
+        let confirmSubmit = true;
+
+        if (dataMax > max) {
+            confirmSubmit = confirm('There is a nominal that exceeds the maximum limit!');
+        }
+
+        if (confirmSubmit) {
+            $.post(ajaxTo('storeSplitData'), {id: data.id, new_message: data.message, total: data.total, result: SMS.clusters}, response => {
+                if (response.status == 'success') {
+                    alert("Data berhasil disimpan!");
+                    window.location.reload();
+                } else {
+                    alert(response.error);
+                }
+            }, 'json');
+        }
+    });
+
+    $(document).on('click', '#deleteSMS', function() {
+        let container   = $('#tablesms').find('tbody tr').first();
+        let smsID       = container.data('id');
+        let hapus       = confirm('Apa anda ingin mengapus sms tersebut?');
+
+        if (hapus) {
+            $.post(ajaxTo('hapusDataSms'), {id: smsID}, response => {
+                if (response.status == 'success') {
+                    alert("Data berhasil dihapus!");
+                    window.location.reload();
+                } else {
+                    alert(response.error);
+                }
+            }, 'json');
+        }
     });
 });

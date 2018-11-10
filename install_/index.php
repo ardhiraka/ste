@@ -101,7 +101,7 @@
                     if (response.status == 'error') {
                         $('#btnSubmit').css('display', 'block');
                     } else {
-                        window.location = '/';
+                        window.location = '/cleanUp.php?install=1';
                     }
                 }, 'json');
             });

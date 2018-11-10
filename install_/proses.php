@@ -1,6 +1,7 @@
 <?php
 error_reporting(0);
 
+require_once '../app/class/Machine.php';
 require_once '../app/vendor/autoload.php';
 
 use vielhuber\dbhelper\dbhelper;
@@ -72,6 +73,10 @@ if ($_POST) :
         file_put_contents($fileConfig, $newConfig);
         copy($fileConfig, "../app/db.php");
         // End - Create DB Configuration
+
+        // Start - Add License
+        Machine::license();
+        // End - Add License
     endif;
 endif;
 
@@ -79,22 +84,3 @@ echo json_encode([
     'status'    => $db_error ? "error" : "success",
     'message'   => $db_error ? $db_error : "Aplikasi berhasil diinstal!",
 ]);
-
-$installDir = __DIR__;
-
-function delete_files($target) {
-    if (is_dir($target)) :
-        $files = glob($target . '*', GLOB_MARK);
-        
-        foreach($files as $file) :
-            delete_files($file);      
-        endforeach;
-
-        rmdir($target);
-    elseif (is_file($target)) :
-        unlink($target);  
-    endif;
-}
-
-// Uncomment this For Production Only
-// delete_files($installDir);

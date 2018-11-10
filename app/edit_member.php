@@ -13,6 +13,8 @@ $config = (array) json_decode($config['config']);
 
 $template 	= $db->fetch_all('select * from template where tampil = ?', 1);
 
+$reply = ["Auto" => 1, "Manual" => 0];
+
 ?>
 	<style scoped>
 		.tab-content {
@@ -86,6 +88,21 @@ $template 	= $db->fetch_all('select * from template where tampil = ?', 1);
 							<div class="input-group-text">Deposit</div>
 						</div>
 						<input name="deposit" value="<?= $member['deposit'] ?>" userdata type="text" class="form-control" placeholder="Deposit" required="required">
+					</div>
+				</div>
+			</div>
+
+			<div class="form-row mb-4">
+				<div class="col-md-3">
+					<div class="input-group">
+						<div class="input-group-prepend">
+							<div class="input-group-text">Auto Reply</div>
+						</div>
+						<select name="auto_reply" userdata class="form-control" required="required">
+							<?php foreach ($reply as $nama => $val) : ?>
+								<option value="<?= $val ?>" <?= $val == $member['auto_reply'] ? 'selected' : '' ?>><?= $nama ?></option>
+							<?php endforeach; ?>
+						</select>
 					</div>
 				</div>
 			</div>

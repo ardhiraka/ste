@@ -2,7 +2,7 @@
 
 if (!$_POST || empty($_POST['ids'])) header('location:laporan.php');
 
-include('header.php');
+require_once 'db.php';
 
 $tipe 	= $_POST['tipe'];
 $ids  	= $_POST['ids'];
@@ -27,5 +27,7 @@ foreach ($list as $item) :
 
 	$db->update('rekap', ['nom_makan' => $nom_makan, 'nom_dealer' => $nom_dealer, 'subtraction' => 1], ['id' => $item['id']]);
 endforeach;
+
+$logActivity->setLog("Nominal cut by {$tipe}");
 
 header("location: laporan.php?tab={$_POST['tab']}");

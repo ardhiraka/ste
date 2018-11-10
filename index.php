@@ -1,6 +1,8 @@
 <?php
 if (file_exists('install')) header('location:install');
 
+require_once 'app/db.php';
+
 session_start();
 
 if (isset($_SESSION['isLoggedIn'])) header('location:app');

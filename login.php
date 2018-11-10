@@ -14,7 +14,10 @@ if ($isUser) :
 
     if ($isUserValid) :
         $_SESSION['isLoggedIn'] = true;
-        $_SESSION['uid'] 		= $isUser['id'];
+        $_SESSION['uid']        = $isUser['id'];
+        $_SESSION['username']	= $isUser['username'];
+
+        $logActivity->setLog("{$isUser['username']} logged in");
         
         header('location:app');
     else :
