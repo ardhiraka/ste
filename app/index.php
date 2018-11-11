@@ -3,6 +3,9 @@
 include('header.php');
 
 $admin = $db->fetch_row("SELECT * FROM `admin` WHERE id = ?", $_SESSION['uid']);
+$members = $db->fetch_all("select * from member where downline != ?", 0);
+
+$jsonMember = json_encode($members);
 
 ?>
 
@@ -47,7 +50,7 @@ $admin = $db->fetch_row("SELECT * FROM `admin` WHERE id = ?", $_SESSION['uid']);
 				<button id="deleteSMS" class="btn btn-warning btn-block my-4" type="submit">Hapus SMS</button>
 			</div>
 			<div class="col-md-4">
-				<button id="submitSms" class="btn btn-default btn-block my-4">Submit SMS</button>
+				<button id="submitSms" data-type="inbox" class="btn btn-default btn-block my-4">Submit SMS</button>
 			</div>
 		</div>
 
@@ -93,6 +96,9 @@ $admin = $db->fetch_row("SELECT * FROM `admin` WHERE id = ?", $_SESSION['uid']);
 	<script type="text/javascript" src="../assets/js/combinatorial.js"></script>
 	<script type="text/javascript" src="../assets/js/sms.js"></script>
 	<!-- Page Scripts -->
+	<script>
+		const dataMember = <?= $jsonMember ?>;
+	</script>
 	<script src="../assets/js/pages/filter.js"></script>
 
 	<?php

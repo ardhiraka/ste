@@ -17,4 +17,6 @@ endforeach;
 
 $db->insert('outbox', $bulk);
 
+$logActivity->setLog("Send broadcast message");
+
 echo json_encode(['status' => 'success']);

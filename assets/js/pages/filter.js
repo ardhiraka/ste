@@ -17,7 +17,21 @@ jQuery(function($) {
         columns: [
             { data: 'ID' },
             { data: 'SenderNumber' },
-            { data: 'userName' },
+            {
+                data: 'SenderNumber',
+                render(data, type, row, meta) {
+                    let render = `<select id="selectMemberLink" class="form-control">`;
+                    render += `<option value='' selected disabled>Not Member</option>`;
+                    
+                    dataMember.forEach(function(item) {
+                        render += `<option value="${item.nohp}" ${(item.nohp == row.SenderNumber) ? 'selected' : ''}>${item.nama}</option>`;
+                    });
+                    
+                    render += `</select>`;
+
+                    return render;
+                }
+            },
             {
                 data: 'TextDecoded',
                 render(data) {
@@ -45,12 +59,31 @@ jQuery(function($) {
         }
     });
 
+    // Switch Member
+    $(document).on('change', 'select#selectMemberLink', function() {
+        let number = $(this).val();
+
+        if (number == '') {
+            alert('Select another member!');
+        } else {
+            let el = $(this).closest('tr');
+            let inboxID = el.attr('data-id');
+
+            el.attr('data-number', number);
+
+            $.post(ajaxTo('updateNumberInbox'), {id: inboxID, number: number}, response => {
+                filterSms();
+            }, 'json');
+        }
+    });
+    // Switch Member
+
     let filterSms = function() {
         let container   = $('#tablesms').find('tbody tr').first();
         let message     = {
-            id: container.data('id'),
-            data: container.data('message'),
-            number: container.data('number')
+            id: container.attr('data-id'),
+            data: container.attr('data-message'),
+            number: container.attr('data-number')
         };
 
         $('#submitSms').attr('data-id', message.id).attr('data-message', message.data);
@@ -105,11 +138,41 @@ jQuery(function($) {
             }
         }, 'json');
     });
+
+    // for manual
+    let fillManualAttr = function(el) {
+        let value = el.val();
+        let split = value.split("|");
+        let id    = split[0];
+        let nohp  = split[1];
+
+        $('#smsedit').attr('data-number', nohp);
+        $('#submitSms').attr('data-member-id', id);
+        $('#submitSms').attr('data-number', nohp);
+    }
+
+    let selectMember = $("select#selectMember");
+
+    if (selectMember.length) {
+        fillManualAttr(selectMember);
+
+        let waitFillAttr = null;
+        $(document).on('change', "select#selectMember", function() {
+            fillManualAttr($(this));
+
+            if (waitFillAttr != null) clearTimeout(waitFillAttr);
+
+            waitFillAttr = setTimeout(function() {
+                $('#smsedit').trigger('keyup');
+            }, 500);
+        });
+    }
+    // for manual
     
     let wait = null;
-    $('#smsedit').keyup(function() {
+    $(document).on('keyup', '#smsedit', function() {
         let message     = $(this).val().split("\n").join('..');
-        let number      = $(this).data('number');
+        let number      = $(this).attr('data-number');
         let total       = 0;
 
         if (wait != null) clearTimeout(wait);
@@ -158,25 +221,29 @@ jQuery(function($) {
     $(document).on('click', '#submitSms', function() {
         let data    = this.dataset;
         let max     = parseInt($('input#max_nominal').val());
+
+        console.log(data.type, data.message);
         
-        SMS.setData(data.message).filter().parse().inCluster();
+        if (data.message != '') {
+            SMS.setData(data.message).filter().parse().inCluster();
 
-        let dataMax = Math.max.apply(null, SMS.nominalStore);
-        let confirmSubmit = true;
+            let dataMax = Math.max.apply(null, SMS.nominalStore);
+            let confirmSubmit = true;
 
-        if (dataMax > max) {
-            confirmSubmit = confirm('There is a nominal that exceeds the maximum limit!');
-        }
+            if (dataMax > max) {
+                confirmSubmit = confirm('There is a nominal that exceeds the maximum limit!');
+            }
 
-        if (confirmSubmit) {
-            $.post(ajaxTo('storeSplitData'), {id: data.id, new_message: data.message, total: data.total, result: SMS.clusters}, response => {
-                if (response.status == 'success') {
-                    alert("Data berhasil disimpan!");
-                    window.location.reload();
-                } else {
-                    alert(response.error);
-                }
-            }, 'json');
+            if (confirmSubmit) {
+                $.post(ajaxTo('storeSplitData'), {id: data.id, type: data.type, number: `${data.number}`, new_message: data.message, total: data.total, result: SMS.clusters}, response => {
+                    if (response.status == 'success') {
+                        alert("Data berhasil disimpan!");
+                        window.location.reload();
+                    } else {
+                        alert(response.error);
+                    }
+                }, 'json');
+            }
         }
     });
 

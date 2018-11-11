@@ -2,15 +2,33 @@
 
 require_once '../../db.php';
 
-$checkInDB  = $db->fetch_all('select * from split where inbox_id = ?', $_POST['id']);
-$isNotExist = count($checkInDB) > 0 ? false : true;
 $response   = ['status' => 'success'];
+$type 		= $_POST['type'];
+
+if ($type == 'manual') :
+	$db->insert('inbox', [
+		'ReceivingDateTime' => date('Y-m-d H:i:s'),
+		'Text'				=> '',
+		'UDH'				=> 'manual',
+		'SenderNumber'		=> $_POST['number'],
+		'TextDecoded'		=> $_POST['new_message'],
+		'RecipientID'		=> '',
+		'isFiltered'		=> 1
+	]);
+
+	$inboxID = $db->last_insert_id();
+else :
+	$inboxID = $_POST['id'];
+endif;
+
+$checkInDB  = $db->fetch_all('select * from split where inbox_id = ?', $inboxID);
+$isNotExist = count($checkInDB) > 0 ? false : true;
 
 if ($isNotExist) :
 	$dateTime 	= date('Y-m-d');
 	$results 	= $_POST['result'];
 	$inData 	= [];
-	$inbox  	= $db->fetch_row('select * from inbox where ID = ?', $_POST['id']);
+	$inbox  	= $db->fetch_row('select * from inbox where ID = ?', $inboxID);
 	$member 	= $db->fetch_row('select * from member where nohp = ?', $inbox['SenderNumber']);
 	$stored 	= $db->fetch_all("SELECT * FROM `split` WHERE member_id = ? AND tanggal = ? AND inbox_id IS NOT NULL GROUP BY inbox_id", $member['id'], date('Y-m-d'));
 	$iNumber 	= count($stored) + 1;
@@ -49,9 +67,9 @@ if ($isNotExist) :
 		$store = $db->insert('split', $inData);
 
 		if ($store) :
-			$logActivity->setLog("Message from {$member['nama']} [{$member['kodeid']}] submitted");
+			$logActivity->setLog("[{$type}] Message from {$member['nama']} [{$member['kodeid']}] submitted");
 			
-			$db->update('inbox', ['TextDecoded' => $_POST['new_message'],'isFiltered' => 1], ['ID' => $_POST['id']]);
+			$db->update('inbox', ['TextDecoded' => $_POST['new_message'],'isFiltered' => 1], ['ID' => $inboxID]);
 			$db->update('member', ['deposit' => $sisa], ['id' => $member['id']]);
 
 			if ($member['auto_reply']) :

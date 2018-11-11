@@ -31,7 +31,7 @@ endif;
 
     <div class="row">
         <div class="col-sm-12 col-md-5">
-            <table class="table table-sm table-bordered table-hover">
+            <table class="table table-sm table-bordered table-hover" style="width: 100%">
                 <thead>
                     <tr>
                         <th>Kode</th>
@@ -58,12 +58,12 @@ endif;
             </table>
         </div>
         <div class="col-sm-12 col-md-7">
-            <table class="table table-sm table-bordered table-hover">
+            <table class="table table-sm table-bordered table-hover" style="width: 100%">
                 <thead>
                     <tr>
-                        <th>ID</th>
+                        <th width="10%">ID</th>
                         <th>Text</th>
-                        <th>Hapus</th>
+                        <th width="10%">Hapus</th>
                     </tr>
                 </thead>
                 <tfoot>
@@ -81,7 +81,7 @@ endif;
                     <?php else : foreach ($messages as $sms) : ?>
                         <tr data-sms="<?= $sms['ID'] ?>">
                             <td><?= $sms['ID'] ?></td>
-                            <td><?= substr($sms['textDecoded'], 0, 50) . '...' ?></td>
+                            <td><?= strlen($sms['textDecoded']) > 50 ? substr($sms['textDecoded'], 0, 50) . '...' : $sms['textDecoded'] ?></td>
                             <td>
                                 <a href="javascript:;" class="delete-sms btn btn-sm btn-default">hapus</a>
                             </td>

@@ -41,7 +41,7 @@
 					<a class="nav-link" href="index.php">Dashboard <span class="sr-only">(current)</span></a>
 				</li>
 				<li class="nav-item">
-					<a class="nav-link" href="#">Manual</a>
+					<a class="nav-link" href="manual.php">Manual</a>
 				</li>
 				<li class="nav-item">
 					<a class="nav-link" href="submitted.php">Data</a>
